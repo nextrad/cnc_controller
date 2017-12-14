@@ -170,7 +170,7 @@ void AudioConnectionManager::stopRecording(void)
     sleep(2);
     readFromSocket();
 
-    system("sudo ../Audio/Asterisk/scripts/relocate_audio_files.sh");
+    system("sudo ../scripts/audio/relocate_audio_files.sh");
 }
 
 

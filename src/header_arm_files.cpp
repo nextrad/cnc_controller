@@ -13,10 +13,10 @@
 HeaderArmFiles::HeaderArmFiles(void)
 {
     headerFileName = "NeXtRAD_Header.txt";
-    headerPathName = "/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt";
+    headerPathName = "/home/nextrad/Documents/cnc_controller/NeXtRAD_Header.txt";
 
     armtimecfgFileName = "armtime.cfg";
-    armtimecfgPathName = "/home/nextrad/Documents/node_controller/armtime.cfg";   // /home/nextrad/Desktop/NextGPSDO/armtime.cfg";
+    armtimecfgPathName = "armtime.cfg";
 }
 
 string HeaderArmFiles::getHeaderFileName()

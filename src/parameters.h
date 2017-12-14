@@ -23,13 +23,12 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 
 #define CAMERA_RESOLUTION 	480
 
-#define OUTPUT_DIRECTORY 	"/home/node1/Documents/Video/output/"
-
 #define IS_MOSAIC_MODE		true
 #define H_FILE_LENGTH       112
 
 #define HEADER_FILE         "NeXtRAD_Header.txt"
-#define HEADER_PATH         "/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt"
+#define CNC_HEADER_PATH     "/home/nextrad/Documents/cnc_controller/NeXtRAD_Header.txt"
+#define NODE_HEADER_PATH    "/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt"
 
 #define ARMTIMECFG_FILE     "armtime.cfg"
 #define ARMTIMECFG_PATH     "/home/nextrad/Documents/NextGPSDO/armtime.cfg"

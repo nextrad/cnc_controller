@@ -29,7 +29,7 @@ Rx3Switchenable = True;
 % Time that experiment starts. Keep format as yyyy-MM-dd hh:mm:ss !!!
 StartTime = 2017-12-14 11:15:37;
 % Time that experiment ends. Only used for Audio/Visual recordings.  Keep format as yyyy-MM-dd hh:mm:ss!!!
-EndTime = 2017-12-14 11:15:37;
+EndTime = 2017-12-11 13:03:50;
 FirstPulse = 1;
 LastPulse = 200;
 PulseStep = 1;

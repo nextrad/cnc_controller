@@ -430,9 +430,10 @@ char* Window::stringToCharPntr(string str)
 void Window::startCountDown(void)
 {
     //Open Header File
-    ifstream headerFile (headerarmfiles.getHeaderFileName()); // (HEADER_FILE);
+    ifstream headerFile ("../" + headerarmfiles.getHeaderFileName()); // (HEADER_FILE);
     printf("Header File opened\n");
     string temp;
+
 
 	// dd-MM-yyyy hh:mm:ss
     while(!headerFile.eof())
@@ -583,7 +584,7 @@ void Window::updateCountDownLCD(void)
 //Opens a new menu to do with editing the header file
 void Window::updateHeaderFileButtonClicked(void)
 {
-    QIcon icon("favicon2.ico");
+    QIcon icon("../media/icons/favicon2.ico");
     headerfilewindow = new HeaderFileWindow();
     headerfilewindow->setWindowIcon(icon); //Set Icon for application
     headerfilewindow->show();
@@ -717,7 +718,7 @@ int Window::sendHeaderButtonClicked(void)
 
     // Nodes
 //     ss << "ansible nodes -m copy -a \"src=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt dest=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt\"";
-     ss << "ansible nodes -m copy -a \"src=" << headerarmfiles.getHeaderPathName() << " dest=" << headerarmfiles.getHeaderPathName() << "\"";
+     ss << "ansible nodes -m copy -a \"src=" << CNC_HEADER_PATH << " dest=" << NODE_HEADER_PATH << "\"";
 
      status = system(stringToCharPntr(ss.str()));     // system(stringToCharPntr(ss.str()));
      if (-1 != status)
@@ -995,9 +996,5 @@ void Window::abortVideoRecordingButtonClicked(void)
 //Method to show the video mosaic.
 void Window::showVideoButtonClicked(void)
 {
-    /*stringstream ss;
-    ss << "x-terminal-emulator -e \"cvlc --vlm-conf ../Video/mosaic_viewer/mosaic.conf --mosaic-width=1280 --mosaic-height=720 --mosaic-keep-picture --mosaic-rows=2 --mosaic-cols=2 --mosaic-position=0 --mosaic-order=1,2,3,4\"";
-    system(stringToCharPntr(ss.str()));*/
-
-    system("x-terminal-emulator -x -e \"cvlc --vlm-conf ../Video/mosaic_viewer/mosaic.conf --mosaic-width=1280 --mosaic-height=720 --mosaic-keep-picture --mosaic-rows=2 --mosaic-cols=2 --mosaic-position=0 --mosaic-order=1,2,3,4\"");
+    system("x-terminal-emulator -x -e \"cvlc --vlm-conf ../scripts/mosaic_view/mosaic.conf --mosaic-width=1280 --mosaic-height=720 --mosaic-keep-picture --mosaic-rows=2 --mosaic-cols=2 --mosaic-position=0 --mosaic-order=1,2,3,4\"");
 }

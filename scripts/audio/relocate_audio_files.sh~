@@ -3,7 +3,7 @@
 echo "Moving recorded audio files..."
 
 RECORD_DIR="/var/spool/asterisk"
-STORE_DIR="/home/nextrad/Documents/cnc_controller/output"
+STORE_DIR="/home/nextrad/Documents/Audio/output"
 
 for i in "$RECORD_DIR"/*.wav
 do

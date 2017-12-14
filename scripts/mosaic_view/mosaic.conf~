@@ -15,7 +15,7 @@ setup channel4 input "rtsp://192.168.1.34:88/live/video/profile3"
 setup channel4 output #duplicate{dst=mosaic-bridge{id=4,height=360,width=640},select=video,dst=bridge-out{id=4},select=audio}                                              
 
 new background broadcast enabled
-setup background input ../media/images/mosaic_background.png
+setup background input media/images/mosaic_background.png
 setup background option image-duration=-1
 setup background output #transcode{sfilter=mosaic,vcodec=mp4v,vb=20000,acodec=none,fps=15,scale=1}:display
 
