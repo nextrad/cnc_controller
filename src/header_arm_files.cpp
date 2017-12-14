@@ -12,14 +12,14 @@
 
 HeaderArmFiles::HeaderArmFiles(void)
 {
-    headerFileName = "NeXtRAD.ini"; //_Header.txt";
-    headerPathName = "/home/nextrad/Documents/cnc_controller/" + headerFileName; //_Header.txt";
+    //headerFileName = "NeXtRAD_Header.txt";
+    //headerPathName = "/home/nextrad/Documents/cnc_controller/NeXtRAD_Header.txt";
 
     armtimecfgFileName = "armtime.cfg";
     armtimecfgPathName = "armtime.cfg";
 
     bearingsFileName = "tardat2cc.rtf";
-    bearingsPathName = "/home/nextrad/" + bearingsFileName;
+    bearingsPathName = "/home/nextrad/Documents/cnc_controller/" + bearingsFileName;
 }
 
 string HeaderArmFiles::getHeaderFileName()

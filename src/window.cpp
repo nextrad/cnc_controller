@@ -744,7 +744,7 @@ int Window::sendHeaderButtonClicked(void)
 
      // Cobalts
      //ss << "ansible cobalts -m copy -a \"src=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt dest=/smbtest/NeXtRAD_Header.txt\"";
-     ss << "ansible cobalts -m copy -a \"src=" << headerarmfiles.getHeaderPathName() << " dest=/smbtest/" << headerarmfiles.getHeaderFileName() << "\"";
+     ss << "ansible cobalts -m copy -a \"src=" << CNC_HEADER_PATH << " dest=/smbtest/" << HEADER_FILE << "\"";
 
      status = system(stringToCharPntr(ss.str()));     // system(stringToCharPntr(ss.str()));
      if (-1 != status)
