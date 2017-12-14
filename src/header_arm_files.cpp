@@ -12,8 +12,8 @@
 
 HeaderArmFiles::HeaderArmFiles(void)
 {
-    headerFileName = "NeXtRAD_Header.txt";
-    headerPathName = "/home/nextrad/Documents/cnc_controller/NeXtRAD_Header.txt";
+    //headerFileName = "NeXtRAD_Header.txt";
+    //headerPathName = "/home/nextrad/Documents/cnc_controller/NeXtRAD_Header.txt";
 
     armtimecfgFileName = "armtime.cfg";
     armtimecfgPathName = "armtime.cfg";
