@@ -274,7 +274,7 @@ void NetworkManager::receiveData(void)
 //            gpsLat[k] = data[1];
 //            gpsLon[k] = data[2];
 //            gpsHt[k] = data[3];
-//            gpsStability[k] = data[4];
+
         }
     }
 
@@ -717,8 +717,3 @@ double NetworkManager::getGPSHt(int clientID)
     return gpsHt[clientID];
 }
 
-//This method returns the Stability of the respective client
-double NetworkManager::getGPSStability(int clientID)
-{
-    return gpsStability[clientID];
-}

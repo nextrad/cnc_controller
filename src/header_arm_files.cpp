@@ -17,6 +17,9 @@ HeaderArmFiles::HeaderArmFiles(void)
 
     armtimecfgFileName = "armtime.cfg";
     armtimecfgPathName = "armtime.cfg";
+
+    bearingsFileName = "tardat2cc.rtf";
+    bearingsPathName = "/home/nextrad/Documents/cnc_controller/" + bearingsFileName;
 }
 
 string HeaderArmFiles::getHeaderFileName()
@@ -44,6 +47,15 @@ string HeaderArmFiles::getArmtimecfgPathName()
     return armtimecfgPathName;
 }
 
+string HeaderArmFiles::getBearingsFileName()
+{
+    return armtimecfgFileName;
+}
+
+string HeaderArmFiles::getBearingsPathName()
+{
+    return armtimecfgPathName;
+}
 
 //=============================================================================
 // writeToHeaderFile()
@@ -79,7 +91,8 @@ void HeaderArmFiles::writeToHeaderFile(string varName, string data, string secti
     content[pos] = varName;
     content[pos].append(" = ");
     content[pos].append(data);
-    content[pos].append(";\r");                       //Use \r (carriage return) because sometimes it gets forgotten
+    //content[pos].append(";\r");                       //Use \r (carriage return) because sometimes it gets forgotten
+    content[pos].append("\r");                       //Use \r (carriage return) because sometimes it gets forgotten
     //overwrite file with new value
     ofstream wfile (getHeaderFileName()); // (HEADER_FILE);
     for(int i = 0; i < H_FILE_LENGTH; i++)
@@ -97,31 +110,12 @@ void HeaderArmFiles::writeToHeaderFile(string varName, string data, string secti
 
 
 //=============================================================================
-// writeToArmtimecfgFile()
-//=============================================================================
-//method to set up the NextGPSDO armtime.cfg file
-void HeaderArmFiles::writeToArmtimecfgFile(string data)
-{
-    //overwrite file with new value
-    ofstream wfile (armtimecfgFileName);
-    stringstream ss;
-    ss << "Date=" << data.substr(8,2) << "/" << data.substr(5,2) << "/" << data.substr(0,4);
-    wfile << ss.str() << endl;
-    ss.str("");
-    ss << "Arm_Time=" << data.substr(11,8) << endl;
-    wfile << ss.str() << endl;
-    wfile.close();
-
-    fflush(stdout);
-}
-
-
-//=============================================================================
 // readFromHeaderFile()
 //=============================================================================
 //method to return a variable's value from the NeXtRAD header file
 QString HeaderArmFiles::readFromHeaderFile(string varName, string section)
 {
+    /*
     //Read from header file
     ifstream rfile (getHeaderFileName()); // (HEADER_FILE);
     string temp = "";
@@ -156,8 +150,28 @@ QString HeaderArmFiles::readFromHeaderFile(string varName, string section)
     string str = temp.substr(pos, temp.find_last_of(';') - pos);
     //cout << "substring end" << endl;                              //debugging
 
-
     return   QString::fromUtf8( str.c_str());
+    */
+
+
+
+    //Read from header file
+    std::ifstream check (getHeaderFileName());
+    if (!check.good())
+    {
+        printf("Please check location of header file and try again.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    CSimpleIniA ini;
+
+    ini.LoadFile(getHeaderFileName().c_str());
+
+    std::string str = (ini.GetValue(section.c_str(), varName.c_str()));
+
+    check.close();
+
+    return  QString::fromUtf8( str.c_str());
 }
 
 //=============================================================================
@@ -183,3 +197,72 @@ int HeaderArmFiles::saveHeaderFile(string newname)
     return result;
 }
 */
+
+//=============================================================================
+// writeToArmtimecfgFile()
+//=============================================================================
+//method to set up the NextGPSDO armtime.cfg file
+void HeaderArmFiles::writeToArmtimecfgFile(string data)
+{
+    //overwrite file with new value
+    ofstream wfile (armtimecfgFileName);
+    stringstream ss;
+    ss << "Date=" << data.substr(8,2) << "/" << data.substr(5,2) << "/" << data.substr(0,4);
+    wfile << ss.str() << endl;
+    ss.str("");
+    ss << "Arm_Time=" << data.substr(11,8) << endl;
+    wfile << ss.str() << endl;
+    wfile.close();
+
+    fflush(stdout);
+}
+
+
+//=============================================================================
+// readFromBearingsFile()
+//=============================================================================
+//method to return a variable's value from the NeXtRAD bearings file
+QString HeaderArmFiles::readFromBearingsFile(string varName)
+{
+    //Read from bearings file
+    ifstream rfile (getBearingsFileName());
+    string temp = "";
+    int pos = -1;
+
+    //find line with corresponding variable's name and find position of the variable's value on that line
+    while(!rfile.eof())
+    {
+        getline(rfile,temp);
+        /*
+        if(temp.find(section) != string::npos)
+        {
+            pos = -2;                                                   //pos = -2 is just to indicate that the section was found
+        }
+        if(pos == -2)
+        {*/
+            if(temp.find(varName) != string::npos)                      //if the variable's name is found
+            {
+                pos = temp.find_first_of('=') + 2;                       //+2 because data starts after "= "
+                break;
+            }
+        //}
+    }
+    rfile.close();
+
+    if(pos < 0)
+    {
+        string str = "error: can't find variable";
+        return "Error";
+    }
+    //cout << "substring" << endl;                              //debugging
+
+    //convert from std::string to QString
+    string str = temp.substr(pos, temp.find_last_of(';') - pos);
+    //cout << "substring end" << endl;                              //debugging
+
+
+    return   QString::fromUtf8( str.c_str());
+}
+
+
+

@@ -13,6 +13,7 @@ Datetime::Datetime(void)
 
 }
 
+//=============================================================================
 
 string Datetime::getTimeAndDate(const char *format)
 {
@@ -25,7 +26,7 @@ string Datetime::getTimeAndDate(const char *format)
     string dateTime(buffer);
     return dateTime;
 }
-
+//=============================================================================
 /*
 time_t now = time(0);
 struct tm tstruct;
@@ -33,15 +34,72 @@ char buf[80];
 tstruct = *localtime(&now);
 strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
 */
-
-string Datetime::nowPlusSecs(int secs)
+//=============================================================================
+string Datetime::getNowPlusSecs(int secs)
 {
     QDateTime eTime = QDateTime::currentDateTime();
     QDateTime t = eTime.addSecs(secs);
     string now = t.toString("yyyy-MM-dd hh:mm:ss").toUtf8().constData();
     return now.c_str();
 }
+//=============================================================================
+string Datetime::getNowSecsPlusSecs(int secs)
+{
+    QDateTime eTime = QDateTime::currentDateTime();
+    QDateTime t = eTime.addSecs(secs);
+    string now = t.toString("ss").toUtf8().constData();
+    return now.c_str();
+}
 
+//=============================================================================
+//"yyyy-MM-dd hh:mm:ss"  Local time (SAST)
+string Datetime::getNowInYears(void)
+{
+    QDateTime eTime = QDateTime::currentDateTime();
+    string now = eTime.toString("yyyy").toUtf8().constData();
+    return now.c_str();
+}
+//=============================================================================
+//"yyyy-MM-dd hh:mm:ss"  Local time (SAST: UTC+2)
+string Datetime::getNowInMonths(void)
+{
+    QDateTime eTime = QDateTime::currentDateTime();
+    string now = eTime.toString("MM").toUtf8().constData();
+    return now.c_str();
+}
+//=============================================================================
+//"yyyy-MM-dd hh:mm:ss"  Local time (SAST: UTC+2)
+string Datetime::getNowInDays(void)
+{
+    QDateTime eTime = QDateTime::currentDateTime();
+    string now = eTime.toString("dd").toUtf8().constData();
+    return now.c_str();
+}
+
+//=============================================================================
+//"yyyy-MM-dd hh:mm:ss"  Local time (SAST)
+string Datetime::getNowInHours(void)
+{
+    QDateTime eTime = QDateTime::currentDateTime();
+    string now = eTime.toString("hh").toUtf8().constData();
+    return now.c_str();
+}
+//=============================================================================
+//"yyyy-MM-dd hh:mm:ss"  Local time (SAST: UTC+2)
+string Datetime::getNowInMinutes(void)
+{
+    QDateTime eTime = QDateTime::currentDateTime();
+    string now = eTime.toString("mm").toUtf8().constData();
+    return now.c_str();
+}
+//=============================================================================
+//"yyyy-MM-dd hh:mm:ss"  Local time (SAST: UTC+2)
+string Datetime::getNowInSeconds(void)
+{
+    QDateTime eTime = QDateTime::currentDateTime();
+    string now = eTime.toString("ss").toUtf8().constData();
+    return now.c_str();
+}
 
 //=============================================================================
 // getCountDownTime()
@@ -59,12 +117,17 @@ QString Datetime::getCountDownTime(time_t timeLeft)
     tim -= mins;
     hours = tim / 60;
 
-    //return as QString so that it's easily outputted
-    QString temp = QStringLiteral("%1:").arg(hours, 2, 10, QChar('0'));
-    temp.append(QStringLiteral("%1").arg(mins, 2, 10, QChar('0')));
-    temp.append(QStringLiteral(":%1").arg(secs, 2, 10, QChar('0')));
-    return temp;
+    string s   = "";
+    s += hours; // hh
+    s += ":";
+    s += mins; // mm
+    s += ":";
+    s += secs; // ss
+    s += ":";
 
+    cout << "CountDownTime = " << s << endl;
+    QString temp = QString::fromStdString(s);
+    return temp;
 }
 
 
