@@ -31,7 +31,10 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define NODE_HEADER_PATH    "/home/nextrad/Documents/node_controller/NeXtRAD.ini"
 
 #define ARMTIMECFG_FILE     "armtime.cfg"
-#define ARMTIMECFG_PATH     "/home/nextrad/Documents/NextGPSDO/armtime.cfg"
+#define ARMTIMECFG_PATH     "/home/nextrad/Documents/cnc_controller/armtime.cfg"
+
+#define BEARINGS_FILE       "tardat2cc.rtf"
+#define BEARINGS_PATH       "/home/nextrad/Documents/cnc_controller/tardat2cc.rtf"
 
 #define STARTTIMESECS       20
 #define ENDTIMESECS         30

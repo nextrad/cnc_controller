@@ -219,6 +219,16 @@ void HeaderFileWindow::showFirstMenu(void)
 
 //========================================================timingParametersButtonClicked=====================
 // quicklookSettingsButtonClicked()
+//[Quicklook]
+
+//; ADC_CHANNEL 0 = L, 1 = X, 2 = X
+//ADC_CHANNEL = 0
+
+//; MPA = 0, HPA = 1
+//AMPLIFIER = 1
+//DYNAMIC_RANGE = 65
+//SPECTROGRAM_BIN = 1000
+//DOPPLER_FFT = 256
 //=============================================================================
 void HeaderFileWindow::quicklookSettingsButtonClicked(void)
 {
@@ -226,46 +236,31 @@ void HeaderFileWindow::quicklookSettingsButtonClicked(void)
     menu = 1;
 
     //set GUI buttons and textfields appropriately
-    label->setText("quicklookration Settings");
+    label->setText("Quicklook Settings");
 
     cancelButton->setText("Cancel");
     okButton->show();
 /*
-    text1->setGeometry(15, 100, 140, 40);
-    text1->setText("PriPredelay");
+    text1->setGeometry(50, 100, 140, 40);
+    text1->setText("ADC_CHANNEL");
     text1->setFont(QFont("Ubuntu",14));
     text1->show();
 
-    text2->setGeometry(260, 100, 140, 40);
-    text2->setText("DdsPredelay");
+    text2->setGeometry(50, 200, 140, 40);
+    text2->setText("AMPLIFIER");
     text2->setFont(QFont("Ubuntu",14));
     text2->show();
 
-    QString oldVal = headerarmfiles.readFromHeaderFile("PriPredelay", "quicklookration");
-    textbox1->setGeometry(150, 105, 40, 29);
+    QString oldVal = headerarmfiles.readFromHeaderFile("Quicklook", "ADC_CHANNEL");
+    textbox1->setGeometry(250, 100, 140, 40);
     textbox1->setText(oldVal);
     textbox1->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("DdsPredelay", "quicklookration");
-    textbox2->setGeometry(445, 105, 40, 29);
+    oldVal = headerarmfiles.readFromHeaderFile("Quicklook", "AMPLIFIER");
+    textbox2->setGeometry(250, 200, 140, 40);
     textbox2->setText(oldVal);
     textbox2->show();
 
-    Rx1SwitchButton->setGeometry(15, 150, 175, 40);
-    Rx1SwitchButton->setText("Rx1 Switch");
-    Rx1SwitchButton->show();
-
-    Rx2SwitchButton->setGeometry(260, 150, 175, 40);
-    Rx2SwitchButton->setText("Rx2 Switch");
-    Rx2SwitchButton->show();
-
-    Rx3SwitchButton->setGeometry(15, 200, 175, 40);
-    Rx3SwitchButton->setText("Rx3 Switch");
-    Rx3SwitchButton->show();
-
-    adcButton->setGeometry(260, 200, 175, 40);
-    adcButton->setText("ADC");
-    adcButton->show();
 
     */
 
@@ -818,44 +813,44 @@ void HeaderFileWindow::geometryParametersButtonClicked(void)
     if (NodeCnt > 1)
     {
         temp = QString::number(server.getGPSLat(0));
-        text5->setGeometry(200, 70, 160, 50);
+        text4->setGeometry(200, 70, 160, 50);
+        text4->setText(temp);
+        text4->setFont(QFont("Ubuntu",14));
+        text4->show();
+
+        temp = QString::number(server.getGPSLon(0));
+        text5->setGeometry(200, 120, 160, 50);
         text5->setText(temp);
         text5->setFont(QFont("Ubuntu",14));
         text5->show();
 
-        temp = QString::number(server.getGPSLon(0));
-        text6->setGeometry(200, 120, 160, 50);
+        temp = QString::number(server.getGPSHt(0));
+        text6->setGeometry(200, 170, 160, 50);
         text6->setText(temp);
         text6->setFont(QFont("Ubuntu",14));
         text6->show();
-
-        temp = QString::number(server.getGPSHt(0));
-        text7->setGeometry(200, 170, 160, 50);
-        text7->setText(temp);
-        text7->setFont(QFont("Ubuntu",14));
-        text7->show();
 
     }
 
     if (NodeCnt > 2)
     {
         temp = QString::number(server.getGPSLat(1));
-        text9->setGeometry(280, 70, 160, 50);
+        text7->setGeometry(280, 70, 160, 50);
+        text7->setText(temp);
+        text7->setFont(QFont("Ubuntu",14));
+        text7->show();
+
+        temp = QString::number(server.getGPSLon(1));
+        text8->setGeometry(280, 120, 160, 50);
+        text8->setText(temp);
+        text8->setFont(QFont("Ubuntu",14));
+        text8->show();
+
+        temp = QString::number(server.getGPSHt(1));
+        text9->setGeometry(280, 170, 160, 50);
         text9->setText(temp);
         text9->setFont(QFont("Ubuntu",14));
         text9->show();
-
-        temp = QString::number(server.getGPSLon(1));
-        text10->setGeometry(280, 120, 160, 50);
-        text10->setText(temp);
-        text10->setFont(QFont("Ubuntu",14));
-        text10->show();
-
-        temp = QString::number(server.getGPSHt(1));
-        text11->setGeometry(280, 170, 160, 50);
-        text11->setText(temp);
-        text11->setFont(QFont("Ubuntu",14));
-        text11->show();
 
     }
 
@@ -863,22 +858,22 @@ void HeaderFileWindow::geometryParametersButtonClicked(void)
     {
 
         temp = QString::number(server.getGPSLat(2));
-        text13->setGeometry(360, 70, 160, 50);
-        text13->setText(temp);
-        text13->setFont(QFont("Ubuntu",14));
-        text13->show();
+        text10->setGeometry(360, 70, 160, 50);
+        text10->setText(temp);
+        text10->setFont(QFont("Ubuntu",14));
+        text10->show();
 
         temp = QString::number(server.getGPSLon(2));
-        text14->setGeometry(360, 120, 160, 50);
-        text14->setText(temp);
-        text14->setFont(QFont("Ubuntu",14));
-        text14->show();
+        text11->setGeometry(360, 120, 160, 50);
+        text11->setText(temp);
+        text11->setFont(QFont("Ubuntu",14));
+        text11->show();
 
         temp = QString::number(server.getGPSHt(2));
-        text15->setGeometry(360, 170, 160, 50);
-        text15->setText(temp);
-        text15->setFont(QFont("Ubuntu",14));
-        text15->show();
+        text12->setGeometry(360, 170, 160, 50);
+        text12->setText(temp);
+        text12->setFont(QFont("Ubuntu",14));
+        text12->show();
 
     }
 
@@ -890,10 +885,10 @@ void HeaderFileWindow::geometryParametersButtonClicked(void)
 //[TargetSettings]
 //; lats and longs are in decimal degrees
 //; height is in meters as WGS84 and above geoid
-//TgtLocationLat    = -34.1874
-//TgtLocationLon    = 18.4280
-//TgtLocationHt     = 0.0235
 
+/*TGT_LOCATION_LAT = -34.1874
+TGT_LOCATION_LON = 18.4280
+TGT_LOCATION_HT = 0*/
 //=============================================================================
 void HeaderFileWindow::targetPositionSettingsButtonClicked(void)
 {
@@ -906,17 +901,17 @@ void HeaderFileWindow::targetPositionSettingsButtonClicked(void)
     okButton->show();
 
     text1->setGeometry(100, 70, 140, 40);
-    text1->setText("TgtLocationLat");
+    text1->setText("TGT_LOCATION_LAT");
     text1->setFont(QFont("Ubuntu",14));
     text1->show();
 
     text2->setGeometry(100, 120, 140, 40);
-    text2->setText("TgtLocationLon");
+    text2->setText("TGT_LOCATION_LON");
     text2->setFont(QFont("Ubuntu",14));
     text2->show();
 
     text3->setGeometry(100, 170, 140, 40);
-    text3->setText("TgtLocationHt");
+    text3->setText("TGT_LOCATION_HT");
     text3->setFont(QFont("Ubuntu",14));
     text3->show();
 
@@ -1133,7 +1128,7 @@ void HeaderFileWindow::weatherParametersButtonClicked(void)
 
     clearMenu();
     menu = 18;
-    label->setText("weather Parameters");
+    label->setText("Weather Parameters");
 
     //set GUI buttons and textfields appropriately
     cancelButton->setText("Cancel");
@@ -1248,90 +1243,113 @@ void HeaderFileWindow::cancelButtonClicked(void)
 //This method reduces the number of buttons needed and combines the ok button of all headerfiles
 void HeaderFileWindow::okButtonClicked(void)
 {
-    std::string temp;
-    string varName = "";
-    stringstream ss;
+
+    std::string value, var;
+    stringstream ss_armtime;
+
     switch(menu)
-    {
+    { /*
         case 1://quicklookration Settings
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("PriPredelay", temp, "quicklookration");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("PriPredelay", value, "quicklookration");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("DdsPredelay", temp, "quicklookration");
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("DdsPredelay", value, "quicklookration");
+
+            showFirstMenu();
+        break;*/
+
+        case 2://Timing Parameters
+            ss_armtime << "Date=";
+
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "DAY", value);
+            ss_armtime << value << "/";
+
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "MONTH", value);
+            ss_armtime << value << "/";
+
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "YEAR", value);
+            ss_armtime << value << "\n";
+
+
+            ss_armtime << "Arm_Time=";
+            value = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "HOUR", value);
+            ss_armtime << value << ":";
+
+            value = textbox5->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "MINUTE", value);
+            ss_armtime << value << ":";
+
+            value = textbox6->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "SECOND", value);
+            ss_armtime << value;
+
+            headerarmfiles.writeToArmtimecfgFile(ss_armtime.str());
 
             showFirstMenu();
         break;
 
-        case 2://Export Parameters
-            temp = textbox1->toPlainText().toUtf8().constData();   //StartTime = 2017-12-04 16:46:17
-            headerarmfiles.writeToHeaderFile("StartTime", temp, "Timing");
+        /*case 3:
+         //Radar Settings
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Power", value, "Radar Settings");
 
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToArmtimecfgFile(temp);
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("F0", value, "Radar Settings");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("EndTime", temp, "Export");
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("PRF", value, "Radar Settings");
 
-            showFirstMenu();
-        break;
+            value = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("PulseLength", value, "Radar Settings");
 
-        case 3://Radar Settings
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Power", temp, "Radar Settings");
-
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("F0", temp, "Radar Settings");
-
-            temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("PRF", temp, "Radar Settings");
-
-            temp = textbox4->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("PulseLength", temp, "Radar Settings");
-
-            temp = textbox5->toPlainText().toUtf8().constData();
-            temp = "'" + temp + "'";
-            headerarmfiles.writeToHeaderFile("Waveform", temp, "Radar Settings");
+            value = textbox5->toPlainText().toUtf8().constData();
+            value = "'" + value + "'";
+            headerarmfiles.writeToHeaderFile("Waveform", value, "Radar Settings");
 
             showFirstMenu();
         break;
-
+*/
         case 4://Target Position
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("TgtLocationLat", temp, "Target");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("TGT_LOCATION_LAT", value, "Target");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("TgtLocationLon", temp, "Target");
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("TGT_LOCATION_LON", value, "Target");
 
-            temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("TgtLocationHt", temp, "Target");
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("TGT_LOCATION_HT", value, "Target");
 
             showFirstMenu();
         break;
-
+/*
         case 5://Polarisation Parameters
-            temp = textbox1->toPlainText().toUtf8().constData();
-            temp = "'" + temp + "'";
-            headerarmfiles.writeToHeaderFile("TxPol", temp, "Polarisation");
+            value = textbox1->toPlainText().toUtf8().constData();
+            value = "'" + value + "'";
+            headerarmfiles.writeToHeaderFile("TxPol", value, "Polarisation");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            temp = "'" + temp + "'";
-            headerarmfiles.writeToHeaderFile("Rx1Pol", temp, "Polarisation");
+            value = textbox2->toPlainText().toUtf8().constData();
+            value = "'" + value + "'";
+            headerarmfiles.writeToHeaderFile("Rx1Pol", value, "Polarisation");
 
-            temp = textbox3->toPlainText().toUtf8().constData();
-            temp = "'" + temp + "'";
-            headerarmfiles.writeToHeaderFile("Rx2Pol", temp, "Polarisation");
+            value = textbox3->toPlainText().toUtf8().constData();
+            value = "'" + value + "'";
+            headerarmfiles.writeToHeaderFile("Rx2Pol", value, "Polarisation");
 
-            temp = textbox4->toPlainText().toUtf8().constData();
-            temp = "'" + temp + "'";
-            headerarmfiles.writeToHeaderFile("Rx3Pol", temp, "Polarisation");
+            value = textbox4->toPlainText().toUtf8().constData();
+            value = "'" + value + "'";
+            headerarmfiles.writeToHeaderFile("Rx3Pol", value, "Polarisation");
 
             showFirstMenu();
         break;
 
         case 6://Pulse Parameters
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("NumberOfPulses", temp, "Pulse Parameters");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("NumberOfPulses", value, "Pulse Parameters");
 
             showFirstMenu();
         break;
@@ -1339,36 +1357,36 @@ void HeaderFileWindow::okButtonClicked(void)
         case 7: case 8: case 9://quicklookration Settings RxSwitch
             ss << (menu - 6);
             varName = ("Rx" + ss.str() + "SwitchDelay");
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile(varName, temp, "quicklookration");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile(varName, value, "quicklookration");
 
             varName = ("Rx" + ss.str() + "SwitchPredelay");
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile(varName, temp, "quicklookration");
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile(varName, value, "quicklookration");
 
             varName = ("Rx" + ss.str() + "Switchenable");
-            temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile(varName, temp, "quicklookration");
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile(varName, value, "quicklookration");
 
             quicklookSettingsButtonClicked();
         break;
 
         case 10://quicklookration Settings ADC
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("AdcDcOffset", temp, "quicklookration");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("AdcDcOffset", value, "quicklookration");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("AdcPreDelay", temp, "quicklookration");
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("AdcPreDelay", value, "quicklookration");
 
-            temp = textbox3->toPlainText().toUtf8().constData();
-            temp = "'" + temp + "'";
-            headerarmfiles.writeToHeaderFile("AdcTriggerSource", temp, "quicklookration");
+            value = textbox3->toPlainText().toUtf8().constData();
+            value = "'" + value + "'";
+            headerarmfiles.writeToHeaderFile("AdcTriggerSource", value, "quicklookration");
 
-            temp = textbox4->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("AdcTriggerLevel", temp, "quicklookration");
+            value = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("AdcTriggerLevel", value, "quicklookration");
 
-            temp = textbox5->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("AdcPreTriggerSample", temp, "quicklookration");
+            value = textbox5->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("AdcPreTriggerSample", value, "quicklookration");
 
             showFirstMenu();
         break;
@@ -1376,139 +1394,145 @@ void HeaderFileWindow::okButtonClicked(void)
         case 11: case 12://Pulse 1 and 2 Parameters
             ss << (menu - 10);
             varName = ("Pulse " + ss.str());
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("MBoffset", temp, varName);
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("MBoffset", value, varName);
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("DIGoffset", temp, varName);
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("DIGoffset", value, varName);
 
-            temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("PRIoffset", temp, varName);
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("PRIoffset", value, varName);
 
-            temp = textbox4->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Frequency", temp, varName);
+            value = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Frequency", value, varName);
 
-            temp = textbox5->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("TxPol", temp, varName);
+            value = textbox5->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("TxPol", value, varName);
 
-            temp = textbox6->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("RxPol", temp, varName);
+            value = textbox6->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("RxPol", value, varName);
 
             showFirstMenu();
         break;
 
         case 13://Pulse Parameters
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("FirstPulse", temp, "Export");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("FirstPulse", value, "Export");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("LastPulse", temp, "Export");
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("LastPulse", value, "Export");
 
-            temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("PulseStep", temp, "Export");
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("PulseStep", value, "Export");
 
-            temp = textbox4->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("NumOfPulses", temp, "Export");
+            value = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("NumOfPulses", value, "Export");
 
             showFirstMenu();
         break;
 
         case 14://Sample Parameters
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("FirstSample", temp, "Export");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("FirstSample", value, "Export");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("LastSample", temp, "Export");
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("LastSample", value, "Export");
 
-            temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("SampleStep", temp, "Export");
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("SampleStep", value, "Export");
 
-            temp = textbox4->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("NumOfSamplesPerPulse", temp, "Export");
+            value = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("NumOfSamplesPerPulse", value, "Export");
 
             showFirstMenu();
-        break;
+        break;*/
 
         case 16://Bearings Parameters
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node 0 Bearing", temp, "Bearings");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node 1 Bearing", temp, "Bearings");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", value);
 
-            temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node 2 Bearing", temp, "Bearings");
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", value);
+
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Bearings", "NODE1_RANGE", value);
+
+            value = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Bearings", "NODE1_BEARING", value);
+
+            value = textbox5->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Bearings", "NODE2_RANGE", value);
+
+            value = textbox6->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Bearings", "NODE2_BEARING", value);
 
             showFirstMenu();
         break;
 
         case 17://geometryParameters Parameters
 
-            temp = text1->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node0LocationLat", temp, "Geometry");
+            value = text4->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", value);
 
-            temp = text2->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node0LocationLon", temp, "Geometry");
+            value = text5->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", value);
 
-            temp = text3->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node0LocationHt", temp, "Geometry");
+            value = text6->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", value);
 
-//            temp = text4->text().toUtf8().constData();
-//            headerarmfiles.writeToHeaderFile("Node0Stability", temp, "Geometry");
+            value = text7->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", value);
 
+            value = text8->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", value);
 
-            temp = text5->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node1LocationLat", temp, "Geometry");
+            value = text9->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", value);
 
-            temp = text6->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node1LocationLon", temp, "Geometry");
+            value = text10->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", value);
 
-            temp = text7->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node1LocationHt", temp, "Geometry");
+            value = text11->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", value);
 
-//            temp = text8->text().toUtf8().constData();
-//            headerarmfiles.writeToHeaderFile("Node1Stability", temp, "Geometry");
-
-
-            temp = text9->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node2LocationLat", temp, "Geometry");
-
-            temp = text10->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node2LocationLon", temp, "Geometry");
-
-            temp = text11->text().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Node2LocationHt", temp, "Geometry");
-
-//            temp = text12->text().toUtf8().constData();
-//            headerarmfiles.writeToHeaderFile("Node2Stability", temp, "Geometry");
+            value = text12->text().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", value);
 
             // already gets saved
             showFirstMenu();
         break;
 
         case 18://weather Parameters
-            temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Humidity", temp, "Environment");
 
-            temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Air Temperature", temp, "Environment");
+            value = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Weather", "DOUGLAS_SEA_STATE", value);
 
-            temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Barometric Pressure", temp, "Environment");
+            value = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Weather", "WIND_SPEED", value);
 
-            temp = textbox4->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Time", temp, "Environment");
+            value = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Weather", "WIND_DIR", value);
+
+            value = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Weather", "WAVE_HEIGHT", value);
+
+            value = textbox5->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Weather", "WAVE_DIR", value);
+
+            value = textbox6->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Weather", "WAVE_PERIOD", value);
+
+            value = textbox7->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Weather", "AIR_TEMPERATURE", value);
+
+            value = textbox8->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Weather", "AIR_PRESSURE", value);
 
             showFirstMenu();
         break;
 
     }
-    //add a timestamp to the file
-    temp = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toUtf8().constData();
-    headerarmfiles.writeToHeaderFile("TimeStamp", temp, "Time Stamp");
-
-
-
 }
 
 

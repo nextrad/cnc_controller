@@ -77,6 +77,8 @@ class HeaderFileWindow : public QDialog
         QTextEdit *textbox4;
         QTextEdit *textbox5;
         QTextEdit *textbox6;
+        QTextEdit *textbox7;
+        QTextEdit *textbox8;
 /*
         QPushButton *Rx1SwitchButton;
         QPushButton *Rx2SwitchButton;

@@ -431,11 +431,12 @@ char* Window::stringToCharPntr(string str)
 void Window::startCountDown(void)
 {
     //Open Header File
-    ifstream headerFile ("../" + headerarmfiles.getHeaderFileName()); // (HEADER_FILE);
+    ifstream headerFile (CNC_HEADER_PATH);
+
     printf("Header File opened\n");
     string temp;
 
-
+    /*
 	// dd-MM-yyyy hh:mm:ss
     while(!headerFile.eof())
     {
@@ -506,6 +507,7 @@ void Window::startCountDown(void)
     else
     {
         starttimer->start((datetime.convertToUnixTime(startTime)+ 2 - currentUnixTime)*1000);
+        starttimer->start();
         //camera buffer stores 2 seconds, thus start two seconds later and record for 2 seconds longer.
         countDownLabel->setText("Countdown to armtime");
         timMode = 1;
@@ -513,7 +515,7 @@ void Window::startCountDown(void)
         statusBox->append("");
     }
 
-    fflush(stdout);
+    fflush(stdout);*/
 }
 
 
@@ -614,76 +616,7 @@ void Window::openMainMenu(void)
 int Window::sendHeaderButtonClicked(void)
 {
 
-    /*
-    //check to see if there are any clients connected
-    if(server.getNoClients() == 0)
-    {
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "No Nodes Connected");
-        return;
-    }
-*/
-    /*
-    //Read header file
-    char* hFile [H_FILE_LENGTH];
-    ifstream file(headerarmfiles.getHeaderFileName()); // (HEADER_FILE);
-
-    string temp;
-    char* line;
-    int8_t len [H_FILE_LENGTH];
-
-    for(int i = 0; i < H_FILE_LENGTH; i++)
-    {
-        getline(file,temp);
-        len[i] = temp.length();
-        line = stringToCharPntr(temp);
-        hFile [i] = line;
-    }
-    file.close();
-
-    //Send Header file
-    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Sending Header File...");
-    server.sendToClients(hFile, len);
-    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File Sent");
-    *//*
-    Datetime datetime;
-
-    // Make header file name
-    string starttime = datetime.nowPlusSecs(300); //STARTTIMESECS);
-    string endtime = datetime.nowPlusSecs(330); //ENDTIMESECS);
-
-    string headerfilename = starttime;
-
-    headerarmfiles.setHeaderFileName(headerfilename);
-
-
-    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "New Header Name is " + headerfilename.c_str());
-
-    // Update header file
-    headerarmfiles.writeToHeaderFile("StartTime", starttime, "Export");
-    headerarmfiles.writeToHeaderFile("EndTime", endtime, "Export");
-
-    headerarmfiles.writeToArmtimecfgFile(starttime);
-
-    // Add a timestamp to the header file  - Moved from receiveNodeDetailsButtonClicked by Shirley
-    headerarmfiles.writeToHeaderFile("TimeStamp", starttime, "Time Stamp");
-
-
-    // Rename header file
-    if (headerarmfiles.renameHeaderFile(headerfilename) != 0)
-    {
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Renaming Header File failed");
-    }
-
-    // Save header file here
-
-*/
-
-
-
-
     // -------------------Send files over network  ---------------------------------------
-
-    int nodeID = 0;
     stringstream ss;
     int status;
     int hdr_ret;
@@ -691,11 +624,10 @@ int Window::sendHeaderButtonClicked(void)
     statusBox->append("");
     statusBox->append("");
 
-
     //GPSDOs
     //Update nodes armtime
     //ansible nodes -m copy -a "src=~/Desktop/AnsiNext/armtime.cfg dest=~/Desktop/NextGPSDO/armtime.cfg"
-    ss << "ansible nodes -m copy -a \"src=" << headerarmfiles.getArmtimecfgPathName() << " dest=/home/nextrad/Desktop/NextGPSDO/" << headerarmfiles.getArmtimecfgFileName() << "\"";
+    ss << "ansible nodes -m copy -a \"src=" << ARMTIMECFG_PATH << " dest=/home/nextrad/Desktop/NextGPSDO/" << ARMTIMECFG_FILE << "\"";
     status = system(stringToCharPntr(ss.str()));     // system(stringToCharPntr(ss.str()));
     if (-1 != status)
     {
@@ -703,12 +635,12 @@ int Window::sendHeaderButtonClicked(void)
 
         if(hdr_ret==0)
         {
-            cout<< "Header file to gpsdo" << (int) nodeID << " successful\n" <<endl;
+            cout<< "Header file to GPSDOs successful\n" <<endl;
             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to GPSDOs");
         }
         else
         {
-            cout<< "Header file to gpsdo" << (int) nodeID << " not successful\n" <<endl;
+            cout<< "Header file to GPSDOs NOT successful\n" <<endl;
             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to GPSDOs");
             return hdr_ret;
         }

@@ -42,8 +42,7 @@ void testNTP(void)
     printf("\nntpStatus.txt opened\n");
     string temp;
     getline(ntpStatus,temp);
-    printf(temp.c_str());
-    printf("\n");
+    printf("%s\n", temp.c_str());
 
     if(temp.find("not running") != string::npos)            //if it finds the substring 'not running'
     {
@@ -64,8 +63,7 @@ void testDNS(void)
     printf("\ndnsStatus.txt opened\n");
     string temp;
     getline(dnsStatus,temp);
-    printf(temp.c_str());
-    printf("\n");
+    printf("%s\n", temp.c_str());
 
     if(temp.find("not running") != string::npos)            //if it finds the substring 'not running'
     {
@@ -81,16 +79,14 @@ void testAsterisk(void)
 {
     system("sudo service asterisk status > asteriskStatus.txt");    //write the status of the Asterisk server to asteriskStatus.txt
 
-    struct timeval tv;
-    tv.tv_sec = 3;   // delay 3 secs
+    sleep(2);
 
     //read status from file
     ifstream audioStatus ("asteriskStatus.txt");
     printf("\nasteriskStatus.txt opened\n");
     string temp;
     getline(audioStatus,temp);
-    printf(temp.c_str());
-    printf("\n");
+    printf("%s\n", temp.c_str());
 
     if(temp.find("not running") != string::npos)                    //if it finds the substring 'not running'
     {
