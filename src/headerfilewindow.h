@@ -37,19 +37,19 @@ class HeaderFileWindow : public QDialog
 
         QLabel *label;
 
-        QPushButton *calibSettingsButton;
-        QPushButton *exportParametersButton;
-        QPushButton *radarSettingsButton;
+        QPushButton *quicklookSettingsButton;
+        QPushButton *timingParametersButton;
+  //      QPushButton *radarSettingsButton;
         QPushButton *targetPositionSettingsButton;
-        QPushButton *polarisationButton;
+   //     QPushButton *polarisationButton;
         QPushButton *pulseParametersButton;
-        QPushButton *Pulse1Button;
-        QPushButton *Pulse2Button;
-        QPushButton *exportPulseParametersButton;
-        QPushButton *exportSampleParametersButton;
-        QPushButton *environmentalParametersButton;
+   //     QPushButton *Pulse1Button;
+   //     QPushButton *Pulse2Button;
+   //     QPushButton *exportPulseParametersButton;
+   //     QPushButton *exportSampleParametersButton;
+        QPushButton *weatherParametersButton;
         QPushButton *bearingsButton;
-        QPushButton *gpsParametersButton;
+        QPushButton *geometryParametersButton;
 
         QPushButton *cancelButton;
         QPushButton *okButton;
@@ -77,7 +77,7 @@ class HeaderFileWindow : public QDialog
         QTextEdit *textbox4;
         QTextEdit *textbox5;
         QTextEdit *textbox6;
-
+/*
         QPushButton *Rx1SwitchButton;
         QPushButton *Rx2SwitchButton;
         QPushButton *Rx3SwitchButton;
@@ -85,7 +85,7 @@ class HeaderFileWindow : public QDialog
 
         QSignalMapper *signalMapper;
         QSignalMapper *pulseSignalMapper;
-
+*/
         time_t currentTime;
         HeaderArmFiles headerarmfiles;
 
@@ -95,23 +95,24 @@ class HeaderFileWindow : public QDialog
         void showFirstMenu(void);
 
     private slots:
-        void calibSettingsButtonClicked(void);
-        void exportParametersButtonClicked(void);
+        void quicklookSettingsButtonClicked(void);
+        void timingParametersButtonClicked(void);
         void radarSettingsButtonClicked(void);
         void targetPositionSettingsButtonClicked(void);
-        void polarisationButtonClicked(void);
+  //      void polarisationButtonClicked(void);
         void pulseParametersButtonClicked(void);
+  //      void RxSwitchButtonClicked(int switchID);
+  //      void adcButtonClicked(void);
+  //      void pulseButtonClicked(int pulseID);
+ //       void exportPulseParametersButtonClicked(void);
+ //       void exportSampleParametersButtonClicked(void);
+        void weatherParametersButtonClicked(void);
+        void bearingsButtonClicked(void);
+        void geometryParametersButtonClicked(void);
+
         void cancelButtonClicked(void);
         void okButtonClicked(void);
-        void RxSwitchButtonClicked(int switchID);
-        void adcButtonClicked(void);
-        void pulseButtonClicked(int pulseID);
-        void exportPulseParametersButtonClicked(void);
-        void exportSampleParametersButtonClicked(void);
-        void environmentalParametersButtonClicked(void);
-        void bearingsButtonClicked(void);
-        void gpsParametersButtonClicked(void);
-
+      
     signals:
     public slots:
 };

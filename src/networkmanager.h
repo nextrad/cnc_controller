@@ -36,7 +36,7 @@ class NetworkManager
         struct sockaddr_in server , client[];
         int portNumber;
         int error[3];
-        double gpsLat[3], gpsLon[3], gpsHt[3], gpsStability[3];
+        double gpsLat[3], gpsLon[3], gpsHt[3];
         int nodeID[3],clientIDs[3];
         std::thread clientThread, getTSThread[3];
         int noClients;
@@ -59,7 +59,6 @@ class NetworkManager
         double getGPSLat(int clientID);
         double getGPSLon(int clientID);
         double getGPSHt(int clientID);
-        double getGPSStability(int clientID);
         void sendToClients(void); //char* hFile [], int8_t len[]);
         int getNoClients();
 

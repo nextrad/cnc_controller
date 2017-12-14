@@ -81,6 +81,9 @@ void testAsterisk(void)
 {
     system("sudo service asterisk status > asteriskStatus.txt");    //write the status of the Asterisk server to asteriskStatus.txt
 
+    struct timeval tv;
+    tv.tv_sec = 3;   // delay 3 secs
+
     //read status from file
     ifstream audioStatus ("asteriskStatus.txt");
     printf("\nasteriskStatus.txt opened\n");

@@ -36,6 +36,7 @@ Window::Window(QWidget *parent) : QWidget(parent)
 
     initGUI();
 
+
     //connect to asterisk server and set up audio recording
     audioRecorder.connectToSocket();
     audioRecorder.loginAMI();

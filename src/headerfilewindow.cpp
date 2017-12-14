@@ -43,48 +43,37 @@ void HeaderFileWindow::initGUI(void)
     label->setFont(QFont("Ubuntu",24));
     label->show();
 
-    //button for changing calibration settings in header file
-    calibSettingsButton = new QPushButton("Calibration\nSettings", this);
-    calibSettingsButton->setGeometry(100, 70, 140, 50);
-    connect(calibSettingsButton, SIGNAL (clicked(bool)), this, SLOT(calibSettingsButtonClicked(void)));
-    calibSettingsButton->setFocusPolicy(Qt::NoFocus);
+ 
 
-    //button for changing export parameters in header file
-    exportParametersButton = new QPushButton("Time &&\nParameters", this);
-    exportParametersButton->setGeometry(100, 140, 140, 50);
-    connect(exportParametersButton, SIGNAL (clicked(bool)), this, SLOT(exportParametersButtonClicked(void)));
-    exportParametersButton->setFocusPolicy(Qt::NoFocus);
+    //button for changing timing parameters in header file
+    timingParametersButton = new QPushButton("Timing", this);
+    timingParametersButton->setGeometry(100, 70, 140, 50);
+    connect(timingParametersButton, SIGNAL (clicked(bool)), this, SLOT(timingParametersButtonClicked(void)));
+    timingParametersButton->setFocusPolicy(Qt::NoFocus);
 
-    //button for changing radar settings in header file
-    radarSettingsButton = new QPushButton("Radar\nSettings", this);
-    radarSettingsButton->setGeometry(100, 210, 140, 50);
-    connect(radarSettingsButton, SIGNAL (clicked(bool)), this, SLOT(radarSettingsButtonClicked(void)));
-    radarSettingsButton->setFocusPolicy(Qt::NoFocus);
-
-    //button for changing bearing parameters in header file
-    bearingsButton = new QPushButton("Bearings", this);
-    bearingsButton->setGeometry(100, 280, 140, 50);
-    connect(bearingsButton, SIGNAL (clicked(bool)), this, SLOT(bearingsButtonClicked(void)));
-    bearingsButton->setFocusPolicy(Qt::NoFocus);
-
-    //button for changing GPS parameters in header file
-    gpsParametersButton = new QPushButton("GPS\nParameters", this);
-    gpsParametersButton->setGeometry(100, 350, 140, 50);
-    connect(gpsParametersButton, SIGNAL (clicked(bool)), this, SLOT(gpsParametersButtonClicked(void)));
-    gpsParametersButton->setFocusPolicy(Qt::NoFocus);
-
+    //button for changing Geometry parameters in header file
+    geometryParametersButton = new QPushButton("Geometry\nParameters", this);
+    geometryParametersButton->setGeometry(260, 70, 140, 50);  // 350
+    connect(geometryParametersButton, SIGNAL (clicked(bool)), this, SLOT(geometryParametersButtonClicked(void)));
+    geometryParametersButton->setFocusPolicy(Qt::NoFocus);
 
     //button for changing target position in header file
     targetPositionSettingsButton = new QPushButton("Target\nPosition", this);
-    targetPositionSettingsButton->setGeometry(260, 70, 140, 50);
+    targetPositionSettingsButton->setGeometry(100, 140, 140, 50);
     connect(targetPositionSettingsButton, SIGNAL (clicked(bool)), this, SLOT(targetPositionSettingsButtonClicked(void)));
     targetPositionSettingsButton->setFocusPolicy(Qt::NoFocus);
 
-    //button for changing Polarisation parameters in header file
-    polarisationButton = new QPushButton("Polarisation\nParameters", this);
-    polarisationButton->setGeometry(260, 140, 140, 50);
-    connect(polarisationButton, SIGNAL (clicked(bool)), this, SLOT(polarisationButtonClicked(void)));
-    polarisationButton->setFocusPolicy(Qt::NoFocus);
+    //button for changing bearing parameters in header file
+    bearingsButton = new QPushButton("Bearings", this);
+    bearingsButton->setGeometry(260, 140, 140, 50);
+    connect(bearingsButton, SIGNAL (clicked(bool)), this, SLOT(bearingsButtonClicked(void)));
+    bearingsButton->setFocusPolicy(Qt::NoFocus);
+
+    //button for changing weather parameters in header file
+    weatherParametersButton = new QPushButton("Weather\nParameters", this);
+    weatherParametersButton->setGeometry(100, 21, 140, 50);
+    connect(weatherParametersButton, SIGNAL (clicked(bool)), this, SLOT(weatherParametersButtonClicked(void)));
+    weatherParametersButton->setFocusPolicy(Qt::NoFocus);
 
     //button for changing Pulse parameters in header file
     pulseParametersButton = new QPushButton("Pulse\nParameters", this);
@@ -92,11 +81,12 @@ void HeaderFileWindow::initGUI(void)
     connect(pulseParametersButton, SIGNAL (clicked(bool)), this, SLOT(pulseParametersButtonClicked(void)));
     pulseParametersButton->setFocusPolicy(Qt::NoFocus);
 
-    //button for changing Environmental parameters in header file
-    environmentalParametersButton = new QPushButton("Environmental\nParameters", this);
-    environmentalParametersButton->setGeometry(260, 280, 140, 50);
-    connect(environmentalParametersButton, SIGNAL (clicked(bool)), this, SLOT(environmentalParametersButtonClicked(void)));
-    environmentalParametersButton->setFocusPolicy(Qt::NoFocus);
+    //button for changing quicklook settings in header file
+    quicklookSettingsButton = new QPushButton("Quicklook\nSettings", this);
+    quicklookSettingsButton->setGeometry(100, 280, 140, 50);
+    connect(quicklookSettingsButton, SIGNAL (clicked(bool)), this, SLOT(quicklookSettingsButtonClicked(void)));
+    quicklookSettingsButton->setFocusPolicy(Qt::NoFocus);
+
 
     //cancel button to go to first menu
     cancelButton = new QPushButton("Cancel", this);
@@ -141,7 +131,7 @@ void HeaderFileWindow::initGUI(void)
     textbox6->hide();
 
 
-    //Buttons to choose which calibration settings
+       /*
     Rx1SwitchButton = new QPushButton(this);
     Rx1SwitchButton->hide();
     Rx1SwitchButton->setFocusPolicy(Qt::NoFocus);
@@ -198,6 +188,7 @@ void HeaderFileWindow::initGUI(void)
     exportSampleParametersButton->hide();
     exportSampleParametersButton->setFocusPolicy(Qt::NoFocus);
     connect(exportSampleParametersButton, SIGNAL (clicked(bool)), this, SLOT(exportSampleParametersButtonClicked(void)));
+    */
 }
 
 
@@ -214,32 +205,32 @@ void HeaderFileWindow::showFirstMenu(void)
     label->setText("What would you like to Edit?");
     label->setFont(QFont("Ubuntu",24));
 
-    calibSettingsButton->show();
-    exportParametersButton->show();
-    radarSettingsButton->show();
+    quicklookSettingsButton->show();
+    timingParametersButton->show();
+ //   radarSettingsButton->show();
     bearingsButton->show();
-    gpsParametersButton->show();
+    geometryParametersButton->show();
     targetPositionSettingsButton->show();
-    polarisationButton->show();
+ //   polarisationButton->show();
     pulseParametersButton->show();
-    environmentalParametersButton->show();
+    weatherParametersButton->show();
 }
 
 
-//========================================================exportParametersButtonClicked=====================
-// calibSettingsButtonClicked()
+//========================================================timingParametersButtonClicked=====================
+// quicklookSettingsButtonClicked()
 //=============================================================================
-void HeaderFileWindow::calibSettingsButtonClicked(void)
+void HeaderFileWindow::quicklookSettingsButtonClicked(void)
 {
     clearMenu();
     menu = 1;
 
     //set GUI buttons and textfields appropriately
-    label->setText("Calibration Settings");
+    label->setText("quicklookration Settings");
 
     cancelButton->setText("Cancel");
     okButton->show();
-
+/*
     text1->setGeometry(15, 100, 140, 40);
     text1->setText("PriPredelay");
     text1->setFont(QFont("Ubuntu",14));
@@ -250,12 +241,12 @@ void HeaderFileWindow::calibSettingsButtonClicked(void)
     text2->setFont(QFont("Ubuntu",14));
     text2->show();
 
-    QString oldVal = headerarmfiles.readFromHeaderFile("PriPredelay", "Calibration");
+    QString oldVal = headerarmfiles.readFromHeaderFile("PriPredelay", "quicklookration");
     textbox1->setGeometry(150, 105, 40, 29);
     textbox1->setText(oldVal);
     textbox1->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("DdsPredelay", "Calibration");
+    oldVal = headerarmfiles.readFromHeaderFile("DdsPredelay", "quicklookration");
     textbox2->setGeometry(445, 105, 40, 29);
     textbox2->setText(oldVal);
     textbox2->show();
@@ -276,12 +267,15 @@ void HeaderFileWindow::calibSettingsButtonClicked(void)
     adcButton->setText("ADC");
     adcButton->show();
 
+    */
+
 }
 
 
 //=============================================================================
 // RxSwitchButtonClicked()
 //=============================================================================
+/*
 void HeaderFileWindow::RxSwitchButtonClicked(int switchID)
 {
     stringstream ss;
@@ -301,7 +295,7 @@ void HeaderFileWindow::RxSwitchButtonClicked(int switchID)
     text1->setFont(QFont("Ubuntu",14));
     text1->show();
 
-    QString oldVal = headerarmfiles.readFromHeaderFile(varName, "Calibration");
+    QString oldVal = headerarmfiles.readFromHeaderFile(varName, "quicklookration");
     textbox1->setGeometry(260, 73, 160, 29);
     textbox1->setText(oldVal);
     textbox1->show();
@@ -312,7 +306,7 @@ void HeaderFileWindow::RxSwitchButtonClicked(int switchID)
     text2->setFont(QFont("Ubuntu",14));
     text2->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile(varName, "Calibration");
+    oldVal = headerarmfiles.readFromHeaderFile(varName, "quicklookration");
     textbox2->setGeometry(260, 123, 160, 29);
     textbox2->setText(oldVal);
     textbox2->show();
@@ -323,21 +317,22 @@ void HeaderFileWindow::RxSwitchButtonClicked(int switchID)
     text3->setFont(QFont("Ubuntu",14));
     text3->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile(varName, "Calibration");
+    oldVal = headerarmfiles.readFromHeaderFile(varName, "quicklookration");
     textbox3->setGeometry(260, 173, 160, 29);
     textbox3->setText(oldVal);
     textbox3->show();
 }
-
+*/
 
 //=============================================================================
 // adcButtonClicked()
 //=============================================================================
+/*
 void HeaderFileWindow::adcButtonClicked(void)
 {
     clearMenu();
     menu = 10;
-    label->setText("ADC Calibration Settings");
+    label->setText("ADC quicklookration Settings");
 
     //set GUI buttons and textfields appropriately
     okButton->show();
@@ -369,38 +364,50 @@ void HeaderFileWindow::adcButtonClicked(void)
     text5->show();
 
     //Textboxes for each of the adc settings with their current values
-    QString oldVal = headerarmfiles.readFromHeaderFile("AdcDcOffset", "Calibration");
+    QString oldVal = headerarmfiles.readFromHeaderFile("AdcDcOffset", "quicklookration");
     textbox1->setGeometry(140, 73, 80, 29);
     textbox1->setText(oldVal);
     textbox1->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("AdcPreDelay", "Calibration");
+    oldVal = headerarmfiles.readFromHeaderFile("AdcPreDelay", "quicklookration");
     textbox2->setGeometry(140, 123, 80, 29);
     textbox2->setText(oldVal);
     textbox2->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("AdcTriggerSource", "Calibration");
+    oldVal = headerarmfiles.readFromHeaderFile("AdcTriggerSource", "quicklookration");
     oldVal = oldVal.mid(1, oldVal.length() - 2);
     textbox3->setGeometry(260, 173, 80, 29);
     textbox3->setText(oldVal);
     textbox3->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("AdcTriggerLevel", "Calibration");
+    oldVal = headerarmfiles.readFromHeaderFile("AdcTriggerLevel", "quicklookration");
     textbox4->setGeometry(405, 73, 80, 29);
     textbox4->setText(oldVal);
     textbox4->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("AdcPreTriggerSample", "Calibration");
+    oldVal = headerarmfiles.readFromHeaderFile("AdcPreTriggerSample", "quicklookration");
     textbox5->setGeometry(260, 223, 80, 29);
     textbox5->setText(oldVal);
     textbox5->show();
+
 }
-
+*/
 
 //=============================================================================
-// exportParametersButtonClicked()
+// timingParametersButtonClicked()
+
+//[Timing]
+//; Time that experiment starts
+//; Local time (SAST: UTC+2)
+//YEAR    = 2017
+//MONTH   = 12
+//DAY     = 11
+//HOUR    = 16
+//MINUTE  = 20
+//SECOND  = 00
+
 //=============================================================================
-void HeaderFileWindow::exportParametersButtonClicked(void)
+void HeaderFileWindow::timingParametersButtonClicked(void)
 {
     Datetime datetime;
 
@@ -415,29 +422,68 @@ void HeaderFileWindow::exportParametersButtonClicked(void)
 
 
     text1->setGeometry(15, 100, 140, 40);
-    text1->setText("Start Time");
+    text1->setText("Year");
     text1->setFont(QFont("Ubuntu",14));
     text1->show();
 
     text2->setGeometry(15, 150, 140, 40);
-    text2->setText("End Time");
+    text2->setText("Month");
     text2->setFont(QFont("Ubuntu",14));
     text2->show();
 
-    // Keep Header file dates in format of yyyy-MM-dd hh:mm:ss !!!
+    text3->setGeometry(15, 200, 140, 40);
+    text3->setText("Day");
+    text3->setFont(QFont("Ubuntu",14));
+    text3->show();
 
-    //QString oldVal = headerarmfiles.readFromHeaderFile("StartTime", "Export");
-    textbox1->setGeometry(150, 105, 200, 29);
-    string now = datetime.nowPlusSecs(STARTTIMESECS);
+
+    text4->setGeometry(15, 250, 140, 40);
+    text4->setText("Hour");
+    text4->setFont(QFont("Ubuntu",14));
+    text4->show();
+
+    text5->setGeometry(15, 300, 140, 40);
+    text5->setText("Minute");
+    text5->setFont(QFont("Ubuntu",14));
+    text5->show();
+
+    text6->setGeometry(15, 350, 140, 40);
+    text6->setText("Second");
+    text6->setFont(QFont("Ubuntu",14));
+    text6->show();
+
+
+    textbox1->setGeometry(150, 100, 200, 29);
+    string now = datetime.getNowInYears();
     textbox1->setText(now.c_str());
     textbox1->show();
 
-    //oldVal = headerarmfiles.readFromHeaderFile("EndTime", "Export");
-    textbox2->setGeometry(150, 155, 200, 29);
-    now = datetime.nowPlusSecs(ENDTIMESECS);
+    textbox2->setGeometry(150, 150, 200, 29);
+    now = datetime.getNowInMonths();
     textbox2->setText(now.c_str());
     textbox2->show();
 
+    textbox3->setGeometry(150, 200, 200, 29);
+    now = datetime.getNowInDays();
+    textbox3->setText(now.c_str());
+    textbox3->show();
+
+    textbox4->setGeometry(150, 250, 200, 29);
+    now = datetime.getNowInHours();
+    textbox4->setText(now.c_str());
+    textbox4->show();
+
+    textbox5->setGeometry(150, 300, 200, 29);
+    now = datetime.getNowInMinutes();
+    textbox5->setText(now.c_str());
+    textbox5->show();
+
+    textbox6->setGeometry(150, 350, 200, 29);
+    now = datetime.getNowSecsPlusSecs(STARTTIMESECS);
+    textbox6->setText(now.c_str());
+    textbox6->show();
+
+/*
     exportPulseParametersButton->setGeometry(15, 200, 175, 40);
     exportPulseParametersButton->setText("Export Pulse\nParameters");
     exportPulseParametersButton->show();
@@ -445,12 +491,14 @@ void HeaderFileWindow::exportParametersButtonClicked(void)
     exportSampleParametersButton->setGeometry(260, 200, 175, 40);
     exportSampleParametersButton->setText("Export Sample\nParameters");
     exportSampleParametersButton->show();
+    */
 }
 
 
 //=============================================================================
 // exportPulseParametersButtonClicked()
 //=============================================================================
+/*
 void HeaderFileWindow::exportPulseParametersButtonClicked(void)
 {
     clearMenu();
@@ -506,11 +554,12 @@ void HeaderFileWindow::exportPulseParametersButtonClicked(void)
     textbox4->setText(oldVal);
     textbox4->show();
 }
-
+*/
 
 //=============================================================================
 // exportSampleParametersButtonClicked()
 //=============================================================================
+/*
 void HeaderFileWindow::exportSampleParametersButtonClicked(void)
 {
     clearMenu();
@@ -562,7 +611,7 @@ void HeaderFileWindow::exportSampleParametersButtonClicked(void)
     textbox4->setText(oldVal);
     textbox4->show();
 }
-
+*/
 
 //=============================================================================
 // radarSettingsButtonClicked()
@@ -633,58 +682,115 @@ void HeaderFileWindow::radarSettingsButtonClicked(void)
 
 //=============================================================================
 // bearingsButtonClicked()
+
+//Bearings]
+//; DTG is date-time (in date-time group format) of getting bearings. EXAMPLE: 091630Z JUL 11 = 1630 UTC on 9 July 2011
+//; Baseline_Bisector and node ranges are in meters
+//; Node bearings are in degrees relative to true north
+//DTG = "061855Z 1217"
+//Baseline_Bisector = 2
+//n0_Range = 1.82952
+//n0_Bearing = 46.5192
+//n1_Range = 1.82952
+//n1_Bearing = 46.5192
+//n2_Range = 1.82952
+//n2_Bearing = 46.5192
+
 //=============================================================================
 void HeaderFileWindow::bearingsButtonClicked(void)
 {
     clearMenu();
     menu = 16;
-    label->setText("Bearings");  // e.g. N 66° 0′ 0″ E  1245.01′
+    label->setText("Bearings");
 
     //set GUI buttons and textfields appropriately
     cancelButton->setText("Cancel");
     okButton->show();
 
     text1->setGeometry(15, 70, 150, 40);
-    text1->setText("Node 0 Bearing");
+    text1->setText("Node 0 Range");
     text1->setFont(QFont("Ubuntu",14));
     text1->show();
 
-    text2->setGeometry(15, 120, 150, 40);
-    text2->setText("Node 1 Bearing");
+    text2->setGeometry(15, 140, 150, 40);
+    text2->setText("Node 0 Bearing");
     text2->setFont(QFont("Ubuntu",14));
     text2->show();
 
-    text3->setGeometry(15, 170, 150, 40);
-    text3->setText("Node 2 Bearing");
+    text3->setGeometry(15, 210, 150, 40);
+    text3->setText("Node 1 Range");
     text3->setFont(QFont("Ubuntu",14));
     text3->show();
 
-    QString oldVal = headerarmfiles.readFromHeaderFile("Node 0 Bearing", "Bearings");
-    textbox1->setGeometry(250, 73, 90, 29);
+    text4->setGeometry(15, 280, 150, 40);
+    text4->setText("Node 1 Bearing");
+    text4->setFont(QFont("Ubuntu",14));
+    text4->show();
+
+    text5->setGeometry(15, 350, 150, 40);
+    text5->setText("Node 2 Range");
+    text5->setFont(QFont("Ubuntu",14));
+    text5->show();
+
+    text6->setGeometry(15, 420, 150, 40);
+    text6->setText("Node 2 Bearing");
+    text6->setFont(QFont("Ubuntu",14));
+    text6->show();
+
+    QString oldVal = headerarmfiles.readFromBearingsFile("n0: Range");
+    textbox1->setGeometry(250, 70, 90, 29);
     textbox1->setText(oldVal);
     textbox1->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("Node 1 Bearing", "Bearings");
-    textbox2->setGeometry(250, 123, 90, 29);
+    oldVal = headerarmfiles.readFromBearingsFile("n0: Bearing");
+    textbox2->setGeometry(250, 140, 90, 29);
     textbox2->setText(oldVal);
     textbox2->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("Node 2 Bearing", "Bearings");
-    textbox3->setGeometry(250, 173, 90, 29);
+    oldVal = headerarmfiles.readFromBearingsFile("n1: Range");
+    textbox3->setGeometry(250, 210, 90, 29);
     textbox3->setText(oldVal);
     textbox3->show();
 
+    oldVal = headerarmfiles.readFromBearingsFile("n1: Bearing");
+    textbox4->setGeometry(250, 280, 90, 29);
+    textbox4->setText(oldVal);
+    textbox4->show();
+
+    oldVal = headerarmfiles.readFromBearingsFile("n2: Range");
+    textbox5->setGeometry(250, 350, 90, 29);
+    textbox5->setText(oldVal);
+    textbox5->show();
+
+    oldVal = headerarmfiles.readFromBearingsFile("n2: Bearing");
+    textbox6->setGeometry(250, 420, 90, 29);
+    textbox6->setText(oldVal);
+    textbox6->show();
 }
 
 
 //=============================================================================
-// gpsParametersButtonClicked()
+// geometryParametersButtonClicked()
+
+//[GeometrySettings]
+//; heights are WGS84 and above geoid
+//; lats and longs are in decimal degrees
+//Node0LocationLat   = -34.1891
+//Node0LocationLon   = 18.3665
+//Node0LocationHt    = 52.76
+//Node1LocationLat   = -3.1891
+//Node1LocationLon   = 18.3665
+//Node1LocationHt    = 52.76
+//Node2LocationLat   = -34.1891
+//Node2LocationLon   = 18.3665
+//Node2LocationHt   = 52.76
+
 //=============================================================================
-void HeaderFileWindow::gpsParametersButtonClicked(void)
+void HeaderFileWindow::geometryParametersButtonClicked(void)
 {
     clearMenu();
     menu = 17;
-    label->setText("GPS Parameters");
+    label->setText("geometry Parameters");
 
     //set GUI buttons and textfields appropriately
     cancelButton->setText("Cancel");
@@ -704,11 +810,6 @@ void HeaderFileWindow::gpsParametersButtonClicked(void)
     text3->setText("Height");
     text3->setFont(QFont("Ubuntu",14));
     text3->show();
-
-//    text4->setGeometry(20, 220, 160, 50);
-//    text4->setText("Stability");
-//    text4->setFont(QFont("Ubuntu",14));
-//    text4->show();
 
 
     QString temp;
@@ -734,10 +835,6 @@ void HeaderFileWindow::gpsParametersButtonClicked(void)
         text7->setFont(QFont("Ubuntu",14));
         text7->show();
 
-    //    text8->setGeometry(200, 220, 160, 50);
-    //    text8->setText("Node0Stability");
-    //    text8->setFont(QFont("Ubuntu",14));
-    //    text8->show();
     }
 
     if (NodeCnt > 2)
@@ -760,10 +857,6 @@ void HeaderFileWindow::gpsParametersButtonClicked(void)
         text11->setFont(QFont("Ubuntu",14));
         text11->show();
 
-    //    text12->setGeometry(280, 230, 160, 50);
-    //    text12->setText("Node2Stability");
-    //    text12->setFont(QFont("Ubuntu",14));
-    //    text12->show();
     }
 
     if (NodeCnt > 3)
@@ -787,16 +880,20 @@ void HeaderFileWindow::gpsParametersButtonClicked(void)
         text15->setFont(QFont("Ubuntu",14));
         text15->show();
 
-    //    text16->setGeometry(360, 230, 160, 50);
-    //    text16->setText("Node2Stability");
-    //    text16->setFont(QFont("Ubuntu",14));
-    //    text16->show();
     }
 
 }
 
 //=============================================================================
 // targetPositionSettingsButtonClicked()
+
+//[TargetSettings]
+//; lats and longs are in decimal degrees
+//; height is in meters as WGS84 and above geoid
+//TgtLocationLat    = -34.1874
+//TgtLocationLon    = 18.4280
+//TgtLocationHt     = 0.0235
+
 //=============================================================================
 void HeaderFileWindow::targetPositionSettingsButtonClicked(void)
 {
@@ -823,19 +920,19 @@ void HeaderFileWindow::targetPositionSettingsButtonClicked(void)
     text3->setFont(QFont("Ubuntu",14));
     text3->show();
 
-    QString oldVal = headerarmfiles.readFromHeaderFile("TgtLocationLat", "Target");
+    QString oldVal = headerarmfiles.readFromBearingsFile("Target Lat/Lon");
     textbox1->setGeometry(260, 73, 180, 29);
     textbox1->setText(oldVal);
     textbox1->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("TgtLocationLon", "Target");
+    oldVal = headerarmfiles.readFromBearingsFile("Target Lat/Lon");
     textbox2->setGeometry(260, 123, 180, 29);
     textbox2->setText(oldVal);
     textbox2->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("TgtLocationHt", "Target");
+
     textbox3->setGeometry(260, 173, 180, 29);
-    textbox3->setText(oldVal);
+    textbox3->setText("0.0235");   // user can enter new value if necessary
     textbox3->show();
 }
 
@@ -843,6 +940,7 @@ void HeaderFileWindow::targetPositionSettingsButtonClicked(void)
 //=============================================================================
 // polarisationButtonClicked()
 //=============================================================================
+/*
 void HeaderFileWindow::polarisationButtonClicked(void)
 {
     clearMenu();
@@ -898,7 +996,7 @@ void HeaderFileWindow::polarisationButtonClicked(void)
     textbox4->setGeometry(260, 223, 160, 29);
     textbox4->setText(oldVal);
     textbox4->show();
-}
+}*/
 
 
 //=============================================================================
@@ -923,7 +1021,7 @@ void HeaderFileWindow::pulseParametersButtonClicked(void)
     textbox1->setGeometry(260, 73, 90, 29);
     textbox1->setText(oldVal);
     textbox1->show();
-
+/*
     Pulse1Button->setGeometry(15, 150, 175, 40);
     Pulse1Button->setText("Pulse 1");
     Pulse1Button->show();
@@ -931,12 +1029,14 @@ void HeaderFileWindow::pulseParametersButtonClicked(void)
     Pulse2Button->setGeometry(260, 150, 175, 40);
     Pulse2Button->setText("Pulse 2");
     Pulse2Button->show();
+    */
 }
 
 
 //=============================================================================
 // pulseButtonClicked()
 //=============================================================================
+/*
 void HeaderFileWindow::pulseButtonClicked(int pulseID)
 {
     stringstream ss;
@@ -1012,62 +1112,115 @@ void HeaderFileWindow::pulseButtonClicked(int pulseID)
     textbox6->show();
 }
 
+*/
+//=============================================================================
+// weatherParametersButtonClicked()
+
+//[Weather]
+//DOUGLAS_SEA_STATE = 5     ; (1 - 8)
+//WIND_SPEED        = 10000 ; (knots)
+//WIND_DIR          = 123   ; (degrees) where it's coming from (bearing)
+//WAVE_HEIGHT       = 6     ; (meters)
+//WAVE_DIR          = 123   ; (degrees) where it's coming from (bearing)
+//WAVE_PERIOD       = 7.0   ; (seconds)
+//AIR_TEMPERATURE   = 17    ; (degrees Celsius)
+//AIR_PRESSURE      = 10.7  ; (millibar)
 
 //=============================================================================
-// environmentalParametersButtonClicked()
-//=============================================================================
-void HeaderFileWindow::environmentalParametersButtonClicked(void)
+void HeaderFileWindow::weatherParametersButtonClicked(void)
 {
     std::string now;
 
     clearMenu();
     menu = 18;
-    label->setText("Environmental Parameters");
+    label->setText("weather Parameters");
 
     //set GUI buttons and textfields appropriately
     cancelButton->setText("Cancel");
     okButton->show();
 
+
+
     text1->setGeometry(15, 70, 200, 40);
-    text1->setText("Humidity");
+    text1->setText("Douglas Sea State");
     text1->setFont(QFont("Ubuntu",14));
     text1->show();
 
     text2->setGeometry(15, 120, 200, 40);
-    text2->setText("Air Temperature");
+    text2->setText("Wind Speed");
     text2->setFont(QFont("Ubuntu",14));
     text2->show();
 
     text3->setGeometry(15, 170, 200, 40);
-    text3->setText("Barometric Pressure");
+    text3->setText("Wind Direction");
     text3->setFont(QFont("Ubuntu",14));
     text3->show();
 
     text4->setGeometry(15, 230, 200, 40);
-    text4->setText("Time");
+    text4->setText("Wind Height");
     text4->setFont(QFont("Ubuntu",14));
     text4->show();
 
-    QString oldVal = headerarmfiles.readFromHeaderFile("Humidity", "Environment");
+    text5->setGeometry(15, 280, 200, 40);
+    text5->setText("Wave Direction");
+    text5->setFont(QFont("Ubuntu",14));
+    text5->show();
+
+    text6->setGeometry(15, 330, 200, 40);
+    text6->setText("Wave Period");
+    text6->setFont(QFont("Ubuntu",14));
+    text6->show();
+
+    text7->setGeometry(15, 380, 200, 40);
+    text7->setText("Air Temperature");
+    text7->setFont(QFont("Ubuntu",14));
+    text7->show();
+
+    text8->setGeometry(15, 430, 200, 40);
+    text8->setText("Air Pressure");
+    text8->setFont(QFont("Ubuntu",14));
+    text8->show();
+
+
+    QString oldVal = headerarmfiles.readFromHeaderFile("DOUGLAS_SEA_STATE", "Weather");
     textbox1->setGeometry(230, 70, 150, 29);
     textbox1->setText(oldVal);
     textbox1->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("Air Temperature", "Environment");
+    oldVal = headerarmfiles.readFromHeaderFile("WIND_SPEED", "Weather");
     textbox2->setGeometry(230, 120, 150, 29);
     textbox2->setText(oldVal);
     textbox2->show();
 
-    oldVal = headerarmfiles.readFromHeaderFile("Barometric Pressure", "Environment");
+    oldVal = headerarmfiles.readFromHeaderFile("WIND_DIR", "Weather");
     textbox3->setGeometry(230, 170, 150, 29);
     textbox3->setText(oldVal);
     textbox3->show();
 
-    now = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toUtf8().constData();
+    oldVal = headerarmfiles.readFromHeaderFile("WAVE_HEIGHT", "Weather");
     textbox4->setGeometry(230, 230, 150, 29);
-    textbox4->setText(now.c_str());
+    textbox4->setText(oldVal);
     textbox4->show();
 
+    oldVal = headerarmfiles.readFromHeaderFile("WAVE_DIR", "Weather");
+    textbox1->setGeometry(230, 280, 150, 29);
+    textbox1->setText(oldVal);
+    textbox1->show();
+
+    oldVal = headerarmfiles.readFromHeaderFile("WAVE_PERIOD", "Weather");
+    textbox2->setGeometry(230, 330, 150, 29);
+    textbox2->setText(oldVal);
+    textbox2->show();
+
+    oldVal = headerarmfiles.readFromHeaderFile("AIR_TEMPERATURE", "Weather");
+    textbox3->setGeometry(230, 380, 150, 29);
+    textbox3->setText(oldVal);
+    textbox3->show();
+
+    oldVal = headerarmfiles.readFromHeaderFile("AIR_PRESSURE", "Weather");
+    textbox4->setGeometry(230, 430, 150, 29);
+    textbox4->setText(oldVal);
+    textbox4->show();
 }
 
 
@@ -1100,19 +1253,19 @@ void HeaderFileWindow::okButtonClicked(void)
     stringstream ss;
     switch(menu)
     {
-        case 1://Calibration Settings
+        case 1://quicklookration Settings
             temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("PriPredelay", temp, "Calibration");
+            headerarmfiles.writeToHeaderFile("PriPredelay", temp, "quicklookration");
 
             temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("DdsPredelay", temp, "Calibration");
+            headerarmfiles.writeToHeaderFile("DdsPredelay", temp, "quicklookration");
 
             showFirstMenu();
         break;
 
         case 2://Export Parameters
             temp = textbox1->toPlainText().toUtf8().constData();   //StartTime = 2017-12-04 16:46:17
-            headerarmfiles.writeToHeaderFile("StartTime", temp, "Export");
+            headerarmfiles.writeToHeaderFile("StartTime", temp, "Timing");
 
             temp = textbox1->toPlainText().toUtf8().constData();
             headerarmfiles.writeToArmtimecfgFile(temp);
@@ -1183,39 +1336,39 @@ void HeaderFileWindow::okButtonClicked(void)
             showFirstMenu();
         break;
 
-        case 7: case 8: case 9://Calibration Settings RxSwitch
+        case 7: case 8: case 9://quicklookration Settings RxSwitch
             ss << (menu - 6);
             varName = ("Rx" + ss.str() + "SwitchDelay");
             temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile(varName, temp, "Calibration");
+            headerarmfiles.writeToHeaderFile(varName, temp, "quicklookration");
 
             varName = ("Rx" + ss.str() + "SwitchPredelay");
             temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile(varName, temp, "Calibration");
+            headerarmfiles.writeToHeaderFile(varName, temp, "quicklookration");
 
             varName = ("Rx" + ss.str() + "Switchenable");
             temp = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile(varName, temp, "Calibration");
+            headerarmfiles.writeToHeaderFile(varName, temp, "quicklookration");
 
-            calibSettingsButtonClicked();
+            quicklookSettingsButtonClicked();
         break;
 
-        case 10://Calibration Settings ADC
+        case 10://quicklookration Settings ADC
             temp = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("AdcDcOffset", temp, "Calibration");
+            headerarmfiles.writeToHeaderFile("AdcDcOffset", temp, "quicklookration");
 
             temp = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("AdcPreDelay", temp, "Calibration");
+            headerarmfiles.writeToHeaderFile("AdcPreDelay", temp, "quicklookration");
 
             temp = textbox3->toPlainText().toUtf8().constData();
             temp = "'" + temp + "'";
-            headerarmfiles.writeToHeaderFile("AdcTriggerSource", temp, "Calibration");
+            headerarmfiles.writeToHeaderFile("AdcTriggerSource", temp, "quicklookration");
 
             temp = textbox4->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("AdcTriggerLevel", temp, "Calibration");
+            headerarmfiles.writeToHeaderFile("AdcTriggerLevel", temp, "quicklookration");
 
             temp = textbox5->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("AdcPreTriggerSample", temp, "Calibration");
+            headerarmfiles.writeToHeaderFile("AdcPreTriggerSample", temp, "quicklookration");
 
             showFirstMenu();
         break;
@@ -1289,7 +1442,7 @@ void HeaderFileWindow::okButtonClicked(void)
             showFirstMenu();
         break;
 
-        case 17://gpsParameters Parameters
+        case 17://geometryParameters Parameters
 
             temp = text1->text().toUtf8().constData();
             headerarmfiles.writeToHeaderFile("Node0LocationLat", temp, "Geometry");
@@ -1333,7 +1486,7 @@ void HeaderFileWindow::okButtonClicked(void)
             showFirstMenu();
         break;
 
-        case 18://environmental Parameters
+        case 18://weather Parameters
             temp = textbox1->toPlainText().toUtf8().constData();
             headerarmfiles.writeToHeaderFile("Humidity", temp, "Environment");
 
@@ -1365,15 +1518,15 @@ void HeaderFileWindow::okButtonClicked(void)
 //Method to hide all buttons and textfields of the 'update header file' menus
 void HeaderFileWindow::clearMenu(void)
 {
-    calibSettingsButton->hide();
-    exportParametersButton->hide();
-    radarSettingsButton->hide();
+    quicklookSettingsButton->hide();
+    timingParametersButton->hide();
+//    radarSettingsButton->hide();
     bearingsButton->hide();
-    gpsParametersButton->hide();
+    geometryParametersButton->hide();
     targetPositionSettingsButton->hide();
-    polarisationButton->hide();
+ //   polarisationButton->hide();
     pulseParametersButton->hide();
-    environmentalParametersButton->hide();
+    weatherParametersButton->hide();
 
     text1->hide();
     text2->hide();
@@ -1394,17 +1547,17 @@ void HeaderFileWindow::clearMenu(void)
     textbox4->hide();
     textbox5->hide();
     textbox6->hide();
-
+/*
     Rx1SwitchButton->hide();
     Rx2SwitchButton->hide();
     Rx3SwitchButton->hide();
-
+*/
     okButton->hide();
-    adcButton->hide();
-    Pulse1Button->hide();
-    Pulse2Button->hide();
-    exportPulseParametersButton->hide();
-    exportSampleParametersButton->hide();
+//    adcButton->hide();
+//    Pulse1Button->hide();
+//    Pulse2Button->hide();
+//    exportPulseParametersButton->hide();
+//    exportSampleParametersButton->hide();
 }
 
 
