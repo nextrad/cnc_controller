@@ -39,7 +39,7 @@ void HeaderFileWindow::initGUI(void)
     //Title
     label = new QLabel(this);
     label->setGeometry(45, 10, 500, 50);
-    label->setText("What would you like to Edit?");
+    label->setText("Header File Settings");
     label->setFont(QFont("Ubuntu",24));
     label->show();
 
@@ -209,10 +209,6 @@ void HeaderFileWindow::showFirstMenu(void)
     menu = 0;
     cancelButton->setText("Ok");
 
-    label->setGeometry(45, 10, 500, 50);
-    label->setText("What would you like to Edit?");
-    label->setFont(QFont("Ubuntu",24));
-
     quicklookSettingsButton->show();
     timingParametersButton->show();
     bearingsButton->show();
@@ -339,7 +335,7 @@ void HeaderFileWindow::geometryParametersButtonClicked(void)
 {
     clearMenu();
     menu = 2;
-    label->setText("geometry Parameters");
+    label->setText("Geometry Parameters");
 
     //set GUI buttons and textfields appropriately
     cancelButton->setText("Cancel");

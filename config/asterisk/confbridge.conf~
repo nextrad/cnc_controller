@@ -9,10 +9,9 @@ music_on_hold_when_empty=yes
 [default_bridge]
 type=bridge
 
-[NeXtRad]								;confbridge name
+[NeXtRad]									;confbridge name
 type=bridge
-record_file=/var/spool/asterisk/NeXtRAD.wav                  		;save location
-record_conference=no							;no record from start
+record_conference=no						;no record from start
 sound_leave=default							;turn leave sound off
 sound_join=default							;turn join sound off
 

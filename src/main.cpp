@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     testAsterisk();
 
     QApplication app (argc, argv);
-    QIcon icon("../media/icons/favicon2.ico");
+    QIcon icon(ICON_PATH);
     Window window;
     window.setWindowIcon(icon); //Set Icon for application
     window.show();

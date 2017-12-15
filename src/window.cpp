@@ -133,12 +133,12 @@ void Window::initGUI(void)
     showVideoButton = new QPushButton("Start Video\nMosaic", this);
     showVideoButton->setGeometry(10, 250, 135, 50);
     connect(showVideoButton, SIGNAL (clicked(bool)), this, SLOT(showVideoButtonClicked(void)));
-/*
-    //button for starting the countdown timer display for the experiment
-    startVideoRecordingCountDownButton = new QPushButton("Countdown to\nVideo Recording", this);
-    startVideoRecordingCountDownButton->setGeometry(10, 310, 135, 50);
-    connect(startVideoRecordingCountDownButton, SIGNAL (clicked(bool)), this, SLOT(startVideoRecordingCountDown(void)));
 
+    //button for starting NeXtLook
+    runNextlookButton = new QPushButton("Run\nNeXtLook", this);
+    runNextlookButton->setGeometry(10, 310, 135, 50);
+    connect(runNextlookButton, SIGNAL (clicked(bool)), this, SLOT(runNextlookButtonClicked(void)));
+/*
     //button for aborting recording and countdown
     abortVideoRecordingButton = new QPushButton("Abort\nVideo Recording", this);
     abortVideoRecordingButton->setGeometry(10, 310, 135, 50); //(10, 370, 135, 50);
@@ -538,7 +538,7 @@ void Window::updateCountDownLCD(void)
 //Opens a new menu to do with editing the header file
 void Window::updateHeaderFileButtonClicked(void)
 {
-    QIcon icon("../media/icons/favicon2.ico");
+    QIcon icon(ICON_PATH);
     headerfilewindow = new HeaderFileWindow();
     headerfilewindow->setWindowIcon(icon); //Set Icon for application
     headerfilewindow->show();
@@ -880,5 +880,12 @@ void Window::abortVideoRecordingButtonClicked(void)
 //Method to show the video mosaic.
 void Window::showVideoButtonClicked(void)
 {
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "opening mosaic view.");
     system("x-terminal-emulator -x -e \"cvlc --vlm-conf ../scripts/mosaic_view/mosaic.conf --mosaic-width=1280 --mosaic-height=720 --mosaic-keep-picture --mosaic-rows=2 --mosaic-cols=2 --mosaic-position=0 --mosaic-order=1,2,3,4\"");
+}
+
+void Window::runNextlookButtonClicked(void)
+{
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "launching NeXtLook on Cobalts.");
+    system("../scripts/nextlook/run_nextlook.sh");
 }

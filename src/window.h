@@ -49,6 +49,7 @@ class Window : public QWidget
         QPushButton *receiveNodeDetailsButton;
         QPushButton *sendHeaderButton;
         QPushButton *showVideoButton;
+        QPushButton *runNextlookButton;
  //       QPushButton *closeButton;
 
         QLCDNumber *countDown;
@@ -85,6 +86,7 @@ class Window : public QWidget
         int sendHeaderButtonClicked(void);
         void closeServer();
         void showVideoButtonClicked(void);
+        void runNextlookButtonClicked(void);
        // void closeButtonClicked(void);
 
     signals:

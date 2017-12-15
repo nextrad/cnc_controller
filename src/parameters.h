@@ -33,8 +33,7 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define ARMTIMECFG_FILE     "armtime.cfg"
 #define ARMTIMECFG_PATH     "/home/nextrad/Documents/cnc_controller/armtime.cfg"
 
-#define BEARINGS_FILE       "tardat2cc.rtf"
-#define BEARINGS_PATH       "/home/nextrad/Documents/cnc_controller/tardat2cc.rtf"
+#define ICON_PATH           "../media/icons/favicon2.ico"
 
 #define STARTTIMESECS       20
 #define ENDTIMESECS         120
