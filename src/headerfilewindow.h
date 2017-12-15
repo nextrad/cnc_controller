@@ -37,19 +37,13 @@ class HeaderFileWindow : public QDialog
 
         QLabel *label;
 
-        QPushButton *quicklookSettingsButton;
         QPushButton *timingParametersButton;
-  //      QPushButton *radarSettingsButton;
-        QPushButton *targetPositionSettingsButton;
-   //     QPushButton *polarisationButton;
-        QPushButton *pulseParametersButton;
-   //     QPushButton *Pulse1Button;
-   //     QPushButton *Pulse2Button;
-   //     QPushButton *exportPulseParametersButton;
-   //     QPushButton *exportSampleParametersButton;
-        QPushButton *weatherParametersButton;
-        QPushButton *bearingsButton;
         QPushButton *geometryParametersButton;
+        QPushButton *targetPositionSettingsButton;
+        QPushButton *bearingsButton;
+        QPushButton *weatherParametersButton;
+        QPushButton *pulseParametersButton;
+        QPushButton *quicklookSettingsButton;
 
         QPushButton *cancelButton;
         QPushButton *okButton;
@@ -79,6 +73,8 @@ class HeaderFileWindow : public QDialog
         QTextEdit *textbox6;
         QTextEdit *textbox7;
         QTextEdit *textbox8;
+        QTextEdit *textbox9;
+        QTextEdit *textbox10;
 /*
         QPushButton *Rx1SwitchButton;
         QPushButton *Rx2SwitchButton;
@@ -91,26 +87,18 @@ class HeaderFileWindow : public QDialog
         time_t currentTime;
         HeaderArmFiles headerarmfiles;
 
-
         short menu;
         void clearMenu(void);
         void showFirstMenu(void);
 
     private slots:
-        void quicklookSettingsButtonClicked(void);
         void timingParametersButtonClicked(void);
-        void radarSettingsButtonClicked(void);
-        void targetPositionSettingsButtonClicked(void);
-  //      void polarisationButtonClicked(void);
-        void pulseParametersButtonClicked(void);
-  //      void RxSwitchButtonClicked(int switchID);
-  //      void adcButtonClicked(void);
-  //      void pulseButtonClicked(int pulseID);
- //       void exportPulseParametersButtonClicked(void);
- //       void exportSampleParametersButtonClicked(void);
-        void weatherParametersButtonClicked(void);
-        void bearingsButtonClicked(void);
         void geometryParametersButtonClicked(void);
+        void targetPositionSettingsButtonClicked(void);
+        void bearingsButtonClicked(void);
+        void weatherParametersButtonClicked(void);
+        void pulseParametersButtonClicked(void);
+        void quicklookSettingsButtonClicked(void);
 
         void cancelButtonClicked(void);
         void okButtonClicked(void);
