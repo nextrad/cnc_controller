@@ -37,7 +37,7 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define BEARINGS_PATH       "/home/nextrad/Documents/cnc_controller/tardat2cc.rtf"
 
 #define STARTTIMESECS       20
-#define ENDTIMESECS         30
+#define ENDTIMESECS         120
 
 
 #endif // PARAMETERS_H

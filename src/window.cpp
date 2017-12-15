@@ -430,72 +430,27 @@ char* Window::stringToCharPntr(string str)
 //and starts the countdown timer
 void Window::startCountDown(void)
 {
-    //Open Header File
-    ifstream headerFile (CNC_HEADER_PATH);
-
-    printf("Header File opened\n");
-    string temp;
-
-    /*
-	// dd-MM-yyyy hh:mm:ss
-    while(!headerFile.eof())
-    {
-        getline(headerFile,temp);
-        if(temp.substr(0,9) == "StartTime")     //looking for the "StartTime" in the header file
-        {
-            if (temp.substr(9,3) == " = ")
-            {
-                startTime = temp.substr(12,19);
-            }
-            else if ((temp.substr(9,2) == " =") || (temp.substr(9,2) == "= "))
-            {
-                startTime = temp.substr(10,19);
-            }
-            else if (temp.substr(9,1) == "=")
-            {
-                startTime = temp.substr(11,19);
-            }
-             printf("startTime = %s\n", startTime.c_str());
-        }
-        else if(temp.substr(0,7) == "EndTime")  //looking for the "EndTime" in the header file
-        {
-            if (temp.substr(7,3) == " = ")
-            {
-                endTime = temp.substr(10,19);
-            }
-            else if ((temp.substr(7,2) == " =") || (temp.substr(7,2) == "= "))
-            {
-                endTime = temp.substr(9,19);
-            }
-            else if (temp.substr(7,1) == "=")
-            {
-                endTime = temp.substr(8,19);
-            }
-            printf("endTime = %s\n", endTime.c_str());
-        }
-    }
-    headerFile.close();
-
     Datetime datetime;
+    stringstream ss_unixtime;
 
-    // Get Unix time (seconds since 01/01/1970)
+    QString year = headerarmfiles.readFromHeaderFile("Timing", "YEAR");
+    QString month = headerarmfiles.readFromHeaderFile("Timing", "MONTH");
+    QString day = headerarmfiles.readFromHeaderFile("Timing", "DAY");
+    QString hour = headerarmfiles.readFromHeaderFile("Timing", "HOUR");
+    QString minute = headerarmfiles.readFromHeaderFile("Timing", "MINUTE");
+    QString second = headerarmfiles.readFromHeaderFile("Timing", "SECOND");
+
+    //required format: YYYY-MM-DD HH:MM:SS
+    ss_unixtime << year.toStdString() << "-" << month.toStdString() << "-" << day.toStdString() << " ";
+    ss_unixtime << hour.toStdString() << ":" << minute.toStdString() << ":" << second.toStdString();
+
+    strtUnixTime = datetime.convertToUnixTime(ss_unixtime.str());
+    //currently hardcoded to a two minute experiment.
+    //stop time should be calculated from header file parameters
+    stopUnixTime = strtUnixTime + ENDTIMESECS;
     currentUnixTime = time(NULL);
 
-    time_t now = time(0);
-    struct tm tstruct;
-    char buf[80];
-    tstruct = *localtime(&now);
-    strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
-
-    std::cout << buf << std::endl;
-
-
-    strtUnixTime = datetime.convertToUnixTime(startTime)+2;  // 2016-10-19 15:22:00 +2  = 146883322
-    stopUnixTime = datetime.convertToUnixTime(endTime)+4;    // The camera has a 2 second buffer which is why 2 seconds were added to start and 4 to end time
-
-    cout << "\ncurrentUnixTime " << currentUnixTime << "\nstrtUnixTime " << strtUnixTime  << "\nstopUnixTime " << stopUnixTime << endl;
-
-    // Checking if the start and end times are in the past or not
+    //check if the start/end times are in the past
     if(strtUnixTime < currentUnixTime)
     {
         statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future start time");
@@ -506,16 +461,12 @@ void Window::startCountDown(void)
     }
     else
     {
-        starttimer->start((datetime.convertToUnixTime(startTime)+ 2 - currentUnixTime)*1000);
-        starttimer->start();
-        //camera buffer stores 2 seconds, thus start two seconds later and record for 2 seconds longer.
+        starttimer->start((strtUnixTime - currentUnixTime)*1000);
         countDownLabel->setText("Countdown to armtime");
         timMode = 1;
         statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
         statusBox->append("");
     }
-
-    fflush(stdout);*/
 }
 
 
