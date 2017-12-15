@@ -572,7 +572,7 @@ int Window::sendHeaderButtonClicked(void)
     int status;
     int hdr_ret;
 
-    /*statusBox->append("");
+    statusBox->append("");
     statusBox->append("");
 
     //GPSDOs
@@ -674,7 +674,7 @@ int Window::sendHeaderButtonClicked(void)
 
 
      // TCUs
-     // ToDo*/
+     // ToDo
 
 
      // start countdown
