@@ -4,16 +4,17 @@
 ; Local time (SAST: UTC+2)
 YEAR = 2017
 MONTH = 12
-DAY = 14
-HOUR = 16
-MINUTE = 25
-SECOND = 07
+DAY = 15
+HOUR = 11
+MINUTE = 07
+SECOND = 46
 
 
 [GeometrySettings]
 
 ; heights are WGS84 and above geoid
 ; lats and longs are in decimal degrees
+; IMT = E018"26'44.146 S034"11'33.252
 NODE0_LOCATION_LAT = -34.1891
 NODE0_LOCATION_LON = 18.3665
 NODE0_LOCATION_HT = 52.76
@@ -29,6 +30,7 @@ NODE2_LOCATION_HT = 52.76
 
 ; lats and longs are in decimal degrees
 ; height is in meters as WGS84 and above geoid
+; RR = E018"27'36.62 S34"10'52.69 
 TGT_LOCATION_LAT = -34.1874
 TGT_LOCATION_LON = 18.4280
 TGT_LOCATION_HT = 0.0235
@@ -37,16 +39,16 @@ TGT_LOCATION_HT = 0.0235
 [Bearings]
 
 ; DTG is date-time (in date-time group format) of getting bearings. EXAMPLE: 091630Z JUL 11 = 1630 UTC on 9 July 2011
-; Baseline_Bisector and node ranges are in meters
+; Baseline_Bisector and node ranges are in metres
 ; Node bearings are in degrees relative to true north
 DTG = "061855Z 1217"
-BASELINE_BISECTOR = 2
-NODE0_RANGE = 1.82952
-NODE0_BEARING = 46.5192
-NODE1_RANGE = 1.82952
-NODE1_BEARING = 46.5192
-NODE2_RANGE = 1.82952
-NODE2_BEARING = 46.5192
+BASELINE_BISECTOR = 0
+NODE0_RANGE = 1828.77
+NODE0_BEARING = 46.79
+NODE1_RANGE = 1828.77
+NODE1_BEARING = 46.79
+NODE2_RANGE = 1828.77
+NODE2_BEARING = 46.79
 
 
 [Weather]
@@ -79,10 +81,10 @@ AIR_PRESSURE = 10.7
 ;   10.0us  = 5      10.0us  = 12
 ;   15.0us  = 6      15.0us  = 13
 ;   20.0us  = 7      20.0us  = 14
-WAVEFORM_INDEX = 3 ; selected from above
+WAVEFORM_INDEX = 5
 
 ; NUM_PRIS = n x m (# unique pulses x # cycles)
-NUM_PRIS = 10000
+NUM_PRIS = 60000
 SAMPLES_PER_PRI = 4096
 
 ; DAC_DELAY MUST NOT BE LESS THAN 1. See Pentek Operating Manual 3.3.2, page 64. DAC_DELAY is the delay before transmit of the DAC. Actual delay is DAC_DELAY/180MSPS + 186*2/180MSPS (measured)
@@ -129,6 +131,6 @@ ADC_CHANNEL = 0
 
 ; MPA = 0, HPA = 1
 AMPLIFIER = 1
-DYNAMIC_RANGE = 50
+DYNAMIC_RANGE = 65
 SPECTROGRAM_BIN = 1000
 DOPPLER_FFT = 256

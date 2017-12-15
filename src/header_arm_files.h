@@ -19,7 +19,6 @@ class HeaderArmFiles
         void writeToHeaderFile(string section, string key, string value);
         QString readFromHeaderFile(string section, string var);
         void writeToArmtimecfgFile(string data);
-        QString readFromBearingsFile(string varName);
     private:
 };
 

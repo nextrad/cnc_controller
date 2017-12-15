@@ -1,3 +1,1 @@
-● ntp.service
-   Loaded: not-found (Reason: No such file or directory)
-   Active: inactive (dead)
+ * NTP server is running
