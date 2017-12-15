@@ -1,0 +1,178 @@
+cobalt0 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+9.312s: 	Copying Header File
+9.318s: 	Memory Allocated
+9.318s: 	Binary Dataset Loaded
+9.319s: 	Reference Dataset Loaded
+9.319s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+9.350s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+64.271s: 	Finished Copying Dataset
+64.271s: 	Checking Integrity of Copy
+Binary files ///smbtest/adc0.dat and ///mnt/external/2017_12_14_17_38_4_n0/2017_12_14_17_38_4_n0_adc0.dat differ
+Copied Dataset is NOT Identical to the Original Dataset.
+Original Dataset will NOT be Deleted.
+73.347s: 	Memory Free Warning: empty y range [0:0], adjusting to [-1:1]
+Warning: empty y range [2.14748e+09:2.14748e+09], adjusting to [2.12601e+09:2.16896e+09]
+ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+
+cobalt1 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+0.015s: 	Copying Header File
+0.019s: 	Memory Allocated
+0.275s: 	Binary Dataset Loaded
+0.275s: 	Reference Dataset Loaded
+0.275s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+0.310s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+64.893s: 	Finished Copying Dataset
+64.893s: 	Checking Integrity of Copy
+65.368s: 	Deleting Original File
+74.692s: 	Memory Free ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+
+cobalt2 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+0.016s: 	Copying Header File
+0.021s: 	Memory Allocated
+0.255s: 	Binary Dataset Loaded
+0.255s: 	Reference Dataset Loaded
+0.255s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+0.289s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+63.593s: 	Finished Copying Dataset
+63.593s: 	Checking Integrity of Copy
+64.032s: 	Deleting Original File
+88.365s: 	Memory Free ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+ssh: connect to host 192.168.1.100 port 22: No route to host
+lost connection
+
+cobalt2 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+0.014s: 	Copying Header File
+0.018s: 	Memory Allocated
+0.018s: 	Binary Dataset Loaded
+0.018s: 	Reference Dataset Loaded
+0.018s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+0.044s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+56.674s: 	Finished Copying Dataset
+56.674s: 	Checking Integrity of Copy
+Binary files ///smbtest/adc0.dat and ///mnt/external/2017_12_14_17_56_36_n2/2017_12_14_17_56_36_n2_adc0.dat differ
+Copied Dataset is NOT Identical to the Original Dataset.
+Original Dataset will NOT be Deleted.
+57.409s: 	Memory Free Warning: empty y range [0:0], adjusting to [-1:1]
+Warning: empty y range [2.14748e+09:2.14748e+09], adjusting to [2.12601e+09:2.16896e+09]
+
+cobalt0 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+0.528s: 	Copying Header File
+0.533s: 	Memory Allocated
+0.533s: 	Binary Dataset Loaded
+0.533s: 	Reference Dataset Loaded
+0.533s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+0.564s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+57.335s: 	Finished Copying Dataset
+57.335s: 	Checking Integrity of Copy
+Binary files ///smbtest/adc0.dat and ///mnt/external/2017_12_14_17_56_36_n0/2017_12_14_17_56_36_n0_adc0.dat differ
+Copied Dataset is NOT Identical to the Original Dataset.
+Original Dataset will NOT be Deleted.
+58.171s: 	Memory Free Warning: empty y range [0:0], adjusting to [-1:1]
+Warning: empty y range [2.14748e+09:2.14748e+09], adjusting to [2.12601e+09:2.16896e+09]
+
+cobalt1 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+0.017s: 	Copying Header File
+0.021s: 	Memory Allocated
+0.266s: 	Binary Dataset Loaded
+0.266s: 	Reference Dataset Loaded
+0.266s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+0.287s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+64.918s: 	Finished Copying Dataset
+64.918s: 	Checking Integrity of Copy
+65.399s: 	Deleting Original File
+66.670s: 	Memory Free 
+
+cobalt1 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+0.013s: 	Copying Header File
+0.017s: 	Memory Allocated
+0.271s: 	Binary Dataset Loaded
+0.272s: 	Reference Dataset Loaded
+0.272s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+0.304s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+64.492s: 	Finished Copying Dataset
+64.492s: 	Checking Integrity of Copy
+64.980s: 	Deleting Original File
+66.266s: 	Memory Free 
+
+cobalt2 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+0.015s: 	Copying Header File
+0.019s: 	Memory Allocated
+0.506s: 	Binary Dataset Loaded
+0.506s: 	Reference Dataset Loaded
+0.506s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+0.596s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+65.590s: 	Finished Copying Dataset
+65.591s: 	Checking Integrity of Copy
+66.081s: 	Deleting Original File
+67.723s: 	Memory Free 
+
+cobalt0 | success | rc=0 >>
+[3;J[H[2JNeXtLook
+--------
+5.730s: 	Copying Header File
+5.734s: 	Memory Allocated
+6.200s: 	Binary Dataset Loaded
+6.200s: 	Reference Dataset Loaded
+6.200s: 	Reference Data Loaded
+Generated Plot: Reference Waveform IQ
+6.251s: 	Complex Conjugate Reference
+Generated Plot: Time Domain Pulse #1
+Generated Plot: Pulse Compressed Pulse #1
+72.597s: 	Finished Copying Dataset
+72.597s: 	Checking Integrity of Copy
+73.105s: 	Deleting Original File
+74.559s: 	Memory Free 
+
