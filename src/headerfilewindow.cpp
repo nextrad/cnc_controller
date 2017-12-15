@@ -1244,7 +1244,7 @@ void HeaderFileWindow::cancelButtonClicked(void)
 void HeaderFileWindow::okButtonClicked(void)
 {
 
-    std::string value, var;
+    std::string day, month, year, hour, minute, second, value, var;
     stringstream ss_armtime;
 
     switch(menu)
@@ -1260,34 +1260,27 @@ void HeaderFileWindow::okButtonClicked(void)
         break;*/
 
         case 2://Timing Parameters
-            ss_armtime << "Date=";
 
-            value = textbox3->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Timing", "DAY", value);
-            ss_armtime << value << "/";
+            year = textbox1->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "YEAR", year);
 
-            value = textbox2->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Timing", "MONTH", value);
-            ss_armtime << value << "/";
+            month = textbox2->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "MONTH", month);
 
-            value = textbox1->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Timing", "YEAR", value);
-            ss_armtime << value << "\n";
+            day = textbox3->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "DAY", day);
 
+            hour = textbox4->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "HOUR", hour);
 
-            ss_armtime << "Arm_Time=";
-            value = textbox4->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Timing", "HOUR", value);
-            ss_armtime << value << ":";
+            minute = textbox5->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "MINUTE", minute);
 
-            value = textbox5->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Timing", "MINUTE", value);
-            ss_armtime << value << ":";
+            second = textbox6->toPlainText().toUtf8().constData();
+            headerarmfiles.writeToHeaderFile("Timing", "SECOND", second);
 
-            value = textbox6->toPlainText().toUtf8().constData();
-            headerarmfiles.writeToHeaderFile("Timing", "SECOND", value);
-            ss_armtime << value;
-
+            ss_armtime << "Date=" << day << "/" << month << "/" << year << "\n";
+            ss_armtime << "Arm_Time=" << hour << ":" << minute << ":" << second;
             headerarmfiles.writeToArmtimecfgFile(ss_armtime.str());
 
             showFirstMenu();

@@ -449,6 +449,8 @@ moc_headerfilewindow.cpp: /usr/include/qt5/QtWidgets/QWidget \
 		../src/datetime.h \
 		../src/networkmanager.h \
 		../src/header_arm_files.h \
+		../src/SimpleIni.h \
+		../src/ConvertUTF.h \
 		../src/headerfilewindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../src/headerfilewindow.h -o moc_headerfilewindow.cpp
 
@@ -592,6 +594,8 @@ moc_window.cpp: /usr/include/qt5/QtWidgets/QWidget \
 		/usr/include/qt5/QtCore/qsignalmapper.h \
 		../src/networkmanager.h \
 		../src/header_arm_files.h \
+		../src/SimpleIni.h \
+		../src/ConvertUTF.h \
 		../src/window.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../src/window.h -o moc_window.cpp
 
@@ -816,7 +820,9 @@ header_arm_files.o: ../src/header_arm_files.cpp ../src/includes.h \
 		/usr/include/qt5/QtCore/qisenum.h \
 		/usr/include/qt5/QtCore/qobject_impl.h \
 		/usr/include/qt5/QtCore/qhash.h \
-		/usr/include/qt5/QtCore/qpair.h
+		/usr/include/qt5/QtCore/qpair.h \
+		../src/SimpleIni.h \
+		../src/ConvertUTF.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o header_arm_files.o ../src/header_arm_files.cpp
 
 headerfilewindow.o: ../src/headerfilewindow.cpp ../src/headerfilewindow.h \
@@ -955,6 +961,8 @@ headerfilewindow.o: ../src/headerfilewindow.cpp ../src/headerfilewindow.h \
 		../src/datetime.h \
 		../src/networkmanager.h \
 		../src/header_arm_files.h \
+		../src/SimpleIni.h \
+		../src/ConvertUTF.h \
 		/usr/include/qt5/QtWidgets/QPushButton \
 		/usr/include/qt5/QtWidgets/qpushbutton.h \
 		/usr/include/qt5/QtWidgets/qabstractbutton.h \
@@ -1131,7 +1139,9 @@ main.o: ../src/main.cpp /usr/include/qt5/QtWidgets/QApplication \
 		/usr/include/qt5/QtCore/QSignalMapper \
 		/usr/include/qt5/QtCore/qsignalmapper.h \
 		../src/networkmanager.h \
-		../src/header_arm_files.h
+		../src/header_arm_files.h \
+		../src/SimpleIni.h \
+		../src/ConvertUTF.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../src/main.cpp
 
 networkmanager.o: ../src/networkmanager.cpp ../src/networkmanager.h \
@@ -1387,6 +1397,8 @@ window.o: ../src/window.cpp ../src/window.h \
 		/usr/include/qt5/QtCore/qsignalmapper.h \
 		../src/networkmanager.h \
 		../src/header_arm_files.h \
+		../src/SimpleIni.h \
+		../src/ConvertUTF.h \
 		/usr/include/qt5/QtWidgets/QPushButton \
 		/usr/include/qt5/QtWidgets/qpushbutton.h \
 		/usr/include/qt5/QtWidgets/qabstractbutton.h \

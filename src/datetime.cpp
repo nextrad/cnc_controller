@@ -108,26 +108,19 @@ string Datetime::getNowInSeconds(void)
 QString Datetime::getCountDownTime(time_t timeLeft)
 {
     //convert unix time to hours, minutes, seconds
-    int tim = (int) timeLeft;
+    int tim = (int)timeLeft;
+
     int hours, mins, secs;
-    secs = tim % 60;
-    tim -= secs;
-    tim = tim / 60;
-    mins = tim % 60;
-    tim -= mins;
-    hours = tim / 60;
 
-    string s   = "";
-    s += hours; // hh
-    s += ":";
-    s += mins; // mm
-    s += ":";
-    s += secs; // ss
-    s += ":";
+    hours = tim / 3600;
+    tim -= hours * 3600;
+    mins = tim / 60;
+    tim -= mins * 60;
+    secs = tim;
 
-    cout << "CountDownTime = " << s << endl;
-    QString temp = QString::fromStdString(s);
-    return temp;
+    stringstream ss_countdown;
+    ss_countdown << std::setfill('0') << std::setw(2) << hours << ":" << std::setfill('0') << std::setw(2) << mins << ":" << std::setfill('0') << std::setw(2) << secs;
+    return QString::fromStdString(ss_countdown.str());
 }
 
 
@@ -153,7 +146,6 @@ time_t Datetime::convertToUnixTime(string timestamp)
     {
         s = str;
     }
-    cout << "s is : " << s << endl;
 
     // Convert the date from 'yyyy-MM-dd hh:mm:ss' format to get correct Unix time!
     struct tm tm;
