@@ -35,22 +35,30 @@ class Window : public QWidget
     public:
         explicit Window(QWidget *parent = 0);
         ~Window();
-        //string convertFromUnixTime(time_t);
+        QString getCountDownTime(time_t timeLeft);
         bool testConnection(string unitname);
         char* stringToCharPntr(string str);
         bool testSubNetwork(QString NetID);
+        int sendFilesOverNetwork(void);
+        void updateHeaderTimes(void);
 
     private:
         int m_counter;
+
+        //inactive is for prior to and after an experiment
+        //waiting is before start time
+        //active is during an experiment, between start and end time
+        // INACTIVE -> WAITING -> ACTIVE -> INACTIVE
+        enum timeState {INACTIVE=0, WAITING=1, ACTIVE=2};
+
         QPushButton *testConnectionButton;
         QPushButton *startCountDownButton;
-        QPushButton *abortVideoRecordingButton;
-        QPushButton *updateHeaderFileButton;
+        QPushButton *abortAudioRecordingButton;
+        QPushButton *editHeaderFileButton;
         QPushButton *receiveNodeDetailsButton;
-        QPushButton *sendHeaderButton;
+        QPushButton *goButton;
         QPushButton *showVideoButton;
         QPushButton *runNextlookButton;
- //       QPushButton *closeButton;
 
         QLCDNumber *countDown;
         QTextEdit *statusBox;
@@ -58,13 +66,14 @@ class Window : public QWidget
 
         QTimer *starttimer;
         QTimer *endtimer;
-        QTimer *countDownTim;
-        string startTime, startTime2;
+        QTimer *countdowntimer;
+        string startTime;
         string endTime;
         time_t stopUnixTime;
         time_t strtUnixTime;
         time_t currentUnixTime;
-        int timMode;
+        int experiment_state;
+
         void initGUI(void);
 
         ConnectionManager connectionManager;
@@ -79,15 +88,14 @@ class Window : public QWidget
         void updateCountDownLCD(void);
         void startRecording(void);
         void stopRecording(void);
-        void abortVideoRecordingButtonClicked(void);
-        void updateHeaderFileButtonClicked(void);
+        void abortAudioRecordingButtonClicked(void);
+        void editHeaderFileButtonClicked(void);
         void openMainMenu(void);
         void receiveNodeDetailsButtonClicked(void);
-        int sendHeaderButtonClicked(void);
+        int goButtonClicked(void);
         void closeServer();
         void showVideoButtonClicked(void);
         void runNextlookButtonClicked(void);
-       // void closeButtonClicked(void);
 
     signals:
     public slots:

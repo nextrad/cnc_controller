@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Window_t {
     QByteArrayData data[15];
-    char stringdata[292];
+    char stringdata[282];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -37,21 +37,21 @@ QT_MOC_LITERAL(4, 51, 18),
 QT_MOC_LITERAL(5, 70, 14),
 QT_MOC_LITERAL(6, 85, 13),
 QT_MOC_LITERAL(7, 99, 32),
-QT_MOC_LITERAL(8, 132, 29),
-QT_MOC_LITERAL(9, 162, 12),
-QT_MOC_LITERAL(10, 175, 31),
-QT_MOC_LITERAL(11, 207, 23),
-QT_MOC_LITERAL(12, 231, 11),
-QT_MOC_LITERAL(13, 243, 22),
-QT_MOC_LITERAL(14, 266, 24)
+QT_MOC_LITERAL(8, 132, 27),
+QT_MOC_LITERAL(9, 160, 12),
+QT_MOC_LITERAL(10, 173, 31),
+QT_MOC_LITERAL(11, 205, 15),
+QT_MOC_LITERAL(12, 221, 11),
+QT_MOC_LITERAL(13, 233, 22),
+QT_MOC_LITERAL(14, 256, 24)
     },
     "Window\0connectionTestButtonClicked\0\0"
     "startCountDown\0updateCountDownLCD\0"
     "startRecording\0stopRecording\0"
-    "abortVideoRecordingButtonClicked\0"
-    "updateHeaderFileButtonClicked\0"
-    "openMainMenu\0receiveNodeDetailsButtonClicked\0"
-    "sendHeaderButtonClicked\0closeServer\0"
+    "abortAudioRecordingButtonClicked\0"
+    "editHeaderFileButtonClicked\0openMainMenu\0"
+    "receiveNodeDetailsButtonClicked\0"
+    "goButtonClicked\0closeServer\0"
     "showVideoButtonClicked\0runNextlookButtonClicked\0"
 };
 #undef QT_MOC_LITERAL
@@ -112,11 +112,11 @@ void Window::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 2: _t->updateCountDownLCD(); break;
         case 3: _t->startRecording(); break;
         case 4: _t->stopRecording(); break;
-        case 5: _t->abortVideoRecordingButtonClicked(); break;
-        case 6: _t->updateHeaderFileButtonClicked(); break;
+        case 5: _t->abortAudioRecordingButtonClicked(); break;
+        case 6: _t->editHeaderFileButtonClicked(); break;
         case 7: _t->openMainMenu(); break;
         case 8: _t->receiveNodeDetailsButtonClicked(); break;
-        case 9: { int _r = _t->sendHeaderButtonClicked();
+        case 9: { int _r = _t->goButtonClicked();
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 10: _t->closeServer(); break;
         case 11: _t->showVideoButtonClicked(); break;

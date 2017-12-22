@@ -15,7 +15,6 @@ class HeaderArmFiles
 {
     public:
         HeaderArmFiles(void);
-
         void writeToHeaderFile(string section, string key, string value);
         QString readFromHeaderFile(string section, string var);
         void writeToArmtimecfgFile(string data);

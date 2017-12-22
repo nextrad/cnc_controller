@@ -12,16 +12,19 @@
 #include "includes.h"
 #include "parameters.h"
 
+int EXPERIMENT_LENGTH;
+
 void testNTP(void);
 void testDNS(void);
 void testAsterisk(void);
+void setParameters(void);
 
 int main(int argc, char **argv)
 {
-	
     testDNS();
     testNTP();
     testAsterisk();
+    setParameters();
 
     QApplication app (argc, argv);
     QIcon icon(ICON_PATH);
@@ -29,7 +32,6 @@ int main(int argc, char **argv)
     window.setWindowIcon(icon); //Set Icon for application
     window.show();
     return app.exec();
-    
 }
 
 //Method to test if the NTP server is running correctly
@@ -95,4 +97,15 @@ void testAsterisk(void)
     }
     printf("\n");
     audioStatus.close();
+}
+
+void setParameters(void)
+{
+    bool gotDetailsOK = false;
+
+    while (!gotDetailsOK)
+    {
+        EXPERIMENT_LENGTH = 60; //default value [seconds]
+        gotDetailsOK = true;
+     }
 }

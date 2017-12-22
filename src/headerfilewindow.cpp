@@ -43,8 +43,6 @@ void HeaderFileWindow::initGUI(void)
     label->setFont(QFont("Ubuntu",24));
     label->show();
 
- 
-
     //button for changing timing parameters in header file
     timingParametersButton = new QPushButton("Timing", this);
     timingParametersButton->setGeometry(100, 100, 140, 50);
@@ -790,12 +788,12 @@ void HeaderFileWindow::pulseParametersButtonClicked(void)
     text8->show();
 
     text9->setGeometry(100, 470, 180, 40);
-    text9->setText("PRI");
+    text9->setText("L Band Frequency");
     text9->setFont(QFont("Ubuntu",14));
     text9->show();
 
     text10->setGeometry(100, 520, 180, 40);
-    text10->setText("Pre Pulse");
+    text10->setText("X Band Frequency");
     text10->setFont(QFont("Ubuntu",14));
     text10->show();
 

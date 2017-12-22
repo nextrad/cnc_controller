@@ -34,9 +34,9 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define ARMTIMECFG_PATH     "/home/nextrad/Documents/cnc_controller/armtime.cfg"
 
 #define ICON_PATH           "../media/icons/favicon2.ico"
+#define TONES_PATH           "/var/lib/asterisk/sounds/custom/tone"
 
 #define STARTTIMESECS       20
-#define ENDTIMESECS         120
 
 
 #endif // PARAMETERS_H
