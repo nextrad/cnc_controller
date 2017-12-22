@@ -40,7 +40,8 @@ class Window : public QWidget
         char* stringToCharPntr(string str);
         bool testSubNetwork(QString NetID);
         int sendFilesOverNetwork(void);
-        void updateHeaderTimes(void);
+        void resetHeaderFileTimes(void);
+        bool startCountDown(void);
 
     private:
         int m_counter;
@@ -83,8 +84,7 @@ class Window : public QWidget
         NetworkManager server;
 
     private slots:
-        void connectionTestButtonClicked(void);
-        void startCountDown(void);
+        void connectionTestButtonClicked(void);  
         void updateCountDownLCD(void);
         void startRecording(void);
         void stopRecording(void);

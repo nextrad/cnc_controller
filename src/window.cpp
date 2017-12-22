@@ -35,11 +35,11 @@ Window::Window(QWidget *parent) : QWidget(parent)
     //Set size of window
     setFixedSize(600,590);
 
-    //This saves the current times to the Header file
-    // ToDo: Move this to wait until Bill's target, bearing, weather arrives
-    updateHeaderTimes();
-
     initGUI();
+
+    //This saves the current times to the Header file
+    // ToDo: In future, wait for Bill's target, bearing, weather first
+    resetHeaderFileTimes();
 
     //connect to asterisk server and set up audio recording
     audioRecorder.connectToSocket();
@@ -66,6 +66,9 @@ Window::Window(QWidget *parent) : QWidget(parent)
     {
         server.resetError(i);       //This is to try get rid of a bug where server.error
     }
+
+
+
 }
 
 
@@ -353,7 +356,7 @@ char* Window::stringToCharPntr(string str)
 // converts the times from dd-MM-yyyy hh:mm:ss to yyyy-MM-dd hh:mm:ss formats for timer and NTP
 // and starts the countdown timer
 //=============================================================================
-void Window::startCountDown(void)
+bool Window::startCountDown(void)
 {
     Datetime datetime;
     stringstream ss_unixtime;
@@ -385,10 +388,12 @@ void Window::startCountDown(void)
     if(strtUnixTime < currentUnixTime)
     {
         statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future start time");
+        return false;
     }
     else if(stopUnixTime < strtUnixTime)
     {
         statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future stop time");
+        return false;
     }
     else // start countdown to armtime
     {
@@ -396,7 +401,8 @@ void Window::startCountDown(void)
         countDownLabel->setText("Countdown to armtime");
         experiment_state = WAITING;
         statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
-        statusBox->append("");
+        // statusBox->append("");
+        return true;
     }
 }
 
@@ -617,8 +623,7 @@ int Window::sendFilesOverNetwork(void)
     int status;
     int hdr_ret;
 
-    statusBox->append("");
-    statusBox->append("");
+ //   statusBox->append("");
 
     //GPSDOs
     //Update nodes armtime
@@ -640,9 +645,9 @@ int Window::sendFilesOverNetwork(void)
             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to GPSDOs");
             return hdr_ret;
         }
+        statusBox->append("");
     }
     ss.str("");             //clear stringstream
-    statusBox->append("");
 
 
     // Nodes
@@ -665,9 +670,9 @@ int Window::sendFilesOverNetwork(void)
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to nodes");
              return hdr_ret;
          }
+         statusBox->append("");
      }
      ss.str("");             //clear stringstream
-     statusBox->append("");
 
 
      // Cobalts
@@ -690,9 +695,9 @@ int Window::sendFilesOverNetwork(void)
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to cobalts");
              return hdr_ret;
          }
+         statusBox->append("");
      }
      ss.str("");             //clear stringstream
-     statusBox->append("");
 
 
      ss << "ansible cobalts -m shell -a \"./run-cobalt.sh\"";
@@ -713,9 +718,9 @@ int Window::sendFilesOverNetwork(void)
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Run cobalts not successful");
              return hdr_ret;
          }
+         statusBox->append("");
      }
      ss.str("");             //clear stringstream
-     statusBox->append("");
 
 
      // TCUs
@@ -726,13 +731,13 @@ int Window::sendFilesOverNetwork(void)
 //=============================================================================
 // setArmTime()
 //=============================================================================
-void Window::updateHeaderTimes(void)
+void Window::resetHeaderFileTimes(void)
 {
     Datetime datetime;
     std::string day, month, year, hour, minute, second;
     stringstream ss_armtime;
 
-    year = datetime.getNowInYears();   // headerarmfiles.readFromHeaderFile()
+    year = datetime.getNowInYears();
     headerarmfiles.writeToHeaderFile("Timing", "YEAR", year);
 
     month = datetime.getNowInMonths();
@@ -761,12 +766,14 @@ void Window::updateHeaderTimes(void)
 //=============================================================================
 int Window::goButtonClicked(void)
 {
-    // sends out header file to all units
-    int hdr_ret = sendFilesOverNetwork();
+    int hdr_ret = 0;
 
     // start countdown
-    startCountDown();
-
+    if (startCountDown())
+    {
+        // sends out header file to all units
+        hdr_ret = sendFilesOverNetwork();
+    }
     return hdr_ret;
 }
 
