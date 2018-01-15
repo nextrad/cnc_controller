@@ -41,16 +41,18 @@ class Window : public QWidget
         bool testSubNetwork(QString NetID);
         int sendFilesOverNetwork(void);
         void resetHeaderFileTimes(void);
-        bool startCountDown(void);
+        bool startCountdown(void);
 
     private:
         int m_counter;
 
-        //inactive is for prior to and after an experiment
-        //waiting is before start time
-        //active is during an experiment, between start and end time
+        // INACTIVE is for prior to and after an experiment
+        // WAITING is before start time
+        // ACTIVE is during an experiment, between start and end time
         // INACTIVE -> WAITING -> ACTIVE -> INACTIVE
         enum timeState {INACTIVE=0, WAITING=1, ACTIVE=2};
+
+        enum buttonColour {GREEN=0, AMBER=1, RED=2};
 
         QPushButton *testConnectionButton;
         QPushButton *startCountDownButton;
@@ -76,6 +78,7 @@ class Window : public QWidget
         int experiment_state;
 
         void initGUI(void);
+        string setButtonColour(int colourno);
 
         ConnectionManager connectionManager;
         AudioConnectionManager audioRecorder;

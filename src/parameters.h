@@ -39,4 +39,6 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define STARTTIMESECS       20
 
 
+
+
 #endif // PARAMETERS_H

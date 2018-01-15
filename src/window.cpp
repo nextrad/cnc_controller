@@ -37,7 +37,7 @@ Window::Window(QWidget *parent) : QWidget(parent)
 
     initGUI();
 
-    //This saves the current times to the Header file
+    // This saves the current times to the Header file
     // ToDo: In future, wait for Bill's target, bearing, weather first
     resetHeaderFileTimes();
 
@@ -66,8 +66,6 @@ Window::Window(QWidget *parent) : QWidget(parent)
     {
         server.resetError(i);       //This is to try get rid of a bug where server.error
     }
-
-
 
 }
 
@@ -133,8 +131,7 @@ void Window::initGUI(void)
     //button for distributing header file to node controllers
     goButton = new QPushButton("GO", this);
     goButton->setGeometry( 250, 500, 135,50);
-    // light red = rgb(255,100,125), light green = rgb(100,255,125),  light yellow = rgb(255,255,125)
-    goButton->setStyleSheet("* { background-color: rgb(100,255,125) }");
+    goButton->setStyleSheet(setButtonColour(RED).c_str());
     connect(goButton, SIGNAL (clicked(bool)), this, SLOT(goButtonClicked(void)));
 
     //button for showing video mosaic
@@ -351,12 +348,12 @@ char* Window::stringToCharPntr(string str)
 
 
 //=============================================================================
-// startCountDown()
+// startCountdown()
 // This method parses the start and end times for the video recording,
 // converts the times from dd-MM-yyyy hh:mm:ss to yyyy-MM-dd hh:mm:ss formats for timer and NTP
 // and starts the countdown timer
 //=============================================================================
-bool Window::startCountDown(void)
+bool Window::startCountdown(void)
 {
     Datetime datetime;
     stringstream ss_unixtime;
@@ -388,11 +385,13 @@ bool Window::startCountDown(void)
     if(strtUnixTime < currentUnixTime)
     {
         statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future start time");
+        goButton->setStyleSheet(setButtonColour(RED).c_str());
         return false;
     }
     else if(stopUnixTime < strtUnixTime)
     {
         statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future stop time");
+        goButton->setStyleSheet(setButtonColour(RED).c_str());
         return false;
     }
     else // start countdown to armtime
@@ -401,8 +400,8 @@ bool Window::startCountDown(void)
         countDownLabel->setText("Countdown to armtime");
         experiment_state = WAITING;
         statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
-        // statusBox->append("");
-        return true;
+        goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+         return true;
     }
 }
 
@@ -493,6 +492,10 @@ void Window::openMainMenu(void)
 {
     this->show();
     headerfilewindow->hide();
+    if (headerfilewindow->newtime == true)
+    {
+        goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    }
 }
 
 
@@ -758,6 +761,8 @@ void Window::resetHeaderFileTimes(void)
     ss_armtime << "Date=" << day << "/" << month << "/" << year << "\n";
     ss_armtime << "Arm_Time=" << hour << ":" << minute << ":" << second;
     headerarmfiles.writeToArmtimecfgFile(ss_armtime.str());
+
+    goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 }
 
 //=============================================================================
@@ -769,7 +774,7 @@ int Window::goButtonClicked(void)
     int hdr_ret = 0;
 
     // start countdown
-    if (startCountDown())
+    if (startCountdown())
     {
         // sends out header file to all units
         hdr_ret = sendFilesOverNetwork();
@@ -777,3 +782,24 @@ int Window::goButtonClicked(void)
     return hdr_ret;
 }
 
+//=============================================================================
+// setButtonColour(int colourno)
+// sets button colour to light green = rgb(100,255,125),  light yellow = rgb(255,255,125) or light red = rgb(255,100,125)
+//=============================================================================
+string Window::setButtonColour(int colourno)
+{
+    string colourstr;
+    if (colourno == GREEN)
+    {
+        colourstr = "* { background-color: rgb(100,255,125) }";  // light green
+    }
+    else if (colourno == AMBER)
+    {
+        colourstr = "* { background-color: rgb(255,255,125) }";  // light yellow
+    }
+    else
+    {
+        colourstr = "* { background-color: rgb(255,100,125) }";  // light red
+    }
+    return colourstr;
+}

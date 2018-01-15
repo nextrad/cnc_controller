@@ -30,6 +30,7 @@ class HeaderFileWindow : public QDialog
     Q_OBJECT
     public:
         HeaderFileWindow(QWidget *parent = 0);
+        bool newtime;
 
     private:
         void initGUI(void);

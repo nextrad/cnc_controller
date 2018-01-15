@@ -26,6 +26,7 @@ HeaderFileWindow::HeaderFileWindow(QWidget *parent) : QDialog(parent)
     //Set size of Window
     setMinimumSize(500,650);//setFixedSize(500,310);
     initGUI();
+    newtime = false;
     showFirstMenu();
 }
 
@@ -308,6 +309,8 @@ void HeaderFileWindow::timingParametersButtonClicked(void)
     now = datetime.getNowSecsPlusSecs(STARTTIMESECS);
     textbox6->setText(now.c_str());
     textbox6->show();
+
+    newtime = true;
 
 }
 
