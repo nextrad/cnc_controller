@@ -41,7 +41,7 @@ class Window : public QWidget
         bool testSubNetwork(QString NetID);
         int sendFilesOverNetwork(void);
         void resetHeaderFileTimes(void);
-        bool startCountdown(void);
+        bool checkCountdown(void);
 
     private:
         int m_counter;
@@ -52,7 +52,7 @@ class Window : public QWidget
         // INACTIVE -> WAITING -> ACTIVE -> INACTIVE
         enum timeState {INACTIVE=0, WAITING=1, ACTIVE=2};
 
-        enum buttonColour {GREEN=0, AMBER=1, RED=2};
+        enum buttonColour {GREEN=0, GRAY=1, RED=2};
 
         QPushButton *testConnectionButton;
         QPushButton *startCountDownButton;
@@ -60,6 +60,7 @@ class Window : public QWidget
         QPushButton *editHeaderFileButton;
         QPushButton *receiveNodeDetailsButton;
         QPushButton *goButton;
+        QPushButton *goLaterButton;
         QPushButton *showVideoButton;
         QPushButton *runNextlookButton;
 
@@ -96,6 +97,7 @@ class Window : public QWidget
         void openMainMenu(void);
         void receiveNodeDetailsButtonClicked(void);
         int goButtonClicked(void);
+        int goLaterButtonClicked(void);
         void closeServer();
         void showVideoButtonClicked(void);
         void runNextlookButtonClicked(void);

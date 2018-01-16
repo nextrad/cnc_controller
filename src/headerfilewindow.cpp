@@ -23,10 +23,13 @@
 //=============================================================================
 HeaderFileWindow::HeaderFileWindow(QWidget *parent) : QDialog(parent)
 {
+    newtime = false;
+
     //Set size of Window
     setMinimumSize(500,650);//setFixedSize(500,310);
+
     initGUI();
-    newtime = false;
+
     showFirstMenu();
 }
 
@@ -237,6 +240,17 @@ void HeaderFileWindow::showFirstMenu(void)
 void HeaderFileWindow::timingParametersButtonClicked(void)
 {
     Datetime datetime;
+    std::string nowplussecs, day, month, year, hour, minute, second;
+
+    // This time rolls over if add seconds
+    nowplussecs = datetime.getNowPlusSecs(STARTTIMESECS);
+
+    year = nowplussecs.substr(0,4);
+    month = nowplussecs.substr(5,2);
+    day = nowplussecs.substr(8,2);
+    hour = nowplussecs.substr(11,2);
+    minute = nowplussecs.substr(14,2);
+    second = nowplussecs.substr(17,2);
 
 
     clearMenu();
@@ -263,7 +277,6 @@ void HeaderFileWindow::timingParametersButtonClicked(void)
     text3->setFont(QFont("Ubuntu",14));
     text3->show();
 
-
     text4->setGeometry(100, 220, 180, 40);
     text4->setText("Hour");
     text4->setFont(QFont("Ubuntu",14));
@@ -281,33 +294,27 @@ void HeaderFileWindow::timingParametersButtonClicked(void)
 
 
     textbox1->setGeometry(300, 73, 180, 29);
-    string now = datetime.getNowInYears();
-    textbox1->setText(now.c_str());
+    textbox1->setText(year.c_str());
     textbox1->show();
 
     textbox2->setGeometry(300, 123, 180, 29);
-    now = datetime.getNowInMonths();
-    textbox2->setText(now.c_str());
+    textbox2->setText(month.c_str());
     textbox2->show();
 
     textbox3->setGeometry(300, 173, 180, 29);
-    now = datetime.getNowInDays();
-    textbox3->setText(now.c_str());
+    textbox3->setText(day.c_str());
     textbox3->show();
 
     textbox4->setGeometry(300, 223, 180, 29);
-    now = datetime.getNowInHours();
-    textbox4->setText(now.c_str());
+    textbox4->setText(hour.c_str());
     textbox4->show();
 
     textbox5->setGeometry(300, 273, 180, 29);
-    now = datetime.getNowInMinutes();
-    textbox5->setText(now.c_str());
+    textbox5->setText(minute.c_str());
     textbox5->show();
 
     textbox6->setGeometry(300, 323, 180, 29);
-    now = datetime.getNowSecsPlusSecs(STARTTIMESECS);
-    textbox6->setText(now.c_str());
+    textbox6->setText(second.c_str());
     textbox6->show();
 
     newtime = true;

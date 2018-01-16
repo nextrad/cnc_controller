@@ -35,6 +35,7 @@ tstruct = *localtime(&now);
 strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
 */
 //=============================================================================
+// This time rolls over if add seconds
 string Datetime::getNowPlusSecs(int secs)
 {
     QDateTime eTime = QDateTime::currentDateTime();
@@ -43,6 +44,7 @@ string Datetime::getNowPlusSecs(int secs)
     return now.c_str();
 }
 //=============================================================================
+// This time does not roll over if add seconds
 string Datetime::getNowSecsPlusSecs(int secs)
 {
     QDateTime eTime = QDateTime::currentDateTime();

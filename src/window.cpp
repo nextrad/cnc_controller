@@ -31,15 +31,12 @@ extern int EXPERIMENT_LENGTH; //in seconds
 Window::Window(QWidget *parent) : QWidget(parent)
 {
     experiment_state = INACTIVE; //see enum for explanation
+   // resetHeaderFileTimes();
 
     //Set size of window
     setFixedSize(600,590);
 
     initGUI();
-
-    // This saves the current times to the Header file
-    // ToDo: In future, wait for Bill's target, bearing, weather first
-    resetHeaderFileTimes();
 
     //connect to asterisk server and set up audio recording
     audioRecorder.connectToSocket();
@@ -130,9 +127,15 @@ void Window::initGUI(void)
 
     //button for distributing header file to node controllers
     goButton = new QPushButton("GO", this);
-    goButton->setGeometry( 250, 500, 135,50);
-    goButton->setStyleSheet(setButtonColour(RED).c_str());
+    goButton->setGeometry( 200, 500, 135, 50);
+    goButton->setStyleSheet(setButtonColour(GREEN).c_str());
     connect(goButton, SIGNAL (clicked(bool)), this, SLOT(goButtonClicked(void)));
+
+    //button for distributing header file to node controllers
+    goLaterButton = new QPushButton("GO LATER", this);
+    goLaterButton->setGeometry( 350, 510, 75, 35);
+    goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    connect(goLaterButton, SIGNAL (clicked(bool)), this, SLOT(goLaterButtonClicked(void)));
 
     //button for showing video mosaic
     showVideoButton = new QPushButton("Start Video\nMosaic", this);
@@ -348,65 +351,6 @@ char* Window::stringToCharPntr(string str)
 
 
 //=============================================================================
-// startCountdown()
-// This method parses the start and end times for the video recording,
-// converts the times from dd-MM-yyyy hh:mm:ss to yyyy-MM-dd hh:mm:ss formats for timer and NTP
-// and starts the countdown timer
-//=============================================================================
-bool Window::startCountdown(void)
-{
-    Datetime datetime;
-    stringstream ss_unixtime;
-    HeaderArmFiles headerarmfiles;
-
-    // read armtime from Header File values
-    QString year = headerarmfiles.readFromHeaderFile("Timing", "YEAR");
-    QString month = headerarmfiles.readFromHeaderFile("Timing", "MONTH");
-    QString day = headerarmfiles.readFromHeaderFile("Timing", "DAY");
-    QString hour = headerarmfiles.readFromHeaderFile("Timing", "HOUR");
-    QString minute = headerarmfiles.readFromHeaderFile("Timing", "MINUTE");
-    QString second = headerarmfiles.readFromHeaderFile("Timing", "SECOND");
-
-    // calculate ENDTIMESECS from Header File values
-    int num_pris = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "NUM_PRIS").toStdString().c_str());
-    int pri = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "PRI").toStdString().c_str());    // microseconds
-    EXPERIMENT_LENGTH = num_pris * pri * 1e-6;  // = 60000 * 1000/1000000 = 60
-
-    //required format: YYYY-MM-DD HH:MM:SS
-    ss_unixtime << year.toStdString() << "-" << month.toStdString() << "-" << day.toStdString() << " ";
-    ss_unixtime << hour.toStdString() << ":" << minute.toStdString() << ":" << second.toStdString();
-
-    //change times to Unix time format
-    strtUnixTime = datetime.convertToUnixTime(ss_unixtime.str());
-    stopUnixTime = strtUnixTime + EXPERIMENT_LENGTH;
-    currentUnixTime = time(NULL);
-
-    //check if the start/end times are in the past
-    if(strtUnixTime < currentUnixTime)
-    {
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future start time");
-        goButton->setStyleSheet(setButtonColour(RED).c_str());
-        return false;
-    }
-    else if(stopUnixTime < strtUnixTime)
-    {
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future stop time");
-        goButton->setStyleSheet(setButtonColour(RED).c_str());
-        return false;
-    }
-    else // start countdown to armtime
-    {
-        starttimer->start((strtUnixTime - currentUnixTime)*1000);
-        countDownLabel->setText("Countdown to armtime");
-        experiment_state = WAITING;
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
-        goButton->setStyleSheet(setButtonColour(GREEN).c_str());
-         return true;
-    }
-}
-
-
-//=============================================================================
 // startRecording()
 // Method to start the countdown until the end of the experiment
 // Note: This is purely for display and recording audio not actually controlling the experiment
@@ -494,7 +438,7 @@ void Window::openMainMenu(void)
     headerfilewindow->hide();
     if (headerfilewindow->newtime == true)
     {
-        goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+        goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
     }
 }
 
@@ -688,7 +632,7 @@ int Window::sendFilesOverNetwork(void)
          hdr_ret = WEXITSTATUS(status);
 
          if(hdr_ret==0)
-         {
+         {        goLaterButton->setStyleSheet(setButtonColour(RED).c_str());
              cout<< "Header file to cobalts successful\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to cobalts");
           }
@@ -706,7 +650,7 @@ int Window::sendFilesOverNetwork(void)
      ss << "ansible cobalts -m shell -a \"./run-cobalt.sh\"";
 
      status = system(stringToCharPntr(ss.str()));     // system(stringToCharPntr(ss.str()));
-     if (-1 != status)
+     if (-1 != status)        goLaterButton->setStyleSheet(setButtonColour(RED).c_str());
      {
          hdr_ret = WEXITSTATUS(status);
 
@@ -727,7 +671,7 @@ int Window::sendFilesOverNetwork(void)
 
 
      // TCUs
-     // ToDo
+     // ToDo        goLaterButton->setStyleSheet(setButtonColour(RED).c_str());
 
 }
 
@@ -737,33 +681,88 @@ int Window::sendFilesOverNetwork(void)
 void Window::resetHeaderFileTimes(void)
 {
     Datetime datetime;
-    std::string day, month, year, hour, minute, second;
+    std::string nowplussecs, day, month, year, hour, minute, second;
     stringstream ss_armtime;
 
-    year = datetime.getNowInYears();
+    // This time rolls over if add seconds
+    nowplussecs = datetime.getNowPlusSecs(STARTTIMESECS);
+
+    year = nowplussecs.substr(0,4);
+    month = nowplussecs.substr(5,2);
+    day = nowplussecs.substr(8,2);
+    hour = nowplussecs.substr(11,2);
+    minute = nowplussecs.substr(14,2);
+    second = nowplussecs.substr(17,2);
+
     headerarmfiles.writeToHeaderFile("Timing", "YEAR", year);
-
-    month = datetime.getNowInMonths();
     headerarmfiles.writeToHeaderFile("Timing", "MONTH", month);
-
-    day = datetime.getNowInDays();
     headerarmfiles.writeToHeaderFile("Timing", "DAY", day);
-
-    hour = datetime.getNowInHours();
     headerarmfiles.writeToHeaderFile("Timing", "HOUR", hour);
-
-    minute = datetime.getNowInMinutes();
     headerarmfiles.writeToHeaderFile("Timing", "MINUTE", minute);
-
-    second = datetime.getNowSecsPlusSecs(STARTTIMESECS);
     headerarmfiles.writeToHeaderFile("Timing", "SECOND", second);
 
     ss_armtime << "Date=" << day << "/" << month << "/" << year << "\n";
     ss_armtime << "Arm_Time=" << hour << ":" << minute << ":" << second;
     headerarmfiles.writeToArmtimecfgFile(ss_armtime.str());
 
-    goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 }
+
+//=============================================================================
+// checkCountdown()
+// This method parses the start and end times for the video recording,
+// converts the times from dd-MM-yyyy hh:mm:ss to yyyy-MM-dd hh:mm:ss formats for timer and NTP
+// If countdown time is valid, this method starts the countdown timer
+//=============================================================================
+bool Window::checkCountdown(void)
+{
+    Datetime datetime;
+    stringstream ss_unixtime;
+    HeaderArmFiles headerarmfiles;
+
+    // read armtime from Header File values
+    QString year = headerarmfiles.readFromHeaderFile("Timing", "YEAR");
+    QString month = headerarmfiles.readFromHeaderFile("Timing", "MONTH");
+    QString day = headerarmfiles.readFromHeaderFile("Timing", "DAY");
+    QString hour = headerarmfiles.readFromHeaderFile("Timing", "HOUR");
+    QString minute = headerarmfiles.readFromHeaderFile("Timing", "MINUTE");
+    QString second = headerarmfiles.readFromHeaderFile("Timing", "SECOND");
+
+    // calculate ENDTIMESECS from Header File values
+    int num_pris = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "NUM_PRIS").toStdString().c_str());
+    int pri = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "PRI").toStdString().c_str());    // microseconds
+    EXPERIMENT_LENGTH = num_pris * pri * 1e-6;  // = 60000 * 1000/1000000 = 60
+
+    //required format: YYYY-MM-DD HH:MM:SS
+    ss_unixtime << year.toStdString() << "-" << month.toStdString() << "-" << day.toStdString() << " ";
+    ss_unixtime << hour.toStdString() << ":" << minute.toStdString() << ":" << second.toStdString();
+
+    //change times to Unix time format
+    strtUnixTime = datetime.convertToUnixTime(ss_unixtime.str());
+    stopUnixTime = strtUnixTime + EXPERIMENT_LENGTH;
+    currentUnixTime = time(NULL);
+
+    //check if the start/end times are in the past
+    if(strtUnixTime < currentUnixTime)
+    {
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future start time");
+        return false;
+    }
+    else if(stopUnixTime < strtUnixTime)
+    {
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future stop time");
+        return false;
+    }
+    else // return true
+    {
+        // start countdown to armtime
+        starttimer->start((strtUnixTime - currentUnixTime)*1000);
+        countDownLabel->setText("Countdown to armtime");
+        experiment_state = WAITING;
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
+        return true;
+    }
+}
+
 
 //=============================================================================
 // goButtonClicked()
@@ -773,14 +772,60 @@ int Window::goButtonClicked(void)
 {
     int hdr_ret = 0;
 
-    // start countdown
-    if (startCountdown())
+    // reset times
+    resetHeaderFileTimes();
+
+    // if countdown time valid
+    if (checkCountdown())
     {
+        goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+
         // sends out header file to all units
         hdr_ret = sendFilesOverNetwork();
     }
+    else
+    {
+        goButton->setStyleSheet(setButtonColour(RED).c_str());
+    }
+
+    headerfilewindow->newtime = false;
+    goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+
     return hdr_ret;
 }
+
+
+//=============================================================================
+// goLaterButtonClicked()
+// sends out header file to all units then starts countdown to armtime
+//=============================================================================
+int Window::goLaterButtonClicked(void)
+{
+    int hdr_ret = 0;
+
+    if (headerfilewindow->newtime == true)
+    {
+        // if countdown time valid, start display
+        if (checkCountdown())
+        {
+            goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
+
+            // sends out header file to all units
+            hdr_ret = sendFilesOverNetwork();
+
+        }
+        else
+        {
+            goLaterButton->setStyleSheet(setButtonColour(RED).c_str());
+        }
+
+        headerfilewindow->newtime = false;
+        goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    }
+
+    return hdr_ret;
+}
+
 
 //=============================================================================
 // setButtonColour(int colourno)
@@ -793,9 +838,9 @@ string Window::setButtonColour(int colourno)
     {
         colourstr = "* { background-color: rgb(100,255,125) }";  // light green
     }
-    else if (colourno == AMBER)
+    else if (colourno == GRAY)
     {
-        colourstr = "* { background-color: rgb(255,255,125) }";  // light yellow
+        colourstr = "* { background-color: rgb(211,211,211) }";  // light gray
     }
     else
     {
