@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Window_t {
     QByteArrayData data[15];
-    char stringdata[288];
+    char stringdata[290];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,18 +38,18 @@ QT_MOC_LITERAL(5, 70, 13),
 QT_MOC_LITERAL(6, 84, 32),
 QT_MOC_LITERAL(7, 117, 27),
 QT_MOC_LITERAL(8, 145, 12),
-QT_MOC_LITERAL(9, 158, 31),
-QT_MOC_LITERAL(10, 190, 15),
-QT_MOC_LITERAL(11, 206, 20),
-QT_MOC_LITERAL(12, 227, 11),
-QT_MOC_LITERAL(13, 239, 22),
-QT_MOC_LITERAL(14, 262, 24)
+QT_MOC_LITERAL(9, 158, 33),
+QT_MOC_LITERAL(10, 192, 15),
+QT_MOC_LITERAL(11, 208, 20),
+QT_MOC_LITERAL(12, 229, 11),
+QT_MOC_LITERAL(13, 241, 22),
+QT_MOC_LITERAL(14, 264, 24)
     },
     "Window\0connectionTestButtonClicked\0\0"
     "updateCountDownLCD\0startRecording\0"
     "stopRecording\0abortAudioRecordingButtonClicked\0"
     "editHeaderFileButtonClicked\0openMainMenu\0"
-    "receiveNodeDetailsButtonClicked\0"
+    "receiveNodePositionsButtonClicked\0"
     "goButtonClicked\0goLaterButtonClicked\0"
     "closeServer\0showVideoButtonClicked\0"
     "runNextlookButtonClicked\0"
@@ -92,7 +92,7 @@ static const uint qt_meta_data_Window[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Int,
     QMetaType::Int,
     QMetaType::Int,
     QMetaType::Void,
@@ -114,7 +114,8 @@ void Window::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 4: _t->abortAudioRecordingButtonClicked(); break;
         case 5: _t->editHeaderFileButtonClicked(); break;
         case 6: _t->openMainMenu(); break;
-        case 7: _t->receiveNodeDetailsButtonClicked(); break;
+        case 7: { int _r = _t->receiveNodePositionsButtonClicked();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 8: { int _r = _t->goButtonClicked();
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 9: { int _r = _t->goLaterButtonClicked();

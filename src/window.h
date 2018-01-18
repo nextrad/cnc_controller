@@ -2,7 +2,9 @@
 //Class:        Window
 //For:          University of Cape Town, Dept. Elec. Eng., RRSG NeXtRAD
 //Created:      April 2016
-//Last Edited:  June 2016
+//Version       1.0 (June 2016)
+//Edited by:    Shirley Coetzee and Darryn Jordan
+//Revision      2.0 (December 2017)
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -42,6 +44,8 @@ class Window : public QWidget
         int sendFilesOverNetwork(void);
         void resetHeaderFileTimes(void);
         bool checkCountdown(void);
+        void runTCUs(void);
+        int runTCU(int tcu_num);
 
     private:
         int m_counter;
@@ -58,7 +62,7 @@ class Window : public QWidget
         QPushButton *startCountDownButton;
         QPushButton *abortAudioRecordingButton;
         QPushButton *editHeaderFileButton;
-        QPushButton *receiveNodeDetailsButton;
+        QPushButton *receiveNodePositionsButton;
         QPushButton *goButton;
         QPushButton *goLaterButton;
         QPushButton *showVideoButton;
@@ -95,7 +99,7 @@ class Window : public QWidget
         void abortAudioRecordingButtonClicked(void);
         void editHeaderFileButtonClicked(void);
         void openMainMenu(void);
-        void receiveNodeDetailsButtonClicked(void);
+        int receiveNodePositionsButtonClicked(void);
         int goButtonClicked(void);
         int goLaterButtonClicked(void);
         void closeServer();

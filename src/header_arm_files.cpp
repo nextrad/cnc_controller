@@ -20,7 +20,7 @@ HeaderArmFiles::HeaderArmFiles(void)
 //method to set a variable's value in the NeXtRAD header file
 void HeaderArmFiles::writeToHeaderFile(string section, string key, string value)
 {
-    std::ifstream check (CNC_HEADER_PATH);
+    std::ifstream check (HEADER_PATH);
     if (!check.good())
     {
         printf("Please check location of header file and try again.\n");
@@ -29,11 +29,11 @@ void HeaderArmFiles::writeToHeaderFile(string section, string key, string value)
 
     CSimpleIniA ini;
 
-    ini.LoadFile(CNC_HEADER_PATH);
+    ini.LoadFile(HEADER_PATH);
 
     ini.SetValue(section.c_str(),key.c_str(),value.c_str());
 
-    ini.SaveFile(CNC_HEADER_PATH);
+    ini.SaveFile(HEADER_PATH);
 
     check.close();
 }
@@ -46,7 +46,7 @@ void HeaderArmFiles::writeToHeaderFile(string section, string key, string value)
 QString HeaderArmFiles::readFromHeaderFile(string section, string var)
 {
     //Read from header file
-    std::ifstream check (CNC_HEADER_PATH);
+    std::ifstream check (HEADER_PATH);
     if (!check.good())
     {
         printf("Please check location of header file and try again.\n");
@@ -55,7 +55,7 @@ QString HeaderArmFiles::readFromHeaderFile(string section, string var)
 
     CSimpleIniA ini;
 
-    ini.LoadFile(CNC_HEADER_PATH);
+    ini.LoadFile(HEADER_PATH);
 
     std::string value = (ini.GetValue(section.c_str(), var.c_str()));
 
@@ -66,17 +66,40 @@ QString HeaderArmFiles::readFromHeaderFile(string section, string var)
 
 
 //=============================================================================
-// writeToArmtimecfgFile()
+// readFromGPSInfoFile()
 //=============================================================================
-//method to set up the NextGPSDO armtime.cfg file
-void HeaderArmFiles::writeToArmtimecfgFile(string data)
+//method to return a variable's value from a GPSInfo file
+QString HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
 {
-    //overwrite file with new value
-    ofstream wfile (ARMTIMECFG_PATH);
-    wfile << data;
-    wfile.close();
+    string path;
 
-    fflush(stdout);
+    switch (nodeno)
+    {
+    case 0: path = CNC_NODE0_GPS_INFO_PATH;
+            break;
+    case 1: path = CNC_NODE1_GPS_INFO_PATH;
+            break;
+    case 2: path = CNC_NODE2_GPS_INFO_PATH;
+            break;
+    }
+
+    //Read from header file
+    std::ifstream check (path);
+    if (!check.good())
+    {
+        printf("Please check location of gps info file and try again.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    CSimpleIniA ini;
+
+    ini.LoadFile(path.c_str());
+
+    std::string value = (ini.GetValue("", var.c_str()));
+
+    check.close();
+
+    return  QString::fromUtf8(value.c_str());
 }
 
 

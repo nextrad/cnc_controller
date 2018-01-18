@@ -973,10 +973,6 @@ void HeaderFileWindow::okButtonClicked(void)
             second = textbox6->toPlainText().toUtf8().constData();
             headerarmfiles.writeToHeaderFile("Timing", "SECOND", second);
 
-            ss_armtime << "Date=" << day << "/" << month << "/" << year << "\n";
-            ss_armtime << "Arm_Time=" << hour << ":" << minute << ":" << second;
-            headerarmfiles.writeToArmtimecfgFile(ss_armtime.str());
-
             showFirstMenu();
         break;
 
