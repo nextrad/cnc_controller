@@ -37,10 +37,10 @@ int main(int argc, char **argv)
 //Method to test if the NTP server is running correctly
 void testNTP(void)
 {
-    system("sudo service ntp status > ntpStatus.txt");      //write the status of the NTP server to ntpStatus.txt
+    system("sudo service ntp status > ../tmp/ntpStatus.txt");      //write the status of the NTP server to ntpStatus.txt
 
     //read status from file
-    ifstream ntpStatus ("ntpStatus.txt");
+    ifstream ntpStatus ("../tmp/ntpStatus.txt");
     printf("\nntpStatus.txt opened\n");
     string temp;
     getline(ntpStatus,temp);
@@ -58,10 +58,10 @@ void testNTP(void)
 //Method to test if the DNS server is running correctly
 void testDNS(void)
 {
-    system("sudo service bind9 status > dnsStatus.txt");    //write the status of the DNS server to dnsStatus.txt
+    system("sudo service bind9 status > ../tmp/dnsStatus.txt");    //write the status of the DNS server to dnsStatus.txt
 
     //read status from file
-    ifstream dnsStatus ("dnsStatus.txt");
+    ifstream dnsStatus ("../tmp/dnsStatus.txt");
     printf("\ndnsStatus.txt opened\n");
     string temp;
     getline(dnsStatus,temp);
@@ -79,12 +79,12 @@ void testDNS(void)
 //Method to test if the Asterisk server is running correctly
 void testAsterisk(void)
 {
-    system("sudo service asterisk status > asteriskStatus.txt");    //write the status of the Asterisk server to asteriskStatus.txt
+    system("sudo service asterisk status > ../tmp/asteriskStatus.txt");    //write the status of the Asterisk server to asteriskStatus.txt
 
     sleep(2);
 
     //read status from file
-    ifstream audioStatus ("asteriskStatus.txt");
+    ifstream audioStatus ("../tmp/asteriskStatus.txt");
     printf("\nasteriskStatus.txt opened\n");
     string temp;
     getline(audioStatus,temp);
