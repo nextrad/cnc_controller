@@ -11,6 +11,8 @@
 //Revision      4.0 (November 2017)
 //Edited by:    Shirley Coetzee and Darryn Jordan
 //Revision      5.0 (December 2017)
+//Edited by:    Shirley Coetzee, Darryn Jordan, Brad Kahn and Simon Lewis
+//Revision      6.0 (Jan/Feb 2018)
 
 
 //=============================================================================
@@ -108,7 +110,7 @@ void Window::initGUI(void)
 
     //Status output text box for outputting any messages to user
     statusBox = new QTextEdit(this);
-    statusBox->setGeometry(155, 70, 425, 420); //320);
+    statusBox->setGeometry(155, 70, 425, 420);
 
     //countdown LCD number set to bottom right
     countDown = new QLCDNumber(8, this);
@@ -445,63 +447,74 @@ void Window::openMainMenu(void)
 // method to receive the nodes' positions from the GPSDOs.
 //=============================================================================
 int Window::receiveNodePositionsButtonClicked(void)
-{  
-    stringstream ss;
-    int status;
-    int hdr_ret;
-    QString lat0, lon0, ht0, lat1, lon1, ht1, lat2, lon2, ht2;
-
-    /*
+{
     statusBox->append("");
     statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching GPS info files from GPSDOs");
-    ss << "ansible nodes -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.cfg dest=~/Desktop/AnsiNext/\"";
+    statusBox->append("");
+
+    receiveNodePosition(0);
+    receiveNodePosition(1);
+    receiveNodePosition(2);
+
+    statusBox->append("");
+}
+
+//=============================================================================
+// receiveNodePosition()
+//=============================================================================
+void Window::receiveNodePosition(int node_num)
+{
+    stringstream ss;
+    int status;
+    int ret;
+    string lat, lon, ht;
+
+    ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.cfg dest=~/Documents/cnc_controller/node"  << node_num << "/\"";
+    cout << ss.str().c_str() << endl;
+
     status = system(stringToCharPntr(ss.str()));
     if (-1 != status)
     {
-        hdr_ret = WEXITSTATUS(status);
+        ret = WEXITSTATUS(status);
 
-        if(hdr_ret==0)
+        if (ret==0)
         {
-            cout<< "GPS info files received from GPSDOs\n" <<endl;
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "GPS info files received from GPSDOs");
+            // Parse gpsinfo.ini file
+            lat = headerarmfiles.readFromGPSInfoFile(node_num,"LATITUDE");
+            lon = headerarmfiles.readFromGPSInfoFile(node_num,"LONGITUDE");
+            ht = headerarmfiles.readFromGPSInfoFile(node_num,"ALTITUDE");
+
+             // Update Header file
+            switch (node_num)
+            {
+                case 0: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
+                        break;
+                case 1: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
+                        break;
+                case 2: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
+                        break;
+            }
+
+            // Display data on screen in green values per node
+            statusBox->setTextColor("green");
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n " \
+                        + "lat=" + QString::fromStdString(lat) + ", \tlong=" + QString::fromStdString(lon) + ", \tht=" + QString::fromStdString(ht));
         }
         else
         {
-            cout<< "GPS info files not received from GPSDOs\n" <<endl;
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "GPS info files not received from GPSDOs");
-            return hdr_ret;
+            // Display data on screen in red X per node
+            statusBox->setTextColor("red");
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
         }
-        statusBox->append("");
     }
     ss.str("");             //clear stringstream
-*/
-
-/*
-    // Parse gpsinfo.ini file
-    lat0 = headerarmfiles.readFromGPSInfoFile(0,"LATITUDE");
-    lon0 = headerarmfiles.readFromGPSInfoFile(0,"LONGITUDE");
-    ht0 = headerarmfiles.readFromGPSInfoFile(0,"ALTITUDE");
-    lat1 = headerarmfiles.readFromGPSInfoFile(1,"LATITUDE");
-    lon1 = headerarmfiles.readFromGPSInfoFile(1,"LONGITUDE");
-    ht1 = headerarmfiles.readFromGPSInfoFile(1,"ALTITUDE");
-    lat2 = headerarmfiles.readFromGPSInfoFile(2,"LATITUDE");
-    lon2 = headerarmfiles.readFromGPSInfoFile(2,"LONGITUDE");
-    ht2 = headerarmfiles.readFromGPSInfoFile(2,"ALTITUDE");
-
-    // Update Header file
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat0.toStdString());
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon0.toStdString());
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht0.toStdString());
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat1.toStdString());
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon1.toStdString());
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht1.toStdString());
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat2.toStdString());
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon2.toStdString());
-    headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht2.toStdString());
-
-    // Display data on screen in green values or red X per node
-*/
-
+    statusBox->append("");
 }
 
 //=============================================================================
@@ -556,7 +569,7 @@ int Window::sendFilesOverNetwork(void)
 {
     stringstream ss;
     int status;
-    int hdr_ret;
+    int ret;
 
 
     //GPSDOs
@@ -565,9 +578,9 @@ int Window::sendFilesOverNetwork(void)
     status = system(stringToCharPntr(ss.str()));
     if (-1 != status)
     {
-        hdr_ret = WEXITSTATUS(status);
+        ret = WEXITSTATUS(status);
 
-        if(hdr_ret==0)
+        if(ret==0)
         {
             cout<< "Header file to GPSDOs successful\n" <<endl;
             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to GPSDOs");
@@ -576,7 +589,7 @@ int Window::sendFilesOverNetwork(void)
         {
             cout<< "Header file to GPSDOs NOT successful\n" <<endl;
             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to GPSDOs");
-            return hdr_ret;
+            return ret;
         }
         statusBox->append("");
     }
@@ -590,9 +603,9 @@ int Window::sendFilesOverNetwork(void)
     status = system(stringToCharPntr(ss.str()));
     if (-1 != status)
     {
-         hdr_ret = WEXITSTATUS(status);
+         ret = WEXITSTATUS(status);
 
-         if(hdr_ret==0)
+         if(ret==0)
          {
              cout<< "Header file to nodes successful\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to nodes");
@@ -601,7 +614,7 @@ int Window::sendFilesOverNetwork(void)
          {
              cout<< "Header file to nodes not successful\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to nodes");
-             return hdr_ret;
+             return ret;
          }
          statusBox->append("");
      }
@@ -615,9 +628,9 @@ int Window::sendFilesOverNetwork(void)
      status = system(stringToCharPntr(ss.str()));
      if (-1 != status)
      {
-         hdr_ret = WEXITSTATUS(status);
+         ret = WEXITSTATUS(status);
 
-         if(hdr_ret==0)
+         if(ret==0)
          {
              cout<< "Header file to cobalts successful\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to cobalts");
@@ -626,7 +639,7 @@ int Window::sendFilesOverNetwork(void)
          {
              cout<< "Header file to cobalts not successful\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to cobalts");
-             return hdr_ret;
+             return ret;
          }
          statusBox->append("");
      }
@@ -638,9 +651,9 @@ int Window::sendFilesOverNetwork(void)
      status = system(stringToCharPntr(ss.str()));
      if (-1 != status)
      {
-         hdr_ret = WEXITSTATUS(status);
+         ret = WEXITSTATUS(status);
 
-         if(hdr_ret==0)
+         if(ret==0)
          {
              cout<< "Primed cobalts successfully\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed cobalts successfully");
@@ -649,7 +662,7 @@ int Window::sendFilesOverNetwork(void)
          {
              cout<< "Cobalts not primed successfully\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Cobalts not primed successfully");
-             return hdr_ret;
+             return ret;
          }
          statusBox->append("");
      }
@@ -662,9 +675,9 @@ int Window::sendFilesOverNetwork(void)
      status = system(stringToCharPntr(ss.str()));
      if (-1 != status)
      {
-         hdr_ret = WEXITSTATUS(status);
+         ret = WEXITSTATUS(status);
 
-         if(hdr_ret==0)
+         if(ret==0)
          {
              cout<< "Primed cobalts successfully\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed cobalts successfully");
@@ -673,7 +686,7 @@ int Window::sendFilesOverNetwork(void)
          {
              cout<< "Cobalts not primed successfully\n" <<endl;
              statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Cobalts not primed successfully");
-             return hdr_ret;
+             return ret;
          }
          statusBox->append("");
      }
@@ -683,8 +696,6 @@ int Window::sendFilesOverNetwork(void)
 }
 
 //=============================================================================
-// resetHeaderFileTimes()
-// Resets Head//=============================================================================
 // resetHeaderFileTimes()
 // Resets Header File times to now plus STARTTIMESECS.
 // The times rollover in date/time.
@@ -782,6 +793,9 @@ void Window::runTCUs(void)
 
 }
 
+//=============================================================================
+// runTCU()
+//=============================================================================
 int Window::runTCU(int tcu_num)
 {
     stringstream ss;
@@ -835,7 +849,7 @@ int Window::runTCU(int tcu_num)
 //=============================================================================
 int Window::goButtonClicked(void)
 {
-    int hdr_ret = 0;
+    int ret = 0;
 
     // reset times
     resetHeaderFileTimes();
@@ -846,7 +860,7 @@ int Window::goButtonClicked(void)
         goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
         // sends out header file to all units
-        //hdr_ret = sendFilesOverNetwork();
+        ret = sendFilesOverNetwork();
 
         // now launching TCUs
         runTCUs();
@@ -860,7 +874,7 @@ int Window::goButtonClicked(void)
     headerfilewindow->newtime = false;
     goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
 
-    return hdr_ret;
+    return ret;
 }
 
 
@@ -870,7 +884,7 @@ int Window::goButtonClicked(void)
 //=============================================================================
 int Window::goLaterButtonClicked(void)
 {
-    int hdr_ret = 0;
+    int ret = 0;
 
     if (headerfilewindow->newtime == true)
     {
@@ -880,7 +894,7 @@ int Window::goLaterButtonClicked(void)
             goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
             // sends out header file to all units
-            //hdr_ret = sendFilesOverNetwork();
+            ret = sendFilesOverNetwork();
 
             // initialise TCUs
             runTCUs();
@@ -895,7 +909,7 @@ int Window::goLaterButtonClicked(void)
         goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
     }
 
-    return hdr_ret;
+    return ret;
 }
 
 

@@ -69,18 +69,18 @@ QString HeaderArmFiles::readFromHeaderFile(string section, string var)
 // readFromGPSInfoFile()
 //=============================================================================
 //method to return a variable's value from a GPSInfo file
-QString HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
+string HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
 {
     string path;
 
     switch (nodeno)
     {
-    case 0: path = CNC_NODE0_GPS_INFO_PATH;
-            break;
-    case 1: path = CNC_NODE1_GPS_INFO_PATH;
-            break;
-    case 2: path = CNC_NODE2_GPS_INFO_PATH;
-            break;
+        case 0: path = CNC_NODE0_GPS_INFO_PATH;
+                break;
+        case 1: path = CNC_NODE1_GPS_INFO_PATH;
+                break;
+        case 2: path = CNC_NODE2_GPS_INFO_PATH;
+                break;
     }
 
     //Read from header file
@@ -99,7 +99,7 @@ QString HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
 
     check.close();
 
-    return  QString::fromUtf8(value.c_str());
+    return value;
 }
 
 

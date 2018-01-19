@@ -5,6 +5,9 @@
 //Version       1.0 (June 2016)
 //Edited by:    Shirley Coetzee and Darryn Jordan
 //Revision      2.0 (December 2017)
+//Edited by:    Shirley Coetzee, Darryn Jordan, Brad Kahn and Simon Lewis
+//Revision      3.0 (Jan/Feb 2018)
+
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -46,6 +49,7 @@ class Window : public QWidget
         bool checkCountdown(void);
         void runTCUs(void);
         int runTCU(int tcu_num);
+        void receiveNodePosition(int node_num);
 
     private:
         int m_counter;

@@ -17,7 +17,7 @@ class HeaderArmFiles
         HeaderArmFiles(void);
         void writeToHeaderFile(string section, string key, string value);
         QString readFromHeaderFile(string section, string var);
-        QString readFromGPSInfoFile(int nodeno, string var);
+        string readFromGPSInfoFile(int nodeno, string var);
     private:
 };
 
