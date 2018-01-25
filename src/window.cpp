@@ -25,6 +25,8 @@
 #include <QDateTime>
 #include <QString>
 
+//#define DEBUG "goLater"
+
 extern int EXPERIMENT_LENGTH; //in seconds
 
 //=============================================================================
@@ -133,11 +135,13 @@ void Window::initGUI(void)
     goButton->setStyleSheet(setButtonColour(GREEN).c_str());
     connect(goButton, SIGNAL (clicked(bool)), this, SLOT(goButtonClicked(void)));
 
+#ifdef DEBUG
     //button for distributing header file to node controllers
     goLaterButton = new QPushButton("GO LATER", this);
     goLaterButton->setGeometry( 350, 510, 75, 35);
     goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
     connect(goLaterButton, SIGNAL (clicked(bool)), this, SLOT(goLaterButtonClicked(void)));
+#endif
 
     //button for showing video mosaic
     showVideoButton = new QPushButton("Start Video\nMosaic", this);
@@ -185,6 +189,8 @@ void Window::connectionTestButtonClicked(void)
     {
         connection_status = false;
     }
+
+    statusBox->setTextColor("black");
 }
 
 
@@ -457,6 +463,7 @@ int Window::receiveNodePositionsButtonClicked(void)
     receiveNodePosition(2);
 
     statusBox->append("");
+    statusBox->setTextColor("black");
 }
 
 //=============================================================================
@@ -469,52 +476,68 @@ void Window::receiveNodePosition(int node_num)
     int ret;
     string lat, lon, ht;
 
-    ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.cfg dest=~/Documents/cnc_controller/node"  << node_num << "/\"";
-    cout << ss.str().c_str() << endl;
-
-    status = system(stringToCharPntr(ss.str()));
-    if (-1 != status)
+    try
     {
-        ret = WEXITSTATUS(status);
+        ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.ini dest=~/Documents/cnc_controller/" << "\"";
+        cout << ss.str().c_str() << endl;
 
-        if (ret==0)
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
         {
-            // Parse gpsinfo.ini file
-            lat = headerarmfiles.readFromGPSInfoFile(node_num,"LATITUDE");
-            lon = headerarmfiles.readFromGPSInfoFile(node_num,"LONGITUDE");
-            ht = headerarmfiles.readFromGPSInfoFile(node_num,"ALTITUDE");
+            ret = WEXITSTATUS(status);
 
-             // Update Header file
-            switch (node_num)
+            if (ret==0)
             {
-                case 0: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
-                        break;
-                case 1: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
-                        break;
-                case 2: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
-                        break;
-            }
+                // Parse gpsinfo.ini file
+                lat = headerarmfiles.readFromGPSInfoFile(node_num,"LATITUDE");
+                lon = headerarmfiles.readFromGPSInfoFile(node_num,"LONGITUDE");
+                ht = headerarmfiles.readFromGPSInfoFile(node_num,"ALTITUDE");
 
-            // Display data on screen in green values per node
-            statusBox->setTextColor("green");
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n " \
-                        + "lat=" + QString::fromStdString(lat) + ", \tlong=" + QString::fromStdString(lon) + ", \tht=" + QString::fromStdString(ht));
+                if ((lat == "Fault") || (lon == "Fault") || (ht == "Fault"))
+                {
+                    // Display data on screen in red X per node
+                    statusBox->setTextColor("red");
+                    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+                }
+                else
+                {
+                    // Update Header file
+                    switch (node_num)
+                    {
+                        case 0: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
+                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
+                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
+                                break;
+                        case 1: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
+                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
+                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
+                                break;
+                        case 2: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
+                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
+                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
+                                break;
+                    }
+
+                    // Display data on screen in green values per node
+                    statusBox->setTextColor("green");
+                    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n " \
+                                + "lat=" + QString::fromStdString(lat) + ", \tlong=" + QString::fromStdString(lon) + ", \tht=" + QString::fromStdString(ht));
+               }
+            }
+            else
+            {
+                // Display data on screen in red X per node
+                statusBox->setTextColor("red");
+                statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+            }
         }
-        else
-        {
-            // Display data on screen in red X per node
-            statusBox->setTextColor("red");
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
-        }
+        ss.str("");             //clear stringstream
+        statusBox->append("");
     }
-    ss.str("");             //clear stringstream
-    statusBox->append("");
+    catch(exception &e)
+    {
+        cout << "receiveNodePosition exception: " << e.what() << endl;
+    }
 }
 
 //=============================================================================
@@ -573,7 +596,7 @@ int Window::sendFilesOverNetwork(void)
 
 
     //GPSDOs
-    //ansible nodes -m copy -a "src=~/Desktop/AnsiNext/NeXtRAD.ini dest=~/Desktop/NextGPSDO/NeXtRAD.ini"
+
     ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=/home/nextrad/Desktop/NextGPSDO/" << HEADER_FILE << "\"";
     status = system(stringToCharPntr(ss.str()));
     if (-1 != status)
@@ -583,12 +606,12 @@ int Window::sendFilesOverNetwork(void)
         if(ret==0)
         {
             cout<< "Header file to GPSDOs successful\n" <<endl;
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to GPSDOs");
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all GPSDOs");
         }
         else
         {
             cout<< "Header file to GPSDOs NOT successful\n" <<endl;
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to GPSDOs");
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all GPSDOs");
             return ret;
         }
         statusBox->append("");
@@ -597,7 +620,7 @@ int Window::sendFilesOverNetwork(void)
 
 
     // Nodes
-    // ss << "ansible nodes -m copy -a \"src=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt dest=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt\"";
+
     ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=" << HEADER_PATH << "\"";
 
     status = system(stringToCharPntr(ss.str()));
@@ -608,12 +631,12 @@ int Window::sendFilesOverNetwork(void)
          if(ret==0)
          {
              cout<< "Header file to nodes successful\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to nodes");
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all nodes");
           }
          else
          {
              cout<< "Header file to nodes not successful\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to nodes");
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all nodes");
              return ret;
          }
          statusBox->append("");
@@ -622,7 +645,7 @@ int Window::sendFilesOverNetwork(void)
 
 
      // Cobalts
-     //ss << "ansible cobalts -m copy -a \"src=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt dest=/smbtest/NeXtRAD_Header.txt\"";
+
      ss << "ansible cobalts -m copy -a \"src=" << HEADER_PATH << " dest=/smbtest/" << HEADER_FILE << "\"";
 
      status = system(stringToCharPntr(ss.str()));
@@ -633,12 +656,12 @@ int Window::sendFilesOverNetwork(void)
          if(ret==0)
          {
              cout<< "Header file to cobalts successful\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to cobalts");
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all cobalts");
           }
          else
          {
              cout<< "Header file to cobalts not successful\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to cobalts");
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all cobalts");
              return ret;
          }
          statusBox->append("");
@@ -656,42 +679,17 @@ int Window::sendFilesOverNetwork(void)
          if(ret==0)
          {
              cout<< "Primed cobalts successfully\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed cobalts successfully");
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed all cobalts successfully");
           }
          else
          {
              cout<< "Cobalts not primed successfully\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Cobalts not primed successfully");
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "All cobalts not primed successfully");
              return ret;
          }
          statusBox->append("");
      }
      ss.str("");             //clear stringstream
-
-
-     // TCUs
-     ss << "ansible cobalts -m shell -a \"./run-cobalt.sh\"";
-
-     status = system(stringToCharPntr(ss.str()));
-     if (-1 != status)
-     {
-         ret = WEXITSTATUS(status);
-
-         if(ret==0)
-         {
-             cout<< "Primed cobalts successfully\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed cobalts successfully");
-          }
-         else
-         {
-             cout<< "Cobalts not primed successfully\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Cobalts not primed successfully");
-             return ret;
-         }
-         statusBox->append("");
-     }
-     ss.str("");             //clear stringstream
-
 
 }
 
@@ -790,7 +788,6 @@ void Window::runTCUs(void)
     runTCU(0);
     runTCU(1);
     runTCU(2);
-
 }
 
 //=============================================================================
@@ -862,9 +859,8 @@ int Window::goButtonClicked(void)
         // sends out header file to all units
         ret = sendFilesOverNetwork();
 
-        // now launching TCUs
+        // initialise TCUs
         runTCUs();
-
     }
     else
     {
@@ -898,7 +894,6 @@ int Window::goLaterButtonClicked(void)
 
             // initialise TCUs
             runTCUs();
-
         }
         else
         {

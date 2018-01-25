@@ -29,9 +29,6 @@ qrc_*.cpp
 ui_*.h
 Makefile*
 *build*
-asteriskStatus.txt
-dnsStatus.txt
-ntpStatus.txt
 scripts/tcu/*
 
 # QtCreator

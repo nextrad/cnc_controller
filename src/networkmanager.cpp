@@ -93,7 +93,7 @@ void NetworkManager::closeServer()
     }
 
     cout << "Closing server!" << endl;
-    close(socket_desc);
+    //close(socket_desc);
     exit(0);
 }
 

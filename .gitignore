@@ -6,6 +6,7 @@
 
 *.slo
 *.lo
+*.log
 *.o
 *.a
 *.la
