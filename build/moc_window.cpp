@@ -92,9 +92,9 @@ static const uint qt_meta_data_Window[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Int,
-    QMetaType::Int,
-    QMetaType::Int,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -114,18 +114,16 @@ void Window::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 4: _t->abortAudioRecordingButtonClicked(); break;
         case 5: _t->editHeaderFileButtonClicked(); break;
         case 6: _t->openMainMenu(); break;
-        case 7: { int _r = _t->receiveNodePositionsButtonClicked();
-            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
-        case 8: { int _r = _t->goButtonClicked();
-            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
-        case 9: { int _r = _t->goLaterButtonClicked();
-            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 7: _t->receiveNodePositionsButtonClicked(); break;
+        case 8: _t->goButtonClicked(); break;
+        case 9: _t->goLaterButtonClicked(); break;
         case 10: _t->closeServer(); break;
         case 11: _t->showVideoButtonClicked(); break;
         case 12: _t->runNextlookButtonClicked(); break;
         default: ;
         }
     }
+    Q_UNUSED(_a);
 }
 
 const QMetaObject Window::staticMetaObject = {

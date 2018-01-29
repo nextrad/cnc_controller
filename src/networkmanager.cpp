@@ -87,6 +87,7 @@ void NetworkManager::closeServer()
 {
     endServer = true;
     cout << "Closing clients...\n";
+
     while(noClients > 0)
     {
         removeClient(noClients - 1);
@@ -127,20 +128,9 @@ NetworkManager::~NetworkManager()
 //Method to receive the position data from Nodes
 void NetworkManager::receiveData(void)
 {
-    std::stringstream ss;
     /*
-    cout << "receiving data" << endl;           //debugging
-    fflush(stdout);
-    cout << "receiving data now" << endl;           //debugging
-    fflush(stdout);
+    std::stringstream ss;
 
-    fd_set rfds;
-    struct timeval tv;
-
-    tv.tv_sec = 5;  //delay before recv() times out
-    tv.tv_usec = 0;
-    int rv;
-*/
     if(noClients <= 0)
     {
         printf("There are %d clients",noClients);
@@ -150,55 +140,6 @@ void NetworkManager::receiveData(void)
     {
         for(int k=0;k<noClients;k++)
         {
-/*
-            FD_ZERO(&rfds); // clear the file descriptor set
-            FD_SET(client_sock[k], &rfds); // add our file descriptor to the set
-            sleep(0.05);
-            //Set the timeout using select()
-            //Not very sure how select() works but need it for timeout otherwise the program could hang forever or until data is received.
-            rv = select(client_sock[k] + 1, &rfds, NULL, NULL, &tv);    //when using select the first parameter must be 1 more than the highest file descriptor.
-            if(rv == 0)
-            {
-                error[k] = 4;
-                printf("Connection timed out for client %d \n",k);
-                continue;
-            }
-            if(rv > 0)
-            {
-                int64_t dataSize = 0;
-
-                //Receive a message from client code waits here for a message
-                //(this method returns a value if returned value is 0 client has disconnected)
-                if(recv(client_sock[k] , &dataSize , sizeof(dataSize) , 0) == 0)
-                {
-                    cout << " Client Disconnected\n";
-                    removeClient(k);
-                    k--;            //decrement k to accommodate reshuffling of client file descriptors
-                    continue;
-                }
-
-                if(dataSize == 4)      // If the next bytes of data are node's position
-                {
-                    double data [dataSize]; //Declare memory to store array of size dataSize
-
-                    recv(client_sock[k] , &data , sizeof(data) , 0);
-                    printf("Position received from client %d!\n", k);
-                    nodeID[k] = data[0];
-                    gpsLat[k] = data[1];
-                    gpsLon[k] = data[2];
-                    gpsHt[k] = data[3];
-
-                    cout << "Sending ack..." << endl;
-                    //send the size of the array so that the receiver knows what to expect
-                    write(client_sock[k], &dataSize, sizeof(dataSize));
-                    //next we send the actual array
-                    write(client_sock[k], data, sizeof(data));
-                    cout << "Ack sent." << endl;
-
-                    //received_message[k] = true;
-                }
-            }*/
-
             int nodeID = getNodeID(k);
             //fflush(stdout);
 
@@ -232,7 +173,7 @@ void NetworkManager::receiveData(void)
             while(!gpsFile.eof())
             {
                  getline(gpsFile,temp);
-          /*      if(temp.substr(0,9) == "StartTime")     //looking for the "StartTime" in the header file
+        */  /*      if(temp.substr(0,9) == "StartTime")     //looking for the "StartTime" in the header file
                 {
                     if (temp.substr(9,3) == " = ")
                     {
@@ -263,7 +204,7 @@ void NetworkManager::receiveData(void)
                         endTime = temp.substr(8,19);
                     }
                     printf("endTime = %s\n", endTime.c_str());
-                }*/
+                }*//*
             }
             gpsFile.close();
 
@@ -277,7 +218,7 @@ void NetworkManager::receiveData(void)
 
         }
     }
-
+*/
 }
 
 
@@ -347,110 +288,6 @@ void NetworkManager::acceptClients(void)
             fflush(stdout);         //this line forces stdout to output so that you know what's happening in this thread
         }
     }
-}
-
-
-//=============================================================================
-// sendToClients()
-//=============================================================================
-//This method sends the header file to the nodes
-//This method no longer gets called. Instead scp is used to transfer the header file as it is simpler.
-void NetworkManager::sendToClients(void) //char* hFile [], int8_t len [])
-{/*
-    if(noClients <= 0)
-    {
-        printf("There are %d clients",noClients);
-        return;
-    }
-    fd_set rfds;
-    struct timeval tv;
-
-    tv.tv_sec = 20;  //delay before recv() times out
-    tv.tv_usec = 0;
-    int rv;
-
-    std::vector<char> data;     //Used vectors because they behave like normal arrays but can change size easily
-    std::vector<char> ack;
-    int8_t dataSize = 1;
-    bool is_equal;
-    int n = 0;
-
-    //Loop through all connected clients
-    for(int k=0;k<noClients;k++)
-    {
-        //Loop through the H_FILE_LENGTH lines of the Header file. Should be set as a Macro in the future as header file will change.
-        for(int j = 0; j < H_FILE_LENGTH && error[k]== 0; j++)
-        {
-            //Loop until there are no discrepancies between sent and echoed data
-            is_equal = false;
-            while(!is_equal && error[k] == 0)
-            {
-                //populate the vector with data
-                dataSize = len[j];
-                for(int i=0;i<len[j];i++)
-                {
-                    data.push_back( hFile[j][i]);
-                }
-
-                //Send size of line first then the actual text
-                n = write(client_sock[k], &dataSize, sizeof(dataSize));
-                if(n < 0)      //if client has disconnected         Note: write() returns -1 if the client has disconnected
-                {
-                    removeClient(k);
-                    //received_message = false;
-                    return;
-                }
-                n = write(client_sock[k], &data[0], len[j]);            //because we're using chars which have a size of one byte the size of the data is the same number as the length
-
-                //check if client times out
-                FD_ZERO(&rfds); // clear the file descriptor set
-                FD_SET(client_sock[k], &rfds); // add our file descriptor to the set
-                sleep(0.05);
-                //Set the timeout using select()
-                //Not very sure how select() works but need it for timeout otherwise the program could hang forever or until data is received.
-                rv = select(client_sock[k] + 1, &rfds, NULL, NULL, &tv);    //when using select the first parameter must be 1 more than the highest file descriptor.
-                if(rv == 0)
-                {
-                    error[k] = 4;
-                    printf("Connection timed out for client %d \n",k);
-                    break;
-                }
-
-                //Nodes will echo back the messages that they receive for error checking and to know that they're still connected
-                n = recv(client_sock[k], &dataSize, sizeof(dataSize), 0);
-                if( n == 0)   //if client has disconnected          Note recv() returns 0 if client has disconnected
-                {
-                    removeClient(k);
-                    //received_message = false;
-                    return;
-                }
-                else
-                {
-                    n = recv(client_sock[k], &ack[0], dataSize, 0);
-
-                    //check that the echoed message is the same as the sent one
-                    if ( data.size() < ack.size() )
-                    {
-                        is_equal = std::equal ( data.begin(), data.end(), ack.begin() );
-                    }
-                    else
-                    {
-                        is_equal = std::equal ( ack.begin(), ack.end(), data.begin() );
-                    }
-                }
-                data.clear();       //clear the vector
-            }
-        }
-        dataSize = (int8_t)2;
-
-        //Send end of file code: "~~"
-        write(client_sock[k], &dataSize, sizeof(dataSize));
-        write(client_sock[k], "~~", 2);                     //I chose end of file code to be "~~" but it can be changed to anything as long as it's also changed on node side
-        printf("Header File Sent to client %d\n", k);
-        fflush(stdout);
-    }
-    //received_message = false;
-    m.unlock();*/
 }
 
 
@@ -536,6 +373,7 @@ void NetworkManager::resetError(int clientID)
 //This method is used to check which error was encountered when creating the server and connecting to the clients
 void NetworkManager::checkTimeStamp(int nodeNum)
 {
+    /*
     nodeNum--;      //by the time this thread starts the value of noClients has already incremented. This still affects the nodeNum parameter somehow
     nodeNum = nodeID[nodeNum];
     cout << "Node ID " << nodeNum << endl;  //debugging
@@ -552,8 +390,8 @@ void NetworkManager::checkTimeStamp(int nodeNum)
    while(!endServer)
    {
         //m.lock();
-        FD_ZERO(&rfds); /* clear the file descriptor set */
-        FD_SET(client_sock[clientIDs[nodeNum]], &rfds); /* add our file descriptor to the set */
+        FD_ZERO(&rfds);// clear the file descriptor set
+        FD_SET(client_sock[clientIDs[nodeNum]], &rfds); // add our file descriptor to the set
         sleep(0.05);
         //Set the timeout using select()
         //Not very sure how select() works but need it for timeout otherwise the program could hang forever or until data is received.
@@ -649,7 +487,7 @@ void NetworkManager::checkTimeStamp(int nodeNum)
             else if(dataSize == 4)      // If the next bytes of data are node's position
             {
                 receiveData();
-                /*
+
                 int64_t sizeOfData = 4;
                 double data [sizeOfData]; //Declare memory to store array of size dataSize
 
@@ -667,7 +505,7 @@ void NetworkManager::checkTimeStamp(int nodeNum)
                 write(client_sock[nodeNum], data, sizeof(data));
                 cout << "Ack sent." << endl;
 
-                //received_message[k] = true;*/
+                //received_message[k] = true;
             }
             cout << "received message" << endl;     //debugging
         }
@@ -675,6 +513,7 @@ void NetworkManager::checkTimeStamp(int nodeNum)
         //cout << "sleep" << endl;     //debugging
         //sleep(0.05);
     }
+    */
 }
 
 

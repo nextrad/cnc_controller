@@ -43,12 +43,12 @@ class Window : public QWidget
         QString getCountDownTime(time_t timeLeft);
         bool testConnection(string unitname);
         char* stringToCharPntr(string str);
-        bool testSubNetwork(QString NetID);
+        void testSubNetwork(QString NetID);
         int sendFilesOverNetwork(void);
         void resetHeaderFileTimes(void);
         bool checkCountdown(void);
         void runTCUs(void);
-        int runTCU(int tcu_num);
+        void runTCU(int tcu_num);
         void receiveNodePosition(int node_num);
 
     private:
@@ -103,9 +103,9 @@ class Window : public QWidget
         void abortAudioRecordingButtonClicked(void);
         void editHeaderFileButtonClicked(void);
         void openMainMenu(void);
-        int receiveNodePositionsButtonClicked(void);
-        int goButtonClicked(void);
-        int goLaterButtonClicked(void);
+        void receiveNodePositionsButtonClicked(void);
+        void goButtonClicked(void);
+        void goLaterButtonClicked(void);
         void closeServer();
         void showVideoButtonClicked(void);
         void runNextlookButtonClicked(void);

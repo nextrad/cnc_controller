@@ -25,7 +25,7 @@
 #include <QDateTime>
 #include <QString>
 
-#define DEBUG "goLater"
+//#define DEBUG "goLater"
 
 extern int EXPERIMENT_LENGTH; //in seconds
 
@@ -172,9 +172,23 @@ void Window::initGUI(void)
 //=============================================================================
 void Window::connectionTestButtonClicked(void)
 {
-    testSubNetwork("1");
-    testSubNetwork("2");
-    testSubNetwork("3");
+    bool connection_status = true;
+
+    statusBox->append("");
+    if(!testSubNetwork("1"))             //Test SubNetwork for Node 0
+    {
+        connection_status = false;
+    }
+
+    if(!testSubNetwork("2"))            //Test SubNetwork for Node 1
+    {
+        connection_status = false;
+    }
+
+    if(!testSubNetwork("3"))            //Test SubNetwork for Node 2
+    {
+        connection_status = false;
+    }
 
     statusBox->setTextColor("black");
 }
@@ -184,8 +198,9 @@ void Window::connectionTestButtonClicked(void)
 // testSubNetwork()
 //=============================================================================
 //Tests the connections to CNC
-void Window::testSubNetwork(QString NetID)
+bool Window::testSubNetwork(QString NetID)
 {
+    bool connection_status = true;
     string temp, name;
     string address = "192.168.1.";
     address.append(NetID.toUtf8().constData());
@@ -199,12 +214,14 @@ void Window::testSubNetwork(QString NetID)
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"AP" + NetID + " not connected");
+        connection_status = false;
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"AP" + NetID + " connected");
+
     }
 
     //Test if STAtion bullet is connected
@@ -215,12 +232,13 @@ void Window::testSubNetwork(QString NetID)
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"STA" + NetID + " not connected");
+        connection_status = false;
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"STA" + NetID + " connected");
     }
 
     //Test if PoE Switch is connected
@@ -231,12 +249,13 @@ void Window::testSubNetwork(QString NetID)
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"Switch" + NetID + " not connected");
+        connection_status = false;
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"Switch" + NetID + " connected");
     }
 
     //Test if Node Laptop is connected
@@ -246,13 +265,15 @@ void Window::testSubNetwork(QString NetID)
     temp.append("1");
     if(!testConnection(temp))
     {
+        statusBox->append("");
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"Node" + NetID + " not connected");
+        connection_status = false;
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"Node" + NetID + " connected");
     }
 
     //Test if IP camera is connected
@@ -260,15 +281,16 @@ void Window::testSubNetwork(QString NetID)
     name.append(NetID.toUtf8().constData());
     temp = address;
     temp.append("4");
-    if(!testConnection(temp))                   //Cameras have no ssh port and more security so it's easier to ping them
+    if(!testConnection(temp)) //isConnected())                  //Cameras have no ssh port and more security so it's easier to ping them
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"Cam" + NetID + " not connected");
+        connection_status = false;
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"Cam" + NetID + " connected");
     }
 
     //Test if Cobalt is connected
@@ -279,15 +301,18 @@ void Window::testSubNetwork(QString NetID)
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"Cobalt" + NetID + " not connected");
+        connection_status = false;
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"Cobalt" + NetID + " connected");
     }
 
     statusBox->append("");
+
+    return connection_status;
 }
 
 
@@ -427,11 +452,11 @@ void Window::openMainMenu(void)
 // receiveNodePositionsButtonClicked()
 // method to receive the nodes' positions from the GPSDOs.
 //=============================================================================
-void Window::receiveNodePositionsButtonClicked(void)
+int Window::receiveNodePositionsButtonClicked(void)
 {
     statusBox->append("");
     statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching GPS info files from GPSDOs");
-    //statusBox->append("");
+    statusBox->append("");
 
     receiveNodePosition(0);
     receiveNodePosition(1);
@@ -546,16 +571,7 @@ void Window::showVideoButtonClicked(void)
 {
     statusBox->append("");
     statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Opening mosaic view");
-    int status = system("x-terminal-emulator -x -e \"cvlc --vlm-conf ../scripts/mosaic_view/mosaic.conf --mosaic-width=1280 --mosaic-height=720 --mosaic-keep-picture --mosaic-rows=2 --mosaic-cols=2 --mosaic-position=0 --mosaic-order=1,2,3,4\"");
-    if (-1 != status)
-    {
-         int ret = WEXITSTATUS(status);
-
-         if(ret!=0)
-         {
-            std::cout << "Failed to execute command properly" << endl;
-         }
-    }
+    system("x-terminal-emulator -x -e \"cvlc --vlm-conf ../scripts/mosaic_view/mosaic.conf --mosaic-width=1280 --mosaic-height=720 --mosaic-keep-picture --mosaic-rows=2 --mosaic-cols=2 --mosaic-position=0 --mosaic-order=1,2,3,4\"");
 }
 
 //=============================================================================
@@ -565,17 +581,7 @@ void Window::runNextlookButtonClicked(void)
 {
     statusBox->append("");
     statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Launching NeXtLook on Cobalts");
-
-    int status = system("../scripts/nextlook/run_nextlook.sh");
-    if (-1 != status)
-    {
-         int ret = WEXITSTATUS(status);
-
-         if(ret!=0)
-         {
-            std::cout << "Failed to execute command properly" << endl;
-         }
-    }
+    system("../scripts/nextlook/run_nextlook.sh");
 }
 
 
@@ -588,113 +594,103 @@ int Window::sendFilesOverNetwork(void)
     int status;
     int ret;
 
-    try
+
+    //GPSDOs
+
+    ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=/home/nextrad/Desktop/NextGPSDO/" << HEADER_FILE << "\"";
+    status = system(stringToCharPntr(ss.str()));
+    if (-1 != status)
     {
-        //GPSDOs
+        ret = WEXITSTATUS(status);
 
-        ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=/home/nextrad/Desktop/NextGPSDO/" << HEADER_FILE << "\"";
-        status = system(stringToCharPntr(ss.str()));
-        if (-1 != status)
+        if(ret==0)
         {
-            ret = WEXITSTATUS(status);
-
-            if (ret==0)
-            {
-                cout<< "Header file to GPSDOs successful\n" <<endl;
-                statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all GPSDOs");
-            }
-            else
-            {
-                cout<< "Header file to GPSDOs NOT successful\n" <<endl;
-                statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all GPSDOs");
-                return ret;
-            }
-            statusBox->append("");
+            cout<< "Header file to GPSDOs successful\n" <<endl;
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all GPSDOs");
         }
-        ss.str("");             //clear stringstream
-
-
-        // Nodes
-
-        ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=" << HEADER_PATH << "\"";
-
-        status = system(stringToCharPntr(ss.str()));
-        if (-1 != status)
+        else
         {
-             ret = WEXITSTATUS(status);
-
-             if (ret==0)
-             {
-                 cout<< "Header file to nodes successful\n" <<endl;
-                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all nodes");
-              }
-             else
-             {
-                 cout<< "Header file to nodes not successful\n" <<endl;
-                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all nodes");
-                 return ret;
-             }
-             statusBox->append("");
-         }
-         ss.str("");             //clear stringstream
-
-
-         // Cobalts
-
-         ss << "ansible cobalts -m copy -a \"src=" << HEADER_PATH << " dest=/smbtest/" << HEADER_FILE << "\"";
-
-         status = system(stringToCharPntr(ss.str()));
-         if (-1 != status)
-         {
-             ret = WEXITSTATUS(status);
-
-             if (ret==0)
-             {
-                 cout<< "Header file to cobalts successful\n" <<endl;
-                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all cobalts");
-              }
-             else
-             {
-                 cout<< "Header file to cobalts not successful\n" <<endl;
-                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all cobalts");
-                 return ret;
-             }
-             statusBox->append("");
-         }
-         ss.str("");             //clear stringstream
-
-
-         ss << "ansible cobalts -m shell -a \"./run-cobalt.sh\"";
-
-         status = system(stringToCharPntr(ss.str()));
-         if (-1 != status)
-         {
-             ret = WEXITSTATUS(status);
-
-             if (ret==0)
-             {
-                 cout<< "Primed cobalts successfully\n" <<endl;
-                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed all cobalts successfully");
-              }
-             else
-             {
-                 cout<< "Cobalts not primed successfully\n" <<endl;
-                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "All cobalts not primed successfully");
-                 return ret;
-             }
-             statusBox->append("");
-         }
-         ss.str("");             //clear stringstream
-
-        return ret;
-
+            cout<< "Header file to GPSDOs NOT successful\n" <<endl;
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all GPSDOs");
+            return ret;
+        }
+        statusBox->append("");
     }
-    catch(exception &e)
+    ss.str("");             //clear stringstream
+
+
+    // Nodes
+
+    ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=" << HEADER_PATH << "\"";
+
+    status = system(stringToCharPntr(ss.str()));
+    if (-1 != status)
     {
-        cout << "sendFilesOverNetwork() exception: " << e.what() << endl;
-    }
+         ret = WEXITSTATUS(status);
 
-    return -1;
+         if(ret==0)
+         {
+             cout<< "Header file to nodes successful\n" <<endl;
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all nodes");
+          }
+         else
+         {
+             cout<< "Header file to nodes not successful\n" <<endl;
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all nodes");
+             return ret;
+         }
+         statusBox->append("");
+     }
+     ss.str("");             //clear stringstream
+
+
+     // Cobalts
+
+     ss << "ansible cobalts -m copy -a \"src=" << HEADER_PATH << " dest=/smbtest/" << HEADER_FILE << "\"";
+
+     status = system(stringToCharPntr(ss.str()));
+     if (-1 != status)
+     {
+         ret = WEXITSTATUS(status);
+
+         if(ret==0)
+         {
+             cout<< "Header file to cobalts successful\n" <<endl;
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all cobalts");
+          }
+         else
+         {
+             cout<< "Header file to cobalts not successful\n" <<endl;
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all cobalts");
+             return ret;
+         }
+         statusBox->append("");
+     }
+     ss.str("");             //clear stringstream
+
+
+     ss << "ansible cobalts -m shell -a \"./run-cobalt.sh\"";
+
+     status = system(stringToCharPntr(ss.str()));
+     if (-1 != status)
+     {
+         ret = WEXITSTATUS(status);
+
+         if(ret==0)
+         {
+             cout<< "Primed cobalts successfully\n" <<endl;
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed all cobalts successfully");
+          }
+         else
+         {
+             cout<< "Cobalts not primed successfully\n" <<endl;
+             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "All cobalts not primed successfully");
+             return ret;
+         }
+         statusBox->append("");
+     }
+     ss.str("");             //clear stringstream
+
 }
 
 //=============================================================================
@@ -799,7 +795,7 @@ void Window::runTCUs(void)
 //=============================================================================
 // runTCU()
 //=============================================================================
-void Window::runTCU(int tcu_num)
+int Window::runTCU(int tcu_num)
 {
     stringstream ss;
     int ret;
@@ -826,30 +822,34 @@ void Window::runTCU(int tcu_num)
     {
         ret = WEXITSTATUS(status);
 
+        // TODO: utilize all error codes
         if(ret==0)
         {
-            cout<< "TCU" << tcu_num << "init successful\n" <<endl;
             statusBox->setTextColor("green");
+            cout<< "TCU" << tcu_num << "init successful\n" <<endl;
             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + "TCU" + QString::number(tcu_num));
         }
         else
         {
-            cout<< "TCU" << tcu_num << " init FAILED" <<endl;
             statusBox->setTextColor("red");
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + "TCU" + QString::number(tcu_num) + "\n" \
-                       + "return value=" + QString::number(ret));
+            cout<< "TCU" << tcu_num << " init FAILED" <<endl;
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + "TCU" + QString::number(tcu_num));
+            return ret;
         }
         statusBox->append("");
     }
     ss.str("");             //clear stringstream
+
+    return ret;
 }
 
 //=============================================================================
 // goButtonClicked()
 // sends out header file to all units then starts countdown to armtime
 //=============================================================================
-void Window::goButtonClicked(void)
+int Window::goButtonClicked(void)
 {
+    int ret = 0;
 
     // reset times
     resetHeaderFileTimes();
@@ -860,11 +860,10 @@ void Window::goButtonClicked(void)
         goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
         // sends out header file to all units
-        if (sendFilesOverNetwork() == 0)
-        {
-            // initialise TCUs
-            runTCUs();
-        }
+//        ret = sendFilesOverNetwork();
+
+        // initialise TCUs
+        runTCUs();
     }
     else
     {
@@ -874,14 +873,17 @@ void Window::goButtonClicked(void)
     headerfilewindow->newtime = false;
     goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
 
+    return ret;
 }
+
 
 //=============================================================================
 // goLaterButtonClicked()
 // sends out header file to all units then starts countdown to armtime
 //=============================================================================
-void Window::goLaterButtonClicked(void)
+int Window::goLaterButtonClicked(void)
 {
+    int ret = 0;
 
     if (headerfilewindow->newtime == true)
     {
@@ -891,11 +893,10 @@ void Window::goLaterButtonClicked(void)
             goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
             // sends out header file to all units
-            if (sendFilesOverNetwork() == 0)
-            {
-                // initialise TCUs
-                runTCUs();
-            }
+            ret = sendFilesOverNetwork();
+
+            // initialise TCUs
+            runTCUs();
         }
         else
         {
@@ -906,7 +907,9 @@ void Window::goLaterButtonClicked(void)
         goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
     }
 
+    return ret;
 }
+
 
 //=============================================================================
 // setButtonColour(int colourno)

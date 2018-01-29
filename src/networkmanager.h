@@ -59,7 +59,6 @@ class NetworkManager
         double getGPSLat(int clientID);
         double getGPSLon(int clientID);
         double getGPSHt(int clientID);
-        void sendToClients(void); //char* hFile [], int8_t len[]);
         int getNoClients();
 
     public slots:

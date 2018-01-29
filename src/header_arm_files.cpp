@@ -84,7 +84,6 @@ string HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
     }
 
     //Read from header file
-
     std::ifstream check (path);
     if (check.good() != 1)
     {
