@@ -103,4 +103,43 @@ string HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
 }
 
 
+//=============================================================================
+// readFromBearingsFile()
+//=============================================================================
+//method to return a variable's value from a Bearings file
+string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int offset, int strsize)
+{
+    string path, data;
+
+    switch (nodeno)
+    {
+        case 0: path = CNC_NODE0_BEARINGS_PATH;
+                break;
+        case 1: path = CNC_NODE1_BEARINGS_PATH;
+                break;
+        case 2: path = CNC_NODE2_BEARINGS_PATH;
+                break;
+    }
+
+    //Read from header file
+    std::ifstream check (path);
+    if (check.good() != 1)
+    {
+        printf("Please check location of bearings file and try again.\n");
+        return "Fault";
+    }
+
+    std::string line;
+    while ( std::getline( check, line ) )
+    {
+        std::size_t found = line.find(var);
+        if (found!=std::string::npos)
+        {
+          data = line.substr(found+offset,strsize);
+          break;
+        }
+    }
+
+    return data;
+}
 

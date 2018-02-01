@@ -113,6 +113,7 @@ void Window::initGUI(void)
     //Status output text box for outputting any messages to user
     statusBox = new QTextEdit(this);
     statusBox->setGeometry(155, 70, 425, 420);
+    statusBox->setTextColor("black");
 
     //countdown LCD number set to bottom right
     countDown = new QLCDNumber(8, this);
@@ -129,6 +130,37 @@ void Window::initGUI(void)
     editHeaderFileButton->setGeometry(10, 130, 135, 50);
     connect(editHeaderFileButton, SIGNAL (clicked(bool)), this, SLOT(editHeaderFileButtonClicked(void)));
 
+    //button for receiving node positions
+    receiveNodePositionsButton = new QPushButton("Receive Node\nPositions", this);
+    receiveNodePositionsButton->setGeometry(10, 190, 135, 50);
+    connect(receiveNodePositionsButton, SIGNAL (clicked(bool)), this, SLOT(receiveNodePositionsButtonClicked(void)));
+
+    //button for receiving bearings
+    receiveBearingsButton = new QPushButton("Receive Bearings", this);
+    receiveBearingsButton->setGeometry(10, 250, 135, 50);
+    connect(receiveBearingsButton, SIGNAL (clicked(bool)), this, SLOT(receiveBearingsButtonClicked(void)));
+
+    //button for showing video mosaic
+    showVideoButton = new QPushButton("Start Video\nMosaic", this);
+    showVideoButton->setGeometry(10, 310, 135, 50);
+    connect(showVideoButton, SIGNAL (clicked(bool)), this, SLOT(showVideoButtonClicked(void)));
+
+    //button for aborting recording and countdown
+    abortAudioRecordingButton = new QPushButton("Abort\nAudio Recording", this);
+    abortAudioRecordingButton->setGeometry(10, 370, 135, 50);
+    connect(abortAudioRecordingButton, SIGNAL (clicked(bool)), this, SLOT(abortAudioRecordingButtonClicked(void)));
+
+    //button for starting NeXtLook
+    runNextlookButton = new QPushButton("Run\nNeXtLook", this);
+    runNextlookButton->setGeometry(10, 430, 135, 50);
+    connect(runNextlookButton, SIGNAL (clicked(bool)), this, SLOT(runNextlookButtonClicked(void)));
+
+    //button for aborting goButton
+    abortGoButton = new QPushButton("Abort GO", this);
+    abortGoButton->setGeometry(10, 490, 135, 50);
+    connect(abortGoButton, SIGNAL (clicked(bool)), this, SLOT(abortGoButtonClicked(void)));
+
+
     //button for distributing header file to node controllers
     goButton = new QPushButton("GO", this);
     goButton->setGeometry( 200, 500, 135, 50);
@@ -142,26 +174,6 @@ void Window::initGUI(void)
     goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
     connect(goLaterButton, SIGNAL (clicked(bool)), this, SLOT(goLaterButtonClicked(void)));
 #endif
-
-    //button for showing video mosaic
-    showVideoButton = new QPushButton("Start Video\nMosaic", this);
-    showVideoButton->setGeometry(10, 250, 135, 50);
-    connect(showVideoButton, SIGNAL (clicked(bool)), this, SLOT(showVideoButtonClicked(void)));
-
-    //button for aborting recording and countdown
-    abortAudioRecordingButton = new QPushButton("Abort\nAudio Recording", this);
-    abortAudioRecordingButton->setGeometry(10, 310, 135, 50); //(10, 370, 135, 50);
-    connect(abortAudioRecordingButton, SIGNAL (clicked(bool)), this, SLOT(abortAudioRecordingButtonClicked(void)));
-
-    //button for starting NeXtLook
-    runNextlookButton = new QPushButton("Run\nNeXtLook", this);
-    runNextlookButton->setGeometry(10, 370, 135, 50);
-    connect(runNextlookButton, SIGNAL (clicked(bool)), this, SLOT(runNextlookButtonClicked(void)));
-
-    //button for receiving node positions
-    receiveNodePositionsButton = new QPushButton("Receive Node\nPositions", this);
-    receiveNodePositionsButton->setGeometry(10, 430, 135, 50);
-    connect(receiveNodePositionsButton, SIGNAL (clicked(bool)), this, SLOT(receiveNodePositionsButtonClicked(void)));
 
 }
 
@@ -515,6 +527,133 @@ void Window::receiveNodePosition(int node_num)
     }
 }
 
+
+
+//=============================================================================
+// receiveBearingsButtonClicked()
+// method to receive the bearings from the GPSDO.
+//=============================================================================
+
+void Window::receiveBearingsButtonClicked(void)
+{
+    statusBox->append("");
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching node bearings file from Mission Control");
+    statusBox->append("");
+
+    receiveBearings(0);
+    receiveBearings(1);
+    receiveBearings(2);
+
+    statusBox->append("");
+    statusBox->setTextColor("black");
+}
+
+//=============================================================================
+// receiveBearings()
+
+/*  tardat2cc.rtf
+(*171207*)
+DTG	061855Z 1217
+Target Lat/Lon 	{-34.1813,18.46}
+n1: Range	1.82952
+n1: Bearing	46.5192
+*/
+//=============================================================================
+void Window::receiveBearings(int node_num)
+{
+    string lat, lon, dtg, baseline_bisector;
+    string n0range, n0bearing, n1range, n1bearing, n2range, n2bearing;
+    stringstream ss;
+    int status;
+    int ret;
+
+    try
+    {
+        ss << "ansible node" << node_num << " -m fetch -a \"src=/home/nextrad/tardat2cc.rtf dest=~/Documents/cnc_controller/" << "\"";
+        cout << ss.str().c_str() << endl;
+
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
+        {
+            ret = WEXITSTATUS(status);
+
+            if (ret==0)
+            {
+                // Parse tardat2cc.rtf file
+                dtg = headerarmfiles.readFromBearingsFile(node_num, "DTG", 4, 12);
+                lat = headerarmfiles.readFromBearingsFile(node_num, "Lat", 11, 8);
+                lon = headerarmfiles.readFromBearingsFile(node_num, "Lon", 16, 5);
+                baseline_bisector = headerarmfiles.readFromBearingsFile(node_num, "BASELINE_BISECTOR", 16, 5);
+                n0range = headerarmfiles.readFromBearingsFile(node_num, "n0: Range", 10, 7);
+                n0bearing = headerarmfiles.readFromBearingsFile(node_num, "n0: Bearing", 12, 7);
+                n1range = headerarmfiles.readFromBearingsFile(node_num, "n1: Range", 10, 7);
+                n1bearing = headerarmfiles.readFromBearingsFile(node_num, "n1: Bearing", 12, 7);
+                n2range = headerarmfiles.readFromBearingsFile(node_num, "n2: Range", 10, 7);
+                n2bearing = headerarmfiles.readFromBearingsFile(node_num, "n2: Bearing", 12, 7);
+
+                if ((lat == "Fault") || (lon == "Fault") || (dtg == "Fault"))
+                {
+                    // Display data on screen in red X per node
+                    statusBox->setTextColor("red");
+                    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "\tnode" + QString::number(node_num));
+                }
+                else
+                {
+                    // Update Header file
+                    headerarmfiles.writeToHeaderFile("Bearings", "DTG", dtg);
+                    headerarmfiles.writeToHeaderFile("Bearings", "BASELINE_BISECTOR", baseline_bisector);
+                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", lat);
+                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lon);
+                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", "0.00");
+
+                    switch (node_num)
+                    {
+                        case 0: headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", n0range);
+                                headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", n0bearing);
+                                break;
+                        case 1: headerarmfiles.writeToHeaderFile("Bearings", "NODE1_RANGE", n1range);
+                                headerarmfiles.writeToHeaderFile("Bearings", "NODE1_BEARING", n1bearing);
+                                break;
+                        case 2: headerarmfiles.writeToHeaderFile("Bearings", "NODE2_RANGE", n2range);
+                                headerarmfiles.writeToHeaderFile("Bearings", "NODE2_BEARING", n2bearing);
+                                break;
+                    }
+
+                    // Display data on screen in green values per node
+                    statusBox->setTextColor("green");
+                    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n" \
+                                + "lat=" + QString::fromStdString(lat) + "\tlong=" + QString::fromStdString(lon) + "\n" \
+                                + "DTG=" + QString::fromStdString(dtg) + "\tbaseline_bisector=" + QString::fromStdString(baseline_bisector));
+
+                    switch(node_num)
+                    {
+                    case 0: statusBox->append("n0 range=" + QString::fromStdString(n0range) + "\tn0 bearing=" + QString::fromStdString(n0bearing));
+                            break;
+                    case 1: statusBox->append("n1 range=" + QString::fromStdString(n1range) + "\tn1 bearing=" + QString::fromStdString(n1bearing));
+                            break;
+                    case 2: statusBox->append("n2 range=" + QString::fromStdString(n2range) + "\tn2 bearing=" + QString::fromStdString(n2bearing));
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                // Display data on screen in red X per node
+                statusBox->setTextColor("red");
+                statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+            }
+        }
+        ss.str("");             //clear stringstream
+        statusBox->append("");
+
+    }
+    catch(exception &e)
+    {
+        cout << "receiveBearings exception: " << e.what() << endl;
+    }
+}
+
+
 //=============================================================================
 // abortAudioRecordingButtonClicked()
 // Method to abort the audio recording. Stops audio recording countdown timers and recording
@@ -725,6 +864,7 @@ void Window::resetHeaderFileTimes(void)
     headerarmfiles.writeToHeaderFile("Timing", "SECOND", second);
 }
 
+
 //=============================================================================
 // checkCountdown()
 // This method parses the start and end times for the video recording,
@@ -842,6 +982,17 @@ void Window::runTCU(int tcu_num)
         statusBox->append("");
     }
     ss.str("");             //clear stringstream
+}
+
+
+//=============================================================================
+// abortGoButtonClicked()
+// aborts GoButton
+//=============================================================================
+void Window::abortGoButtonClicked(void)
+{
+    goButton->setStyleSheet(setButtonColour(RED).c_str());
+    goLaterButton->setStyleSheet(setButtonColour(RED).c_str());
 }
 
 //=============================================================================

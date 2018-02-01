@@ -50,6 +50,7 @@ class Window : public QWidget
         void runTCUs(void);
         void runTCU(int tcu_num);
         void receiveNodePosition(int node_num);
+        void receiveBearings(int node_num);
 
     private:
         int m_counter;
@@ -67,10 +68,13 @@ class Window : public QWidget
         QPushButton *abortAudioRecordingButton;
         QPushButton *editHeaderFileButton;
         QPushButton *receiveNodePositionsButton;
+        QPushButton *receiveBearingsButton;
+
         QPushButton *goButton;
         QPushButton *goLaterButton;
         QPushButton *showVideoButton;
         QPushButton *runNextlookButton;
+        QPushButton *abortGoButton;
 
         QLCDNumber *countDown;
         QTextEdit *statusBox;
@@ -104,11 +108,13 @@ class Window : public QWidget
         void editHeaderFileButtonClicked(void);
         void openMainMenu(void);
         void receiveNodePositionsButtonClicked(void);
+        void receiveBearingsButtonClicked(void);
         void goButtonClicked(void);
         void goLaterButtonClicked(void);
         void closeServer();
         void showVideoButtonClicked(void);
         void runNextlookButtonClicked(void);
+        void abortGoButtonClicked(void);
 
     signals:
     public slots:
