@@ -580,16 +580,16 @@ void Window::receiveBearings(int node_num)
             if (ret==0)
             {
                 // Parse tardat2cc.rtf file
-                dtg = headerarmfiles.readFromBearingsFile(node_num, "DTG", 4, 12);
-                lat = headerarmfiles.readFromBearingsFile(node_num, "Lat", 11, 8);
-                lon = headerarmfiles.readFromBearingsFile(node_num, "Lon", 16, 5);
-                baseline_bisector = headerarmfiles.readFromBearingsFile(node_num, "BASELINE_BISECTOR", 16, 5);
-                n0range = headerarmfiles.readFromBearingsFile(node_num, "n0: Range", 10, 7);
-                n0bearing = headerarmfiles.readFromBearingsFile(node_num, "n0: Bearing", 12, 7);
-                n1range = headerarmfiles.readFromBearingsFile(node_num, "n1: Range", 10, 7);
-                n1bearing = headerarmfiles.readFromBearingsFile(node_num, "n1: Bearing", 12, 7);
-                n2range = headerarmfiles.readFromBearingsFile(node_num, "n2: Range", 10, 7);
-                n2bearing = headerarmfiles.readFromBearingsFile(node_num, "n2: Bearing", 12, 7);
+                dtg = headerarmfiles.readFromBearingsFile(node_num, "DTG", 12);
+                lat = headerarmfiles.readFromBearingsFile(node_num, "Lat", 8);
+                lon = headerarmfiles.readFromBearingsFile(node_num, "Lon", 5);
+                baseline_bisector = headerarmfiles.readFromBearingsFile(node_num, "BASELINE_BISECTOR", 5);
+                n0range = headerarmfiles.readFromBearingsFile(node_num, "n0: Range", 7);
+                n0bearing = headerarmfiles.readFromBearingsFile(node_num, "n0: Bearing", 7);
+                n1range = headerarmfiles.readFromBearingsFile(node_num, "n1: Range", 7);
+                n1bearing = headerarmfiles.readFromBearingsFile(node_num, "n1: Bearing", 7);
+                n2range = headerarmfiles.readFromBearingsFile(node_num, "n2: Range", 7);
+                n2bearing = headerarmfiles.readFromBearingsFile(node_num, "n2: Bearing", 7);
 
                 if ((lat == "Fault") || (lon == "Fault") || (dtg == "Fault"))
                 {
@@ -645,7 +645,6 @@ void Window::receiveBearings(int node_num)
         }
         ss.str("");             //clear stringstream
         statusBox->append("");
-
     }
     catch(exception &e)
     {

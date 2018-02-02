@@ -107,9 +107,10 @@ string HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
 // readFromBearingsFile()
 //=============================================================================
 //method to return a variable's value from a Bearings file
-string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int offset, int strsize)
+string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
 {
     string path, data;
+    int c;
 
     switch (nodeno)
     {
@@ -129,14 +130,43 @@ string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int offset, 
         return "Fault";
     }
 
+
     std::string line;
     while ( std::getline( check, line ) )
     {
+        // find var
         std::size_t found = line.find(var);
         if (found!=std::string::npos)
         {
-          data = line.substr(found+offset,strsize);
-          break;
+            cout << line[found] << endl;
+
+            // get rest of line
+            std::string str = line.substr (found + var.length() + 1);
+            cout << "the rest of the string after " << var << " is " << str << endl;
+
+            if (var == "Lon")
+            {
+                std::size_t found2 = str.find_first_of(",");
+                if (found2!=std::string::npos)
+                {
+                    cout << str.substr(found2 + 1) << endl;
+                    // print out value
+                    data = str.substr(found2 + 1, strsize);
+                    cout << data << endl;
+                }
+            }
+            else
+            {
+                // find a minus or number
+                std::size_t found2 = str.find_first_of("-1234567890");
+                if (found2!=std::string::npos)
+                {
+                    cout << str.substr(found2) << endl;
+                    // print out value
+                    data = str.substr(found2, strsize);
+                    cout << data << endl;
+                }
+            }
         }
     }
 

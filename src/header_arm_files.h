@@ -10,6 +10,8 @@
 #include "includes.h"
 #include "parameters.h"
 #include "SimpleIni.h"
+#include <cctype>
+#include <string>
 
 class HeaderArmFiles
 {
@@ -18,7 +20,7 @@ class HeaderArmFiles
         void writeToHeaderFile(string section, string key, string value);
         QString readFromHeaderFile(string section, string var);
         string readFromGPSInfoFile(int nodeno, string var);
-        string readFromBearingsFile(int nodeno, string var, int offset, int strsize);
+        string readFromBearingsFile(int nodeno, string var, int strsize);
 
     private:
 };
