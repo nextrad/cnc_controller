@@ -138,21 +138,21 @@ string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
         std::size_t found = line.find(var);
         if (found!=std::string::npos)
         {
-            cout << line[found] << endl;
+            //cout << line[found] << endl;
 
             // get rest of line
             std::string str = line.substr (found + var.length() + 1);
-            cout << "the rest of the string after " << var << " is " << str << endl;
+            //cout << "the rest of the string after " << var << " is " << str << endl;
 
             if (var == "Lon")
             {
                 std::size_t found2 = str.find_first_of(",");
                 if (found2!=std::string::npos)
                 {
-                    cout << str.substr(found2 + 1) << endl;
+                    //cout << str.substr(found2 + 1) << endl;
                     // print out value
                     data = str.substr(found2 + 1, strsize);
-                    cout << data << endl;
+                    //cout << data << endl;
                 }
             }
             else
@@ -161,10 +161,10 @@ string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
                 std::size_t found2 = str.find_first_of("-1234567890");
                 if (found2!=std::string::npos)
                 {
-                    cout << str.substr(found2) << endl;
+                    //cout << str.substr(found2) << endl;
                     // print out value
                     data = str.substr(found2, strsize);
-                    cout << data << endl;
+                    //cout << data << endl;
                 }
             }
         }

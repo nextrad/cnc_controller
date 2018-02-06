@@ -160,7 +160,6 @@ void Window::initGUI(void)
     abortGoButton->setGeometry(10, 490, 135, 50);
     connect(abortGoButton, SIGNAL (clicked(bool)), this, SLOT(abortGoButtonClicked(void)));
 
-
     //button for distributing header file to node controllers
     goButton = new QPushButton("GO", this);
     goButton->setGeometry( 200, 500, 135, 50);
@@ -288,6 +287,22 @@ void Window::testSubNetwork(QString NetID)
     name.append(NetID.toUtf8().constData());
     temp = address;
     temp.append("5");
+    if(!testConnection(temp))
+    {
+        statusBox->setTextColor("red");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
+    }
+    else
+    {
+        statusBox->setTextColor("green");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
+    }
+
+    //Test if TCUs is connected
+    name = "tcu";
+    name.append(NetID.toUtf8().constData());
+    temp = address;
+    temp.append("6");
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
@@ -443,7 +458,6 @@ void Window::receiveNodePositionsButtonClicked(void)
 {
     statusBox->append("");
     statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching GPS info files from GPSDOs");
-    //statusBox->append("");
 
     receiveNodePosition(0);
     receiveNodePosition(1);
@@ -488,21 +502,23 @@ void Window::receiveNodePosition(int node_num)
                 }
                 else
                 {
-                    // Update Header file
-                    switch (node_num)
+                    if (node_num == 0)
                     {
-                        case 0: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
-                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
-                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
-                                break;
-                        case 1: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
-                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
-                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
-                                break;
-                        case 2: headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
-                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
-                                headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
-                                break;
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
+                    }
+                    else if (node_num == 1)
+                    {
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
+                    }
+                    else if (node_num == 2)
+                    {
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
                     }
 
                     // Display data on screen in green values per node
@@ -606,17 +622,20 @@ void Window::receiveBearings(int node_num)
                     headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lon);
                     headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", "0.00");
 
-                    switch (node_num)
+                    if (node_num == 0)
                     {
-                        case 0: headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", n0range);
-                                headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", n0bearing);
-                                break;
-                        case 1: headerarmfiles.writeToHeaderFile("Bearings", "NODE1_RANGE", n1range);
-                                headerarmfiles.writeToHeaderFile("Bearings", "NODE1_BEARING", n1bearing);
-                                break;
-                        case 2: headerarmfiles.writeToHeaderFile("Bearings", "NODE2_RANGE", n2range);
-                                headerarmfiles.writeToHeaderFile("Bearings", "NODE2_BEARING", n2bearing);
-                                break;
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", n0range);
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", n0bearing);
+                    }
+                    else if (node_num == 1)
+                    {
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE1_RANGE", n1range);
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE1_BEARING", n1bearing);
+                    }
+                    else if (node_num == 2)
+                    {
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE2_RANGE", n2range);
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE2_BEARING", n2bearing);
                     }
 
                     // Display data on screen in green values per node
@@ -724,7 +743,7 @@ int Window::sendFilesOverNetwork(void)
 {
     stringstream ss;
     int status;
-    int ret;
+    int ret = -1;
 
     try
     {
@@ -738,19 +757,17 @@ int Window::sendFilesOverNetwork(void)
 
             if (ret==0)
             {
-                cout<< "Header file to GPSDOs successful\n" <<endl;
+                cout<< "Header file to GPSDOs all successful\n" <<endl;
                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all GPSDOs");
             }
             else
             {
-                cout<< "Header file to GPSDOs NOT successful\n" <<endl;
+                cout<< "Header file to GPSDOs not all successful\n" <<endl;
                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all GPSDOs");
-                return ret;
             }
             statusBox->append("");
         }
-        ss.str("");             //clear stringstream
-
+        ss.str("");
 
         // Nodes
 
@@ -763,14 +780,13 @@ int Window::sendFilesOverNetwork(void)
 
              if (ret==0)
              {
-                 cout<< "Header file to nodes successful\n" <<endl;
+                 cout<< "Header file to nodes all successful\n" <<endl;
                  statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all nodes");
               }
              else
              {
-                 cout<< "Header file to nodes not successful\n" <<endl;
+                 cout<< "Header file to nodes not all successful\n" <<endl;
                  statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all nodes");
-                 return ret;
              }
              statusBox->append("");
          }
@@ -788,14 +804,13 @@ int Window::sendFilesOverNetwork(void)
 
              if (ret==0)
              {
-                 cout<< "Header file to cobalts successful\n" <<endl;
+                 cout<< "Header file to cobalts all successful\n" <<endl;
                  statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all cobalts");
               }
              else
              {
-                 cout<< "Header file to cobalts not successful\n" <<endl;
+                 cout<< "Header file to cobalts not all successful\n" <<endl;
                  statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all cobalts");
-                 return ret;
              }
              statusBox->append("");
          }
@@ -811,14 +826,13 @@ int Window::sendFilesOverNetwork(void)
 
              if (ret==0)
              {
-                 cout<< "Primed cobalts successfully\n" <<endl;
+                 cout<< "Primed all cobalts successfully\n" <<endl;
                  statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed all cobalts successfully");
               }
              else
              {
-                 cout<< "Cobalts not primed successfully\n" <<endl;
+                 cout<< "Not all Cobalts were primed successfully\n" <<endl;
                  statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "All cobalts not primed successfully");
-                 return ret;
              }
              statusBox->append("");
          }
@@ -930,7 +944,7 @@ void Window::runTCUs(void)
 
     runTCU(0);
     runTCU(1);
-    runTCU(2);
+    //runTCU(2);
 
     statusBox->setTextColor("black");
 }
@@ -957,7 +971,7 @@ void Window::runTCU(int tcu_num)
     {
         ss << TCU2;
     }
-    ss << " " << HEADER_PATH << endl;
+    ss << " " << HEADER_PATH << " &" << endl;
     cout << ss.str() << endl;
     status = system(ss.str().c_str());
 
@@ -969,13 +983,13 @@ void Window::runTCU(int tcu_num)
         {
             cout<< "TCU" << tcu_num << "init successful\n" <<endl;
             statusBox->setTextColor("green");
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + "TCU" + QString::number(tcu_num));
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + "tcu" + QString::number(tcu_num));
         }
         else
         {
             cout<< "TCU" << tcu_num << " init FAILED" <<endl;
             statusBox->setTextColor("red");
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + "TCU" + QString::number(tcu_num) + "\n" \
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + "tcu" + QString::number(tcu_num) + "\n" \
                        + "return value=" + QString::number(ret));
         }
         statusBox->append("");
