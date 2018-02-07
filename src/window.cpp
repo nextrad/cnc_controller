@@ -9,8 +9,10 @@
 //Revision      3.0 (January, February 2017)
 //Edited by:    Shirley Coetzee
 //Revision      4.0 (November 2017)
-//Edited by:    Shirley Coetzee
+//Edited by:    Shirley Coetzee and Darryn Jordan
 //Revision      5.0 (December 2017)
+//Edited by:    Shirley Coetzee, Darryn Jordan, Brad Kahn and Simon Lewis
+//Revision      6.0 (Jan/Feb 2018)
 
 
 //=============================================================================
@@ -23,45 +25,49 @@
 #include <QDateTime>
 #include <QString>
 
+#define DEBUG "goLater"
 
+extern int EXPERIMENT_LENGTH; //in seconds
 
 //=============================================================================
 // Constructor
 //=============================================================================
 Window::Window(QWidget *parent) : QWidget(parent)
 {
-    timMode = 0; //timer set to count down mode
+    experiment_state = INACTIVE; //see enum for explanation
+   // resetHeaderFileTimes();
+
     //Set size of window
     setFixedSize(600,590);
 
     initGUI();
-
 
     //connect to asterisk server and set up audio recording
     audioRecorder.connectToSocket();
     audioRecorder.loginAMI();
     audioRecorder.stopRecording();
 
-    //Set up timers for start and end experiments and update countdown clock.
-    //Note this is purely for display to monitor the time and does not directly affect the experiment
-    stopUnixTime = time(NULL);
+    //start timer calls startRecording() once it reaches the start time (happens once)
     starttimer = new QTimer(this);
     starttimer->setSingleShot(true);
     connect(starttimer, SIGNAL(timeout()), this, SLOT(startRecording()));
 
+    //end timer calls stopRecording() once it reaches the end time (happens once)
     endtimer = new QTimer(this);
     endtimer->setSingleShot(true);
     connect(endtimer, SIGNAL(timeout()), this, SLOT(stopRecording()));
 
-    countDownTim = new QTimer(this);
-    countDownTim->setInterval(1000);
-    connect(countDownTim, SIGNAL(timeout()), this, SLOT(updateCountDownLCD()));
-    countDownTim->start(1000);
+    //the count down timer calls updateCountDownLCD() every second
+    countdowntimer = new QTimer(this);
+    countdowntimer->setInterval(1000);
+    connect(countdowntimer, SIGNAL(timeout()), this, SLOT(updateCountDownLCD()));
+    countdowntimer->start(1000);
 
     for(int i=0; i<3; i++)
     {
         server.resetError(i);       //This is to try get rid of a bug where server.error
     }
+
 }
 
 
@@ -76,8 +82,8 @@ Window::~Window()
 
 //=============================================================================
 // Close Server()
+// Method to close the CNC's server socket
 //=============================================================================
-//Method to close the CNC's server socket
 void Window::closeServer()
 {
     server.closeServer();
@@ -86,8 +92,8 @@ void Window::closeServer()
 
 //=============================================================================
 // initGUI()
+// Method to initialise all the GUI features of the window
 //=============================================================================
-//Method to initialise all the GUI features of the window
 void Window::initGUI(void)
 {
     //Title
@@ -99,14 +105,15 @@ void Window::initGUI(void)
 
     //text label above countdown LCD
     countDownLabel = new QLabel(this);
-    countDownLabel->setGeometry(445, 500, 140, 20 ); //445, 410, 140, 20);
+    countDownLabel->setGeometry(445, 500, 140, 20 );
     countDownLabel->setText("No countdown active");
     countDownLabel->setFont(QFont("Ubuntu",10));
     countDownLabel->show();
 
     //Status output text box for outputting any messages to user
     statusBox = new QTextEdit(this);
-    statusBox->setGeometry(155, 70, 425, 420); //320);
+    statusBox->setGeometry(155, 70, 425, 420);
+    statusBox->setTextColor("black");
 
     //countdown LCD number set to bottom right
     countDown = new QLCDNumber(8, this);
@@ -119,120 +126,68 @@ void Window::initGUI(void)
     connect(testConnectionButton, SIGNAL (clicked(bool)), this, SLOT(connectionTestButtonClicked(void)));
 
     //button for editing header file
-    updateHeaderFileButton = new QPushButton("Edit Header\nFile", this);
-    updateHeaderFileButton->setGeometry(10, 130, 135, 50);
-    connect(updateHeaderFileButton, SIGNAL (clicked(bool)), this, SLOT(updateHeaderFileButtonClicked(void)));
+    editHeaderFileButton = new QPushButton("Edit Header\nFile", this);
+    editHeaderFileButton->setGeometry(10, 130, 135, 50);
+    connect(editHeaderFileButton, SIGNAL (clicked(bool)), this, SLOT(editHeaderFileButtonClicked(void)));
 
-    //button for distributing header file to node controllers
-    sendHeaderButton = new QPushButton("GO", this);
-    sendHeaderButton->setGeometry( 250, 500, 135,50);                                    // 10, 190, 135, 50);
-    sendHeaderButton->setStyleSheet("* { background-color: rgb(255,100,125) }");
-    connect(sendHeaderButton, SIGNAL (clicked(bool)), this, SLOT(sendHeaderButtonClicked(void)));
+    //button for receiving node positions
+    receiveNodePositionsButton = new QPushButton("Receive Node\nPositions", this);
+    receiveNodePositionsButton->setGeometry(10, 190, 135, 50);
+    connect(receiveNodePositionsButton, SIGNAL (clicked(bool)), this, SLOT(receiveNodePositionsButtonClicked(void)));
+
+    //button for receiving bearings
+    receiveBearingsButton = new QPushButton("Receive Bearings", this);
+    receiveBearingsButton->setGeometry(10, 250, 135, 50);
+    connect(receiveBearingsButton, SIGNAL (clicked(bool)), this, SLOT(receiveBearingsButtonClicked(void)));
 
     //button for showing video mosaic
     showVideoButton = new QPushButton("Start Video\nMosaic", this);
-    showVideoButton->setGeometry(10, 250, 135, 50);
+    showVideoButton->setGeometry(10, 310, 135, 50);
     connect(showVideoButton, SIGNAL (clicked(bool)), this, SLOT(showVideoButtonClicked(void)));
-/*
-    //button for starting the countdown timer display for the experiment
-    startVideoRecordingCountDownButton = new QPushButton("Countdown to\nVideo Recording", this);
-    startVideoRecordingCountDownButton->setGeometry(10, 310, 135, 50);
-    connect(startVideoRecordingCountDownButton, SIGNAL (clicked(bool)), this, SLOT(startVideoRecordingCountDown(void)));
 
     //button for aborting recording and countdown
-    abortVideoRecordingButton = new QPushButton("Abort\nVideo Recording", this);
-    abortVideoRecordingButton->setGeometry(10, 310, 135, 50); //(10, 370, 135, 50);
-    connect(abortVideoRecordingButton, SIGNAL (clicked(bool)), this, SLOT(abortVideoRecordingButtonClicked(void)));
-*/
-    //button for receiving node positions
-    receiveNodeDetailsButton = new QPushButton("Receive Node\nDetails", this);
-    receiveNodeDetailsButton->setGeometry(10, 430, 135, 50);
-    connect(receiveNodeDetailsButton, SIGNAL (clicked(bool)), this, SLOT(receiveNodeDetailsButtonClicked(void)));
-/*
-    //close button
-    closeButton = new QPushButton("Close", this);
-    closeButton->setFont(QFont("Ubuntu",12));
-    closeButton->setGeometry(400, 500, 135,50);
-    connect(closeButton, SIGNAL (clicked(bool)), this, SLOT(closeButtonClicked(void)));
-    closeButton->setFocusPolicy(Qt::NoFocus);
-    */
+    abortAudioRecordingButton = new QPushButton("Abort\nAudio Recording", this);
+    abortAudioRecordingButton->setGeometry(10, 370, 135, 50);
+    connect(abortAudioRecordingButton, SIGNAL (clicked(bool)), this, SLOT(abortAudioRecordingButtonClicked(void)));
+
+    //button for starting NeXtLook
+    runNextlookButton = new QPushButton("Run\nNeXtLook", this);
+    runNextlookButton->setGeometry(10, 430, 135, 50);
+    connect(runNextlookButton, SIGNAL (clicked(bool)), this, SLOT(runNextlookButtonClicked(void)));
+
+    //button for aborting goButton
+    abortGoButton = new QPushButton("Abort GO", this);
+    abortGoButton->setGeometry(10, 490, 135, 50);
+    connect(abortGoButton, SIGNAL (clicked(bool)), this, SLOT(abortGoButtonClicked(void)));
+
+    //button for distributing header file to node controllers
+    goButton = new QPushButton("GO", this);
+    goButton->setGeometry( 200, 500, 135, 50);
+    goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    connect(goButton, SIGNAL (clicked(bool)), this, SLOT(goButtonClicked(void)));
+
+#ifdef DEBUG
+    //button for distributing header file to node controllers
+    goLaterButton = new QPushButton("GO LATER", this);
+    goLaterButton->setGeometry( 350, 510, 75, 35);
+    goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    connect(goLaterButton, SIGNAL (clicked(bool)), this, SLOT(goLaterButtonClicked(void)));
+#endif
+
 }
 
 
-/*
-//=============================================================================
-// closeButtonClicked()
-//=============================================================================
-void HeaderFileWindow::closeButtonClicked(void)
-{
-    switch(menu)
-    {
-        default:
-            emit finished(0);
-        break;
-    }
-}
-
-*/
 //=============================================================================
 // connectionTestButtonClicked()
+// Tests the connections to CNC
 //=============================================================================
-//Tests the connections to CNC
 void Window::connectionTestButtonClicked(void)
 {
-    bool connection_status = true;
+    testSubNetwork("1");
+    testSubNetwork("2");
+    testSubNetwork("3");
 
-//    string address = "192.168.1.";
-//    string temp = address;
-//    temp.append("1");
-
-    //Test if CNCHub is connected
-
-//    temp = "cnc"; //address;
-//    if(!testConnection(temp))
-// //   if(!connectionManager.isConnected())
-//    {
-//        statusBox->setTextColor("red");
-//        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(temp) ); //+ "CNCHub not connected");
-//        connection_status = false;
-//    }
-//    else
-//    {
-//        statusBox->setTextColor("green");
-//        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(temp) ); //+ "CNCHub connected");
-
-        statusBox->append("");
-        if(!testSubNetwork("1"))             //Test SubNetwork for Node 0
-        {
-            connection_status = false;
-        }
-
-       //statusBox->append("");
-        if(!testSubNetwork("2"))            //Test SubNetwork for Node 1
-        {
-            connection_status = false;
-        }
-
-        //statusBox->append("");
-        if(!testSubNetwork("3"))            //Test SubNetwork for Node 2
-        {
-            connection_status = false;
-        }
-  // }
-/*
-    if(connection_status)
-    {
-        //if everything is connected change button colour to green
-        testConnectionButton->setText("Connected");
-        testConnectionButton->setStyleSheet("* { background-color: rgb(100,255,125) }");
-    }
-    else
-    {
-        //if anything is not connected change button colour to red
-        testConnectionButton->setText("Connection Error");
-        testConnectionButton->setStyleSheet("* { background-color: rgb(255,100,125) }");
-    }
-    */
+    statusBox->setTextColor("black");
 }
 
 
@@ -240,16 +195,8 @@ void Window::connectionTestButtonClicked(void)
 // testSubNetwork()
 //=============================================================================
 //Tests the connections to CNC
-bool Window::testSubNetwork(QString NetID)
+void Window::testSubNetwork(QString NetID)
 {
-//    //Trying to highlight individual lines in statusbox
-//    QTextEdit::ExtraSelection highlight;
-//    highlight.cursor = statusBox->textCursor();
-//    highlight.format.setProperty(QTextFormat::FullWidthSelection, true);
-//    highlight.format.setBackground( Qt::green );
-//    QList<QTextEdit::ExtraSelection> extras;
-
-    bool connection_status = true;
     string temp, name;
     string address = "192.168.1.";
     address.append(NetID.toUtf8().constData());
@@ -260,19 +207,15 @@ bool Window::testSubNetwork(QString NetID)
     name.append(NetID.toUtf8().constData());
     temp = address;
     temp.append("2");
-//    connectionManager.connectionTest(stringToCharPntr(temp));
-//    if(!connectionManager.isConnected())
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"AP" + NetID + " not connected");
-        connection_status = false;
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"AP" + NetID + " connected");
-
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
     }
 
     //Test if STAtion bullet is connected
@@ -280,18 +223,15 @@ bool Window::testSubNetwork(QString NetID)
     name.append(NetID.toUtf8().constData());
     temp = address;
     temp.append("3");
-    //    connectionManager.connectionTest(stringToCharPntr(temp));
-    //    if(!connectionManager.isConnected())
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"STA" + NetID + " not connected");
-        connection_status = false;
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"STA" + NetID + " connected");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
     }
 
     //Test if PoE Switch is connected
@@ -299,18 +239,15 @@ bool Window::testSubNetwork(QString NetID)
     name.append(NetID.toUtf8().constData());
     temp = address;
     temp.append("0");
-    //    connectionManager.connectionTest(stringToCharPntr(temp));
-    //    if(!connectionManager.isConnected())
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"Switch" + NetID + " not connected");
-        connection_status = false;
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"Switch" + NetID + " connected");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
     }
 
     //Test if Node Laptop is connected
@@ -318,19 +255,15 @@ bool Window::testSubNetwork(QString NetID)
     name.append(NetID.toUtf8().constData());
     temp = address;
     temp.append("1");
-    //    connectionManager.connectionTest(stringToCharPntr(temp));
-    //    if(!connectionManager.isConnected())
     if(!testConnection(temp))
     {
-        statusBox->append("");
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"Node" + NetID + " not connected");
-        connection_status = false;
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"Node" + NetID + " connected");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
     }
 
     //Test if IP camera is connected
@@ -338,16 +271,15 @@ bool Window::testSubNetwork(QString NetID)
     name.append(NetID.toUtf8().constData());
     temp = address;
     temp.append("4");
-    if(!testConnection(temp)) //isConnected())                  //Cameras have no ssh port and more security so it's easier to ping them
+    if(!testConnection(temp))                   //Cameras have no ssh port and more security so it's easier to ping them
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"Cam" + NetID + " not connected");
-        connection_status = false;
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"Cam" + NetID + " connected");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
     }
 
     //Test if Cobalt is connected
@@ -355,38 +287,45 @@ bool Window::testSubNetwork(QString NetID)
     name.append(NetID.toUtf8().constData());
     temp = address;
     temp.append("5");
-    //    connectionManager.connectionTest(stringToCharPntr(temp));
-    //    if(!connectionManager.isConnected())
     if(!testConnection(temp))
     {
         statusBox->setTextColor("red");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) ); //+ " not connected"); //"Cobalt" + NetID + " not connected");
-        connection_status = false;
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
     }
     else
     {
         statusBox->setTextColor("green");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );  //+ " connected"); //"Cobalt" + NetID + " connected");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
+    }
+
+    //Test if TCUs is connected
+    name = "tcu";
+    name.append(NetID.toUtf8().constData());
+    temp = address;
+    temp.append("6");
+    if(!testConnection(temp))
+    {
+        statusBox->setTextColor("red");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
+    }
+    else
+    {
+        statusBox->setTextColor("green");
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + QString::fromStdString(name) );
     }
 
     statusBox->append("");
-
-    return connection_status;
 }
 
 
 //=============================================================================
 // testConnection()
+// pings an address to see if it's connected to the network.
 //=============================================================================
-//pings an address to see if it's connected to the network.
 bool Window::testConnection(string address)
 {
-    string command = "ping -c 1 ";  // c = count
+    string command = "ping -c 1 ";  // where c = count
     command.append(address);
-
-//    string command = "ansible ";     // "ping -c 2 ";
-//    command.append(unitname);
-//    command.append(" -m ping "); //-vvvv");
 
     int status = system(stringToCharPntr(command));
     if (-1 != status)
@@ -409,11 +348,10 @@ bool Window::testConnection(string address)
 }
 
 
-
 //=============================================================================
 // stringToCharPntr()
+// Takes in a string and converts it to char*
 //=============================================================================
-//Takes in a string and converts it to char*
 char* Window::stringToCharPntr(string str)
 {
     char *cstr = new char[str.length() + 1];
@@ -423,126 +361,27 @@ char* Window::stringToCharPntr(string str)
 
 
 //=============================================================================
-// startCountDown()
-//=============================================================================
-//This method parses the start and end times for the video recording,
-//converts the times from dd-MM-yyyy hh:mm:ss to yyyy-MM-dd hh:mm:ss formats for timer and NTP
-//and starts the countdown timer
-void Window::startCountDown(void)
-{
-    //Open Header File
-    ifstream headerFile (CNC_HEADER_PATH);
-
-    printf("Header File opened\n");
-    string temp;
-
-    /*
-	// dd-MM-yyyy hh:mm:ss
-    while(!headerFile.eof())
-    {
-        getline(headerFile,temp);
-        if(temp.substr(0,9) == "StartTime")     //looking for the "StartTime" in the header file
-        {
-            if (temp.substr(9,3) == " = ")
-            {
-                startTime = temp.substr(12,19);
-            }
-            else if ((temp.substr(9,2) == " =") || (temp.substr(9,2) == "= "))
-            {
-                startTime = temp.substr(10,19);
-            }
-            else if (temp.substr(9,1) == "=")
-            {
-                startTime = temp.substr(11,19);
-            }
-             printf("startTime = %s\n", startTime.c_str());
-        }
-        else if(temp.substr(0,7) == "EndTime")  //looking for the "EndTime" in the header file
-        {
-            if (temp.substr(7,3) == " = ")
-            {
-                endTime = temp.substr(10,19);
-            }
-            else if ((temp.substr(7,2) == " =") || (temp.substr(7,2) == "= "))
-            {
-                endTime = temp.substr(9,19);
-            }
-            else if (temp.substr(7,1) == "=")
-            {
-                endTime = temp.substr(8,19);
-            }
-            printf("endTime = %s\n", endTime.c_str());
-        }
-    }
-    headerFile.close();
-
-    Datetime datetime;
-
-    // Get Unix time (seconds since 01/01/1970)
-    currentUnixTime = time(NULL);
-
-    time_t now = time(0);
-    struct tm tstruct;
-    char buf[80];
-    tstruct = *localtime(&now);
-    strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
-
-    std::cout << buf << std::endl;
-
-
-    strtUnixTime = datetime.convertToUnixTime(startTime)+2;  // 2016-10-19 15:22:00 +2  = 146883322
-    stopUnixTime = datetime.convertToUnixTime(endTime)+4;    // The camera has a 2 second buffer which is why 2 seconds were added to start and 4 to end time
-
-    cout << "\ncurrentUnixTime " << currentUnixTime << "\nstrtUnixTime " << strtUnixTime  << "\nstopUnixTime " << stopUnixTime << endl;
-
-    // Checking if the start and end times are in the past or not
-    if(strtUnixTime < currentUnixTime)
-    {
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future start time");
-    }
-    else if(stopUnixTime < strtUnixTime)
-    {
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future stop time");
-    }
-    else
-    {
-        starttimer->start((datetime.convertToUnixTime(startTime)+ 2 - currentUnixTime)*1000);
-        starttimer->start();
-        //camera buffer stores 2 seconds, thus start two seconds later and record for 2 seconds longer.
-        countDownLabel->setText("Countdown to armtime");
-        timMode = 1;
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
-        statusBox->append("");
-    }
-
-    fflush(stdout);*/
-}
-
-
-
-//=============================================================================
 // startRecording()
+// Method to start the countdown until the end of the experiment
+// Note: This is purely for display and recording audio not actually controlling the experiment
 //=============================================================================
-//Method to start the countdown until the end of the experiment
-//Note: This is purely for display and recording audio not actually controlling the experiment
 void Window::startRecording(void)
 {
-    timMode = 2;
-    endtimer->start(( stopUnixTime - currentUnixTime)*1000);
+    experiment_state = ACTIVE;
     audioRecorder.startRecording();
+    endtimer->start((stopUnixTime - currentUnixTime)*1000);
     statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio recording started");
-    countDownLabel->setText("Recording audio");
+    countDownLabel->setText("Audio recording ends in ...");
 }
-
 
 //=============================================================================
 // stopRecording()
+// Method to stop the countdown timer signalling end of experiment
+// Note: This is purely for display and recording audio not actually controlling the experiment
 //=============================================================================
-//Method to stop the countdown timer signalling end of experiment
-//Note: This is purely for display and recording audio not actually controlling the experiment
 void Window::stopRecording(void)
 {
-    timMode = 0;
+    experiment_state = INACTIVE;
     audioRecorder.stopRecording();
     statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio stopped");
     statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio saved to /var/spool/Asterisk/");
@@ -550,44 +389,45 @@ void Window::stopRecording(void)
     countDownLabel->setText("Stopped recording");
 }
 
-
+//=======================================================================
+// getCountDownTime()
+//=======================================================================
+//Calculates the hours minutes and seconds remaining for countdown
+QString Window::getCountDownTime(time_t timeLeft)
+{
+    Datetime datetime;
+    QString temp = datetime.getCountDownTime(timeLeft); //"%d.%m.%Y_%I:%M:%S");
+    return temp;
+}
 
 //=============================================================================
 // updateCountDownLCD()
+// Updates the countdown LCD according.
 //=============================================================================
-// Updates the countdown LCD according.  timMode==0 - no active countdowns
-//                                        timMode==1 - countdown until recording starts
-//                                        timMode==2 - countdown until recording ends
-
 void Window::updateCountDownLCD(void)
 {
-    Datetime datetime;
-
     currentUnixTime = time(NULL);
-    if(timMode == 0)            //if no active countdowns
+    if (experiment_state == INACTIVE)
     {
         countDown->display("00:00:00");
     }
-    else if(timMode == 1)       //if countdown until start
+    else if(experiment_state == WAITING)
     {
-        countDown->display(datetime.getCountDownTime(strtUnixTime - currentUnixTime));
+        countDown->display(getCountDownTime(strtUnixTime - currentUnixTime));
     }
-    else                        //if coundown until end
+    else if(experiment_state == ACTIVE)
     {
-        countDown->display(datetime.getCountDownTime(stopUnixTime - currentUnixTime));
+        countDown->display(getCountDownTime(stopUnixTime - currentUnixTime));
     }
-
 }
 
-
-
 //=============================================================================
-// updateHeaderFileButtonClicked()
+// editHeaderFileButtonClicked()
+// Opens a new menu to do with editing the header file
 //=============================================================================
-//Opens a new menu to do with editing the header file
-void Window::updateHeaderFileButtonClicked(void)
+void Window::editHeaderFileButtonClicked(void)
 {
-    QIcon icon("../media/icons/favicon2.ico");
+    QIcon icon(ICON_PATH);
     headerfilewindow = new HeaderFileWindow();
     headerfilewindow->setWindowIcon(icon); //Set Icon for application
     headerfilewindow->show();
@@ -595,9 +435,7 @@ void Window::updateHeaderFileButtonClicked(void)
     //link the closing of the header file menu to opening the main window
     connect(headerfilewindow, SIGNAL (finished(int)), this, SLOT (openMainMenu(void)));
     this->hide();
-
 }
-
 
 //=============================================================================
 // openMainMenu()
@@ -606,328 +444,652 @@ void Window::openMainMenu(void)
 {
     this->show();
     headerfilewindow->hide();
+    if (headerfilewindow->newtime == true)
+    {
+        goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    }
 }
 
-
 //=============================================================================
-// sendHeaderButtonClicked()
+// receiveNodePositionsButtonClicked()
+// method to receive the nodes' positions from the GPSDOs.
 //=============================================================================
-//sends out header file to all connected nodes
-int Window::sendHeaderButtonClicked(void)
+void Window::receiveNodePositionsButtonClicked(void)
 {
+    statusBox->append("");
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching GPS info files from GPSDOs");
 
-    // -------------------Send files over network  ---------------------------------------
+    receiveNodePosition(0);
+    receiveNodePosition(1);
+    receiveNodePosition(2);
+
+    statusBox->append("");
+    statusBox->setTextColor("black");
+}
+
+//=============================================================================
+// receiveNodePosition()
+//=============================================================================
+void Window::receiveNodePosition(int node_num)
+{
     stringstream ss;
     int status;
-    int hdr_ret;
+    int ret;
+    string lat, lon, ht;
 
-    statusBox->append("");
-    statusBox->append("");
-
-    //GPSDOs
-    //Update nodes armtime
-    //ansible nodes -m copy -a "src=~/Desktop/AnsiNext/armtime.cfg dest=~/Desktop/NextGPSDO/armtime.cfg"
-    ss << "ansible nodes -m copy -a \"src=" << ARMTIMECFG_PATH << " dest=/home/nextrad/Desktop/NextGPSDO/" << ARMTIMECFG_FILE << "\"";
-    status = system(stringToCharPntr(ss.str()));     // system(stringToCharPntr(ss.str()));
-    if (-1 != status)
+    try
     {
-        hdr_ret = WEXITSTATUS(status);
+        ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.ini dest=~/Documents/cnc_controller/" << "\"";
+        cout << ss.str().c_str() << endl;
 
-        if(hdr_ret==0)
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
         {
-            cout<< "Header file to GPSDOs successful\n" <<endl;
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to GPSDOs");
+            ret = WEXITSTATUS(status);
+
+            if (ret==0)
+            {
+                // Parse gpsinfo.ini file
+                lat = headerarmfiles.readFromGPSInfoFile(node_num,"LATITUDE");
+                lon = headerarmfiles.readFromGPSInfoFile(node_num,"LONGITUDE");
+                ht = headerarmfiles.readFromGPSInfoFile(node_num,"ALTITUDE");
+
+                if ((lat == "Fault") || (lon == "Fault") || (ht == "Fault"))
+                {
+                    // Display data on screen in red X per node
+                    statusBox->setTextColor("red");
+                    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+                }
+                else
+                {
+                    if (node_num == 0)
+                    {
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
+                    }
+                    else if (node_num == 1)
+                    {
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
+                    }
+                    else if (node_num == 2)
+                    {
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
+                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
+                    }
+
+                    // Display data on screen in green values per node
+                    statusBox->setTextColor("green");
+                    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n " \
+                                + "lat=" + QString::fromStdString(lat) + ", \tlong=" + QString::fromStdString(lon) + ", \tht=" + QString::fromStdString(ht));
+               }
+            }
+            else
+            {
+                // Display data on screen in red X per node
+                statusBox->setTextColor("red");
+                statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+            }
         }
-        else
-        {
-            cout<< "Header file to GPSDOs NOT successful\n" <<endl;
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to GPSDOs");
-            return hdr_ret;
-        }
-    }
-    ss.str("");             //clear stringstream
-    statusBox->append("");
-
-
-    // Nodes
-//     ss << "ansible nodes -m copy -a \"src=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt dest=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt\"";
-     ss << "ansible nodes -m copy -a \"src=" << CNC_HEADER_PATH << " dest=" << NODE_HEADER_PATH << "\"";
-
-     status = system(stringToCharPntr(ss.str()));     // system(stringToCharPntr(ss.str()));
-     if (-1 != status)
-     {
-         hdr_ret = WEXITSTATUS(status);
-
-         if(hdr_ret==0)
-         {
-             cout<< "Header file to nodes successful\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to nodes");
-          }
-         else
-         {
-             cout<< "Header file to nodes not successful\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to nodes");
-             return hdr_ret;
-         }
-     }
-     ss.str("");             //clear stringstream
-     statusBox->append("");
-
-
-     // Cobalts
-     //ss << "ansible cobalts -m copy -a \"src=/home/nextrad/Documents/node_controller/NeXtRAD_Header.txt dest=/smbtest/NeXtRAD_Header.txt\"";
-     ss << "ansible cobalts -m copy -a \"src=" << CNC_HEADER_PATH << " dest=/smbtest/" << HEADER_FILE << "\"";
-
-     status = system(stringToCharPntr(ss.str()));     // system(stringToCharPntr(ss.str()));
-     if (-1 != status)
-     {
-         hdr_ret = WEXITSTATUS(status);
-
-         if(hdr_ret==0)
-         {
-             cout<< "Header file to cobalts successful\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to cobalts");
-          }
-         else
-         {
-             cout<< "Header file to cobalts not successful\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to cobalts");
-             return hdr_ret;
-         }
-     }
-     ss.str("");             //clear stringstream
-     statusBox->append("");
-
-
-     ss << "ansible cobalts -m shell -a \"./run-cobalt.sh\"";
-
-     status = system(stringToCharPntr(ss.str()));     // system(stringToCharPntr(ss.str()));
-     if (-1 != status)
-     {
-         hdr_ret = WEXITSTATUS(status);
-
-         if(hdr_ret==0)
-         {
-             cout<< "Primed cobalts successfully\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Run cobalts successful");
-          }
-         else
-         {
-             cout<< "Cobalts not primed successfully\n" <<endl;
-             statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Run cobalts not successful");
-             return hdr_ret;
-         }
-     }
-     ss.str("");             //clear stringstream
-     statusBox->append("");
-
-
-     // TCUs
-     // ToDo
-
-
-     // start countdown
-     startCountDown();
-
-     return hdr_ret;
-}
-
-
-//=============================================================================
-// receiveNodeDetailsButtonClicked()
-//=============================================================================
-//method to receive the nodes' coordinates.
-void Window::receiveNodeDetailsButtonClicked(void)
-{
-    stringstream ss;      //stringstreams for formatting the strings correctly for updating the header file
-    //string temp;
-    cout << "receiving position" << endl;         //debugging
-    fflush(stdout);
-
-    //check to see if there are any clients connected
-    if(server.getNoClients() == 0)
-    {
-        cout << "no clients\n" << endl;
-        fflush(stdout);
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "No Nodes Connected");
-        return;
-    }
-    cout << "noClients checked\n" << endl;         //debugging
-    fflush(stdout);
-
-    int errorcode = server.checkError(0);
-    //if there were no errors setting up the sockets then receive data from nodes
-    if(errorcode == 0)
-    {
-        cout << "no error\n" << endl;         //debugging
-        fflush(stdout);
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "CNC Server Ready");
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Waiting for incoming connections...");
-        QApplication::processEvents();   //This forces QApplication to output to statusBox before next process
-        server.receiveData();
-    }
-    else //Usually the error is caused by leaving sockets open. If this happens just recompile the cnc controller and the node controller
-    {
-        cout << "error\n" <<  errorcode << endl;         //debugging
-        fflush(stdout);
-        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "error receiving GPS data"); //Not sure why but server.checkError is always != 0 the first time.
-        return;
-    }
-
-
-    //loop through all connected clients to get their positions and write the positions to the header file
-    for(int k = 0; k < server.getNoClients(); k++)
-    {
-        errorcode = server.checkError(0);
-
-        int nodeID = server.getNodeID(k);
-//      cout << "loop 1\n" << endl;         //debugging
-        fflush(stdout);
-        if(errorcode == 4)
-        {
-            cout << "node " << nodeID << " not ready\n" << endl;
-            //fflush(stdout);
-            //ss << "Client " << (int) k << " wasn't ready to send position";
-            //statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + ss.str().c_str());
-            statusBox->setTextColor("red");
-            ss << "node" << nodeID;
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + ss.str().c_str()); //+ QString::fromStdString(temp) );
-            ss.str("");             //clear stringstream
-            continue;
-        }
-        else
-        {
-            cout << "node " << nodeID << " gave details\n" << endl;
-            //cout << "client ready. position received\n" << endl;         //debugging
-            //fflush(stdout);
-            //ss << "Node " << server.getNodeID(k) << " position received";
-            //statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + ss.str().c_str());
-            statusBox->setTextColor("green");
-            ss << "node" << nodeID;
-            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + ss.str().c_str()); //+ QString::fromStdString(temp) );
-            ss.str("");             //clear stringstream
-        }
-
+        ss.str("");             //clear stringstream
         statusBox->append("");
-
-
-        //For node 0 both Tx and Rx1's positions must be updated
-//        int nodeID = server.getNodeID(k);
-//        fflush(stdout);
-
-        /*
-        if(nodeID == 0) // Set Tx and Rx locations
-        {
-
-//            if(errorcode == 4)
-//            {
-//                server.resetError(k);
-//                return;
-//            }
-
-            ss.str("");             //clear stringstream
-            ss << server.getGPSLat(k);
-            fflush(stdout);
-            headerarmfiles->writeToHeaderFile("TxLocationLat", ss.str(), "Geometry");
-            headerarmfiles->writeToHeaderFile("Rx1LocationLat", ss.str(), "Geometry");
-
-            ss.str("");             //clear stringstream
-            ss << server.getGPSLon(k);
-            fflush(stdout);
-            headerarmfiles->writeToHeaderFile("TxLocationLon", ss.str(), "Geometry");
-            headerarmfiles->writeToHeaderFile("Rx1LocationLon", ss.str(), "Geometry");
-
-            ss.str("");             //clear stringstream
-            ss << server.getGPSHt(k);
-            fflush(stdout);
-            headerarmfiles->writeToHeaderFile("TxLocationHt", ss.str(), "Geometry");
-            headerarmfiles->writeToHeaderFile("Rx1LocationHt", ss.str(), "Geometry");
-
-            ss.str("");             //clear stringstream
-            ss << server.getGPSStability(k);
-            fflush(stdout);
-            headerarmfiles->writeToHeaderFile("TxLocationStability", ss.str(), "Geometry");
-            headerarmfiles->writeToHeaderFile("Rx1LocationStability", ss.str(), "Geometry");
-
-        }
-        else // Set only Rx locations
-        {
-            ss.str("");             //clear stringstream
-            varName.str("");
-
-//            if(server.checkError(k) == 4)
-//            {
-//                server.resetError(k);
-//                return;
-//            }
-
-
-            ss << server.getGPSLat(k);
-            fflush(stdout);
-            varName << "Rx" << (nodeID+1) << "LocationLat";
-            headerarmfiles->writeToHeaderFile(varName.str(), ss.str(), "Geometry");
-            fflush(stdout);
-
-            ss.str("");             //clear stringstream
-            varName.str("");
-            varName << "Rx" << (nodeID+1) << "LocationLon";
-            ss << server.getGPSLon(k);
-            fflush(stdout);
-            headerarmfiles->writeToHeaderFile(varName.str(), ss.str(), "Geometry");
-
-            ss.str("");             //clear stringstream
-            varName.str("");
-            ss << server.getGPSHt(k);
-            fflush(stdout);
-            varName << "Rx" << (nodeID+1) << "LocationHt";
-            headerarmfiles->writeToHeaderFile(varName.str(), ss.str(), "Geometry");
-
-            ss.str("");             //clear stringstream
-            varName.str("");
-            ss << server.getGPSStability(k);
-            fflush(stdout);
-            varName << "Rx" << (nodeID+1) << "LocationStability";
-            headerarmfiles->writeToHeaderFile(varName.str(), ss.str(), "Geometry");
-
-        }
-    */
-
- // Shirley moved this to sendHeaderClicked()
- //       // add a cnc timestamp to the header file
- //      temp = QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss").toUtf8().constData();
- //       headerarmfiles->writeToHeaderFile("TimeStamp", temp, "Time Stamp");
     }
-    fflush(stdout);
+    catch(exception &e)
+    {
+        cout << "receiveNodePosition exception: " << e.what() << endl;
+    }
+}
+
+
+
+//=============================================================================
+// receiveBearingsButtonClicked()
+// method to receive the bearings from the GPSDO.
+//=============================================================================
+
+void Window::receiveBearingsButtonClicked(void)
+{
+    statusBox->append("");
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching node bearings file from Mission Control");
+    statusBox->append("");
+
+    receiveBearings(0);
+    receiveBearings(1);
+    receiveBearings(2);
+
+    statusBox->append("");
+    statusBox->setTextColor("black");
+}
+
+//=============================================================================
+// receiveBearings()
+
+/*  tardat2cc.rtf
+(*171207*)
+DTG	061855Z 1217
+Target Lat/Lon 	{-34.1813,18.46}
+n1: Range	1.82952
+n1: Bearing	46.5192
+*/
+//=============================================================================
+void Window::receiveBearings(int node_num)
+{
+    string lat, lon, dtg, baseline_bisector;
+    string n0range, n0bearing, n1range, n1bearing, n2range, n2bearing;
+    stringstream ss;
+    int status;
+    int ret;
+
+    try
+    {
+        ss << "ansible node" << node_num << " -m fetch -a \"src=/home/nextrad/tardat2cc.rtf dest=~/Documents/cnc_controller/" << "\"";
+        cout << ss.str().c_str() << endl;
+
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
+        {
+            ret = WEXITSTATUS(status);
+
+            if (ret==0)
+            {
+                // Parse tardat2cc.rtf file
+                dtg = headerarmfiles.readFromBearingsFile(node_num, "DTG", 12);
+                lat = headerarmfiles.readFromBearingsFile(node_num, "Lat", 8);
+                lon = headerarmfiles.readFromBearingsFile(node_num, "Lon", 5);
+                baseline_bisector = headerarmfiles.readFromBearingsFile(node_num, "BASELINE_BISECTOR", 5);
+                n0range = headerarmfiles.readFromBearingsFile(node_num, "n0: Range", 7);
+                n0bearing = headerarmfiles.readFromBearingsFile(node_num, "n0: Bearing", 7);
+                n1range = headerarmfiles.readFromBearingsFile(node_num, "n1: Range", 7);
+                n1bearing = headerarmfiles.readFromBearingsFile(node_num, "n1: Bearing", 7);
+                n2range = headerarmfiles.readFromBearingsFile(node_num, "n2: Range", 7);
+                n2bearing = headerarmfiles.readFromBearingsFile(node_num, "n2: Bearing", 7);
+
+                if ((lat == "Fault") || (lon == "Fault") || (dtg == "Fault"))
+                {
+                    // Display data on screen in red X per node
+                    statusBox->setTextColor("red");
+                    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "\tnode" + QString::number(node_num));
+                }
+                else
+                {
+                    // Update Header file
+                    headerarmfiles.writeToHeaderFile("Bearings", "DTG", dtg);
+                    headerarmfiles.writeToHeaderFile("Bearings", "BASELINE_BISECTOR", baseline_bisector);
+                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", lat);
+                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lon);
+                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", "0.00");
+
+                    if (node_num == 0)
+                    {
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", n0range);
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", n0bearing);
+                    }
+                    else if (node_num == 1)
+                    {
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE1_RANGE", n1range);
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE1_BEARING", n1bearing);
+                    }
+                    else if (node_num == 2)
+                    {
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE2_RANGE", n2range);
+                        headerarmfiles.writeToHeaderFile("Bearings", "NODE2_BEARING", n2bearing);
+                    }
+
+                    // Display data on screen in green values per node
+                    statusBox->setTextColor("green");
+                    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n" \
+                                + "lat=" + QString::fromStdString(lat) + "\tlong=" + QString::fromStdString(lon) + "\n" \
+                                + "DTG=" + QString::fromStdString(dtg) + "\tbaseline_bisector=" + QString::fromStdString(baseline_bisector));
+
+                    switch(node_num)
+                    {
+                    case 0: statusBox->append("n0 range=" + QString::fromStdString(n0range) + "\tn0 bearing=" + QString::fromStdString(n0bearing));
+                            break;
+                    case 1: statusBox->append("n1 range=" + QString::fromStdString(n1range) + "\tn1 bearing=" + QString::fromStdString(n1bearing));
+                            break;
+                    case 2: statusBox->append("n2 range=" + QString::fromStdString(n2range) + "\tn2 bearing=" + QString::fromStdString(n2bearing));
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                // Display data on screen in red X per node
+                statusBox->setTextColor("red");
+                statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+            }
+        }
+        ss.str("");             //clear stringstream
+        statusBox->append("");
+    }
+    catch(exception &e)
+    {
+        cout << "receiveBearings exception: " << e.what() << endl;
+    }
 }
 
 
 //=============================================================================
-// abortVideoRecordingButtonClicked()
+// abortAudioRecordingButtonClicked()
+// Method to abort the audio recording. Stops audio recording countdown timers and recording
 //=============================================================================
-//Method to abort the video recording. Stops video recording countdown timers and recording
-void Window::abortVideoRecordingButtonClicked(void)
+void Window::abortAudioRecordingButtonClicked(void)
 {
-    //stop all timers
-    if(timMode == 1)
+    //in 'countdown to start' mode only the starttimer needs to be stopped
+    if(experiment_state == WAITING)
     {
         starttimer->stop();
+        endtimer->stop();
     }
-    else if(timMode == 2)
+    //in 'countdown to end' mode the starttimer must be stopped as well as the recording
+    else if(experiment_state == ACTIVE)
     {
         stopRecording();
         endtimer->stop();
     }
-
-    //set timer mode to 'no active countdowns'
-    timMode = 0;
-    countDownLabel->setText("Video rec aborted!");
+    experiment_state = INACTIVE;
+    countDownLabel->setText("Audio recording aborted!");
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio recording aborted!");
 }
 
 //=============================================================================
 // showVideoButtonClicked()
+// Method to show the video mosaic.
 //=============================================================================
-//Method to show the video mosaic.
 void Window::showVideoButtonClicked(void)
 {
-    system("x-terminal-emulator -x -e \"cvlc --vlm-conf ../scripts/mosaic_view/mosaic.conf --mosaic-width=1280 --mosaic-height=720 --mosaic-keep-picture --mosaic-rows=2 --mosaic-cols=2 --mosaic-position=0 --mosaic-order=1,2,3,4\"");
+    statusBox->append("");
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Opening mosaic view");
+    int status = system("x-terminal-emulator -x -e \"cvlc --vlm-conf ../scripts/mosaic_view/mosaic.conf --mosaic-width=1280 --mosaic-height=720 --mosaic-keep-picture --mosaic-rows=2 --mosaic-cols=2 --mosaic-position=0 --mosaic-order=1,2,3,4\"");
+    if (-1 != status)
+    {
+         int ret = WEXITSTATUS(status);
+
+         if(ret!=0)
+         {
+            std::cout << "Failed to execute command properly" << endl;
+         }
+    }
+}
+
+//=============================================================================
+// runNextlookButtonClicked()
+//=============================================================================
+void Window::runNextlookButtonClicked(void)
+{
+    statusBox->append("");
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Launching NeXtLook on Cobalts");
+
+    int status = system("../scripts/nextlook/run_nextlook.sh");
+    if (-1 != status)
+    {
+         int ret = WEXITSTATUS(status);
+
+         if(ret!=0)
+         {
+            std::cout << "Failed to execute command properly" << endl;
+         }
+    }
+}
+
+
+//=============================================================================
+// sendFilesOverNetwork()
+//=============================================================================
+int Window::sendFilesOverNetwork(void)
+{
+    stringstream ss;
+    int status;
+    int ret = -1;
+
+    try
+    {
+        //GPSDOs
+
+        ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=/home/nextrad/Desktop/NextGPSDO/" << HEADER_FILE << "\"";
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
+        {
+            ret = WEXITSTATUS(status);
+
+            if (ret==0)
+            {
+                cout<< "Header file to GPSDOs all successful\n" <<endl;
+                statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all GPSDOs");
+            }
+            else
+            {
+                cout<< "Header file to GPSDOs not all successful\n" <<endl;
+                statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all GPSDOs");
+            }
+            statusBox->append("");
+        }
+        ss.str("");
+
+        // Nodes
+
+        ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=" << HEADER_PATH << "\"";
+
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
+        {
+             ret = WEXITSTATUS(status);
+
+             if (ret==0)
+             {
+                 cout<< "Header file to nodes all successful\n" <<endl;
+                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all nodes");
+              }
+             else
+             {
+                 cout<< "Header file to nodes not all successful\n" <<endl;
+                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all nodes");
+             }
+             statusBox->append("");
+         }
+         ss.str("");             //clear stringstream
+
+
+         // Cobalts
+
+         ss << "ansible cobalts -m copy -a \"src=" << HEADER_PATH << " dest=/smbtest/" << HEADER_FILE << "\"";
+
+         status = system(stringToCharPntr(ss.str()));
+         if (-1 != status)
+         {
+             ret = WEXITSTATUS(status);
+
+             if (ret==0)
+             {
+                 cout<< "Header file to cobalts all successful\n" <<endl;
+                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all cobalts");
+              }
+             else
+             {
+                 cout<< "Header file to cobalts not all successful\n" <<endl;
+                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all cobalts");
+             }
+             statusBox->append("");
+         }
+         ss.str("");             //clear stringstream
+
+
+         ss << "ansible cobalts -m shell -a \"./run-cobalt.sh\"";
+
+         status = system(stringToCharPntr(ss.str()));
+         if (-1 != status)
+         {
+             ret = WEXITSTATUS(status);
+
+             if (ret==0)
+             {
+                 cout<< "Primed all cobalts successfully\n" <<endl;
+                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Primed all cobalts successfully");
+              }
+             else
+             {
+                 cout<< "Not all Cobalts were primed successfully\n" <<endl;
+                 statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "All cobalts not primed successfully");
+             }
+             statusBox->append("");
+         }
+         ss.str("");             //clear stringstream
+
+        return ret;
+
+    }
+    catch(exception &e)
+    {
+        cout << "sendFilesOverNetwork() exception: " << e.what() << endl;
+    }
+
+    return -1;
+}
+
+//=============================================================================
+// resetHeaderFileTimes()
+// Resets Header File times to now plus STARTTIMESECS.
+// The times rollover in date/time.
+//=============================================================================
+void Window::resetHeaderFileTimes(void)
+{
+    Datetime datetime;
+    std::string nowplussecs, day, month, year, hour, minute, second;
+
+    // This time rolls over if add seconds
+    nowplussecs = datetime.getNowPlusSecs(STARTTIMESECS);
+
+    year = nowplussecs.substr(0,4);
+    month = nowplussecs.substr(5,2);
+    day = nowplussecs.substr(8,2);
+    hour = nowplussecs.substr(11,2);
+    minute = nowplussecs.substr(14,2);
+    second = nowplussecs.substr(17,2);
+
+    headerarmfiles.writeToHeaderFile("Timing", "YEAR", year);
+    headerarmfiles.writeToHeaderFile("Timing", "MONTH", month);
+    headerarmfiles.writeToHeaderFile("Timing", "DAY", day);
+    headerarmfiles.writeToHeaderFile("Timing", "HOUR", hour);
+    headerarmfiles.writeToHeaderFile("Timing", "MINUTE", minute);
+    headerarmfiles.writeToHeaderFile("Timing", "SECOND", second);
+}
+
+
+//=============================================================================
+// checkCountdown()
+// This method parses the start and end times for the video recording,
+// converts the times from dd-MM-yyyy hh:mm:ss to yyyy-MM-dd hh:mm:ss formats for timer and NTP
+// If countdown time is valid, this method starts the countdown timer
+//=============================================================================
+bool Window::checkCountdown(void)
+{
+    Datetime datetime;
+    stringstream ss_unixtime;
+    HeaderArmFiles headerarmfiles;
+
+    // read armtime from Header File values
+    QString year = headerarmfiles.readFromHeaderFile("Timing", "YEAR");
+    QString month = headerarmfiles.readFromHeaderFile("Timing", "MONTH");
+    QString day = headerarmfiles.readFromHeaderFile("Timing", "DAY");
+    QString hour = headerarmfiles.readFromHeaderFile("Timing", "HOUR");
+    QString minute = headerarmfiles.readFromHeaderFile("Timing", "MINUTE");
+    QString second = headerarmfiles.readFromHeaderFile("Timing", "SECOND");
+
+    // calculate ENDTIMESECS from Header File values
+    int num_pris = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "NUM_PRIS").toStdString().c_str());
+    int pri = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "PRI").toStdString().c_str());    // microseconds
+    EXPERIMENT_LENGTH = num_pris * pri * 1e-6;  // = 60000 * 1000/1000000 = 60
+
+    //required format: YYYY-MM-DD HH:MM:SS
+    ss_unixtime << year.toStdString() << "-" << month.toStdString() << "-" << day.toStdString() << " ";
+    ss_unixtime << hour.toStdString() << ":" << minute.toStdString() << ":" << second.toStdString();
+
+    //change times to Unix time format
+    strtUnixTime = datetime.convertToUnixTime(ss_unixtime.str());
+    stopUnixTime = strtUnixTime + EXPERIMENT_LENGTH;
+    currentUnixTime = time(NULL);
+
+    //check if the start/end times are in the past
+    if(strtUnixTime < currentUnixTime)
+    {
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future start time");
+        return false;
+    }
+    else if(stopUnixTime < strtUnixTime)
+    {
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Please use a future stop time");
+        return false;
+    }
+    else // return true
+    {
+        // start countdown to armtime
+        starttimer->start((strtUnixTime - currentUnixTime)*1000);
+        countDownLabel->setText("Countdown to armtime");
+        experiment_state = WAITING;
+        statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
+        return true;
+    }
+}
+
+//=============================================================================
+// runTCUs()
+//=============================================================================
+void Window::runTCUs(void)
+{
+    statusBox->append("");
+    statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Initialising TCUs");
+
+    runTCU(0);
+    runTCU(1);
+    //runTCU(2);
+
+    statusBox->setTextColor("black");
+}
+
+//=============================================================================
+// runTCU()
+//=============================================================================
+void Window::runTCU(int tcu_num)
+{
+    stringstream ss;
+    int ret;
+    int status;
+
+    ss << "../scripts/tcu/tcu_v2/tcu_project.py ";
+    if (tcu_num == 0)
+    {
+        ss << TCU0;
+    }
+    else if (tcu_num == 1)
+    {
+        ss << TCU1;
+    }
+    else
+    {
+        ss << TCU2;
+    }
+    ss << " " << HEADER_PATH << " &" << endl;
+    cout << ss.str() << endl;
+    status = system(ss.str().c_str());
+
+    if (-1 != status)
+    {
+        ret = WEXITSTATUS(status);
+
+        if(ret==0)
+        {
+            cout<< "TCU" << tcu_num << "init successful\n" <<endl;
+            statusBox->setTextColor("green");
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + "tcu" + QString::number(tcu_num));
+        }
+        else
+        {
+            cout<< "TCU" << tcu_num << " init FAILED" <<endl;
+            statusBox->setTextColor("red");
+            statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + "tcu" + QString::number(tcu_num) + "\n" \
+                       + "return value=" + QString::number(ret));
+        }
+        statusBox->append("");
+    }
+    ss.str("");             //clear stringstream
+}
+
+
+//=============================================================================
+// abortGoButtonClicked()
+// aborts GoButton
+//=============================================================================
+void Window::abortGoButtonClicked(void)
+{
+    goButton->setStyleSheet(setButtonColour(RED).c_str());
+    goLaterButton->setStyleSheet(setButtonColour(RED).c_str());
+}
+
+//=============================================================================
+// goButtonClicked()
+// sends out header file to all units then starts countdown to armtime
+//=============================================================================
+void Window::goButtonClicked(void)
+{
+
+    // reset times
+    resetHeaderFileTimes();
+
+    // if countdown time valid
+    if (checkCountdown())
+    {
+        goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+
+        // sends out header file to all units
+        if (sendFilesOverNetwork() == 0)
+        {
+            // initialise TCUs
+            runTCUs();
+        }
+    }
+    else
+    {
+        goButton->setStyleSheet(setButtonColour(RED).c_str());
+    }
+
+    headerfilewindow->newtime = false;
+    goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+
+}
+
+//=============================================================================
+// goLaterButtonClicked()
+// sends out header file to all units then starts countdown to armtime
+//=============================================================================
+void Window::goLaterButtonClicked(void)
+{
+
+    if (headerfilewindow->newtime == true)
+    {
+        // if countdown time valid, start display
+        if (checkCountdown())
+        {
+            goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
+
+            // sends out header file to all units
+            if (sendFilesOverNetwork() == 0)
+            {
+                // initialise TCUs
+                runTCUs();
+            }
+        }
+        else
+        {
+            goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+        }
+
+        headerfilewindow->newtime = false;
+        goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    }
+
+}
+
+//=============================================================================
+// setButtonColour(int colourno)
+// sets button colour to light green = rgb(100,255,125),  light gray = rgb(211,211,211) or light red = rgb(255,100,125)
+//=============================================================================
+string Window::setButtonColour(int colourno)
+{
+    string colourstr;
+    if (colourno == GREEN)
+    {
+        colourstr = "* { background-color: rgb(100,255,125) }";  // light green
+    }
+    else if (colourno == GRAY)
+    {
+        colourstr = "* { background-color: rgb(211,211,211) }";  // light gray
+    }
+    else
+    {
+        colourstr = "* { background-color: rgb(255,100,125) }";  // light red
+    }
+    return colourstr;
 }

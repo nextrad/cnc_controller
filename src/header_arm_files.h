@@ -10,16 +10,18 @@
 #include "includes.h"
 #include "parameters.h"
 #include "SimpleIni.h"
+#include <cctype>
+#include <string>
 
 class HeaderArmFiles
 {
     public:
         HeaderArmFiles(void);
-
         void writeToHeaderFile(string section, string key, string value);
         QString readFromHeaderFile(string section, string var);
-        void writeToArmtimecfgFile(string data);
-        QString readFromBearingsFile(string varName);
+        string readFromGPSInfoFile(int nodeno, string var);
+        string readFromBearingsFile(int nodeno, string var, int strsize);
+
     private:
 };
 

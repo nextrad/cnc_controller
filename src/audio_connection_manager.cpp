@@ -51,23 +51,25 @@ void AudioConnectionManager::loginAMI(void)
     writeToSocket("Username: admin");
     writeToSocket("Secret: admin");
     writeToSocket("");
-    //readFromSocket();
+
     writeToSocket("Action: Events"); //Turn Event Logging Off
     writeToSocket("ActionID: 2");
     writeToSocket("EventMask: off");
     writeToSocket("");
-    //readFromSocket();
 }
 
 
 void AudioConnectionManager::beepAMI(void)
 {
-    writeToSocket("Action: Originate", PRIVATE); //start recording
-    writeToSocket("ActionID: 6", PRIVATE);
-    writeToSocket("Channel: LOCAL/101", PRIVATE);
-    writeToSocket("Application: Playback", PRIVATE);
-    writeToSocket("Data: /home/nextrad/tones/", PRIVATE);
-    writeToSocket("", PRIVATE);
+    stringstream ss_data;
+    ss_data << "Data: " << TONES_PATH;
+
+    writeToSocket("Action: Originate");
+    writeToSocket("ActionID: 6");
+    writeToSocket("Channel: LOCAL/101");
+    writeToSocket("Application: Playback");
+    writeToSocket(ss_data.str().c_str());
+    writeToSocket("");
 }
 
 
@@ -99,8 +101,6 @@ void AudioConnectionManager::readFromSocket(void)
 
 void AudioConnectionManager::startRecording(void)
 {
-    printf("Initializing audio recording...\n\n");
-
     Datetime datetime;
 
     string record_command = "RecordFile: /var/spool/asterisk/" + datetime.getTimeAndDate("%d.%m.%Y_%I:%M:%S") + ".wav";  //the only location available for recording
@@ -112,7 +112,7 @@ void AudioConnectionManager::startRecording(void)
     writeToSocket(record_command);
     writeToSocket("");
 
-    printf("\nWaiting for audio recording to begin...\n\n");
+    printf("\nWaiting for audio recording to begin...\n");
     //waiting in a while loop would make the whole program hang and should rather be done with a QTimer
     //I thought it would be better to be able to start and stop the audio recording with a button
 /*
@@ -137,7 +137,7 @@ void AudioConnectionManager::startRecording(void)
         oldTime = currentTime;
     }
 */
-    printf("\nRecording audio ...\n");
+    printf("Recording audio ...\n");
     writeToSocket("");
 /*
     while (currentTime <= endTime)
