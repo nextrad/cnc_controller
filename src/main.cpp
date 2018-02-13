@@ -8,7 +8,7 @@
 
 #include <QApplication>
 #include <QPushButton>
-#include "window.h"
+#include "mainwindow.h"
 #include "includes.h"
 #include "parameters.h"
 
@@ -23,16 +23,17 @@ void setParameters(void);
 
 int main(int argc, char **argv)
 {
+/*
     testDNS();
     testNTP();
-    testAsterisk();
+    testAsterisk();*/
     setParameters();
 
     QApplication app (argc, argv);
     QIcon icon(ICON_PATH);
-    Window window;
-    window.setWindowIcon(icon); //Set Icon for application
-    window.show();
+    MainWindow mainwindow;
+    mainwindow.setWindowIcon(icon); //Set Icon for application
+    mainwindow.show();
     return app.exec();
 }
 
