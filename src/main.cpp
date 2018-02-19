@@ -23,10 +23,10 @@ void setParameters(void);
 
 int main(int argc, char **argv)
 {
-/*
+
     testDNS();
     testNTP();
-    testAsterisk();*/
+    testAsterisk();
     setParameters();
 
     QApplication app (argc, argv);

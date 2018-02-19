@@ -28,39 +28,52 @@ LIBS += -L/usr/lib/x86_64-linux-gnu -lboost_system -pthread
 
 QMAKE_CXXFLAGS += -std=c++0x -pthread   #using c++11 and multithreading
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    audio_connection_manager.cpp \
+SOURCES += audio_connection_manager.cpp \
     connection_manager.cpp \
     datetime.cpp \
     header_arm_files.cpp \
     headerfilewindow.cpp \
-    networkmanager.cpp
-#    audio_connection_manager.cpp \
-#    connection_manager.cpp \
-#    datetime.cpp \
-#    header_arm_files.cpp \
-#    headerfilewindow.cpp \
-#    main.cpp \
-#    networkmanager.cpp 
+    main.cpp \
+    mainwindow.cpp \
+    networkmanager.cpp \
+    timingdialog.cpp \
+    pulsedialog.cpp \
+    targetdialog.cpp \
+    bearingsdialog.cpp \
+    weatherdialog.cpp \
+    geometrydialog.cpp \
+    quicklookdialog.cpp
 
-HEADERS  += mainwindow.h \
-    includes.h \
-    parameters.h \
-    audio_connection_manager.h \
+
+HEADERS  +=  audio_connection_manager.h \
     connection_manager.h \
     datetime.h \
     header_arm_files.h \
     headerfilewindow.h \
-    networkmanager.h
-#    audio_connection_manager.h \
-#    connection_manager.h \
-#    datetime.h \
-#    header_arm_files.h \
-#    headerfilewindow.h \
-#    includes.h \
-#    networkmanager.h \
-#    parameters.h \
-#    mainwindow.h
+    includes.h \
+    mainwindow.h \
+    networkmanager.h \
+    parameters.h \
+    timingdialog.h \
+    pulsedialog.h \
+    targetdialog.h \
+    bearingsdialog.h \
+    ../build/ui_headerfilewindow.h \
+    ../build/ui_mainwindow.h \
+    ../build/ui_bearingsdialog.h \
+    ../build/ui_pulsedialog.h \
+    ../build/ui_targetdialog.h \
+    ../build/ui_timingdialog.h \
+    weatherdialog.h \
+    geometrydialog.h \
+    quicklookdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    headerfilewindow.ui \
+    timingdialog.ui \
+    pulsedialog.ui \
+    targetdialog.ui \
+    bearingsdialog.ui \
+    weatherdialog.ui \
+    geometrydialog.ui \
+    quicklookdialog.ui

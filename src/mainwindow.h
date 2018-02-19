@@ -7,6 +7,7 @@
 #include <QLCDNumber>
 #include <QTextEdit>
 #include <QString>
+
 #include "connection_manager.h"
 #include "audio_connection_manager.h"
 #include "includes.h"
@@ -15,8 +16,9 @@
 #include "headerfilewindow.h"
 #include "header_arm_files.h"
 #include "networkmanager.h"
-#include <thread>
+#include "timingdialog.h"
 
+#include <thread>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
@@ -85,6 +87,7 @@ private:
     HeaderFileWindow *headerfilewindow;
     HeaderArmFiles headerarmfiles;
     NetworkManager server;
+    TimingDialog *timingdialog;
 
     void closeServer();
 
@@ -107,8 +110,6 @@ private:
     void updateCountDownLCD(void);
     void startRecording(void);
     void stopRecording(void);
-
-
 };
 
 #endif // MAINWINDOW_H

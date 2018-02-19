@@ -26,7 +26,6 @@
 extern int EXPERIMENT_LENGTH; //in seconds
 
 
-
 //=============================================================================
 // Constructor
 //=============================================================================
@@ -36,15 +35,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     experiment_state = INACTIVE; //see enum for explanation
 
-//    resetHeaderFileTimes();
-
-
+    resetHeaderFileTimes();
 
     ui->setupUi(this);
 
-     ui->Countdown->display("00:00:00");
+    ui->Countdown->display("00:00:00");
 
-    ui->goButton->setStyleSheet(setButtonColour(RED).c_str());
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
 #ifdef DEBUG
     ui->goLaterButton->show();
@@ -53,8 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->goLaterButton->hide();
 #endif
 
-
-/*
     //connect to asterisk server and set up audio recording
     audioRecorder.connectToSocket();
     audioRecorder.loginAMI();
@@ -80,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         server.resetError(i);       //This is to try get rid of a bug where server.error
     }
-*/
+
 }
 
 //=============================================================================
@@ -100,6 +95,20 @@ void MainWindow::closeServer()
 {
     server.closeServer();
 }
+
+//=============================================================================
+// editHeaderFileButton()
+// Edits the Header File using several windows
+//=============================================================================
+void MainWindow::on_editHeaderFileButton_clicked()
+{
+    headerfilewindow = new HeaderFileWindow(this);
+    headerfilewindow->show();
+
+    ui->goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
+}
+
+
 
 //=============================================================================
 // connectionTestButtonClicked()
@@ -240,7 +249,6 @@ void MainWindow::testSubNetwork(QString NetID)
     ui->statusBox->append("");
 }
 
-
 //=============================================================================
 // testConnection()
 // pings an address to see if it's connected to the network.
@@ -270,7 +278,6 @@ bool MainWindow::testConnection(string address)
     return false;
 }
 
-
 //=============================================================================
 // stringToCharPntr()
 // Takes in a string and converts it to char*
@@ -280,11 +287,6 @@ char* MainWindow::stringToCharPntr(string str)
     char *cstr = new char[str.length() + 1];
     strcpy(cstr, str.c_str());
     return cstr;
-}
-
-void MainWindow::on_editHeaderFileButton_clicked()
-{
-
 }
 
 //=============================================================================
@@ -303,7 +305,6 @@ void MainWindow::on_receiveNodePositionsButton_clicked()
     ui->statusBox->append("");
     ui->statusBox->setTextColor("black");
 }
-
 
 //=============================================================================
 // receiveNodePosition()
@@ -549,7 +550,6 @@ void MainWindow::on_abortAudioRecordingButton_clicked()
     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio recording aborted!");
 }
 
-
 //=============================================================================
 // runNextlookButtonClicked()
 //=============================================================================
@@ -569,7 +569,6 @@ void MainWindow::on_runNextlookButton_clicked()
          }
     }
 }
-
 
 //=============================================================================
 // abortGoButtonClicked()
@@ -608,7 +607,6 @@ void MainWindow::on_goButton_clicked()
         ui->goButton->setStyleSheet(setButtonColour(RED).c_str());
     }
 
-    headerfilewindow->newtime = false;
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
 
 }
@@ -661,6 +659,8 @@ bool MainWindow::checkCountdown(void)
     QString minute = headerarmfiles.readFromHeaderFile("Timing", "MINUTE");
     QString second = headerarmfiles.readFromHeaderFile("Timing", "SECOND");
 
+    //cout << year.toStdString() << " " << month.toStdString() << " " << day.toStdString() << " " << hour.toStdString() << " " << minute.toStdString() << " " << second.toStdString() << endl;
+
     // calculate ENDTIMESECS from Header File values
     int num_pris = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "NUM_PRIS").toStdString().c_str());
     int pri = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "PRI").toStdString().c_str());    // microseconds
@@ -670,8 +670,27 @@ bool MainWindow::checkCountdown(void)
     ss_unixtime << year.toStdString() << "-" << month.toStdString() << "-" << day.toStdString() << " ";
     ss_unixtime << hour.toStdString() << ":" << minute.toStdString() << ":" << second.toStdString();
 
-    //change times to Unix time format
-    strtUnixTime = datetime.convertToUnixTime(ss_unixtime.str());
+    struct tm tm1;
+    tm1 = datetime.convertToStructTm(ss_unixtime.str());
+
+    // Check for validity
+    int iyear, imonth, iday;
+
+    iyear = tm1.tm_year + 1900;
+    imonth = tm1.tm_mon + 1;
+    iday = tm1.tm_mday;
+
+    //cout << iyear << " " << imonth << " " << iday << endl;
+
+    if (((imonth == 2) && (iday > 28) && (remainder (iyear, 4) != 0)) ||
+        ((imonth == 2) && (iday > 29) && (remainder (iyear, 4) == 0)) ||
+        (((imonth == 4) || (imonth == 6) || (imonth == 11))  && (iday > 30)))
+    {
+        ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File date is invalid, please correct it.");
+        return false;
+    }
+
+    strtUnixTime = datetime.convertToUnixTime(tm1);
     stopUnixTime = strtUnixTime + EXPERIMENT_LENGTH;
     currentUnixTime = time(NULL);
 
@@ -693,6 +712,7 @@ bool MainWindow::checkCountdown(void)
         ui->countdownLabel->setText("Countdown to armtime");
         experiment_state = WAITING;
         ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
+
         return true;
     }
 }
@@ -716,6 +736,7 @@ string MainWindow::setButtonColour(int colourno)
     {
         colourstr = "* { background-color: rgb(255,100,125) }";  // light red
     }
+
     return colourstr;
 }
 
@@ -842,7 +863,7 @@ void MainWindow::runTCUs(void)
 
     runTCU(0);
     runTCU(1);
-    //runTCU(2);
+    runTCU(2);
 
     ui->statusBox->setTextColor("black");
 }
@@ -895,35 +916,25 @@ void MainWindow::runTCU(int tcu_num)
     ss.str("");             //clear stringstream
 }
 
-
 //=============================================================================
 // goLaterButtonClicked()
 // sends out header file to all units then starts countdown to armtime
 //=============================================================================
 void MainWindow::on_goLaterButton_clicked()
 {
-    if (headerfilewindow->newtime == true)
+    // if countdown time valid, start display
+    if (checkCountdown())
     {
-        // if countdown time valid, start display
-        if (checkCountdown())
+        // sends out header file to all units
+        if (sendFilesOverNetwork() == 0)
         {
-            ui->goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
-
-            // sends out header file to all units
-            if (sendFilesOverNetwork() == 0)
-            {
-                // initialise TCUs
-                runTCUs();
-            }
-        }
-        else
-        {
-            ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
-        }
-
-        headerfilewindow->newtime = false;
-        ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+            // initialise TCUs
+            runTCUs();
+        }    
     }
+
+    ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+
 }
 
 //=============================================================================

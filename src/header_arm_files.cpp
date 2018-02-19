@@ -110,7 +110,6 @@ string HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
 string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
 {
     string path, data;
-    int c;
 
     switch (nodeno)
     {

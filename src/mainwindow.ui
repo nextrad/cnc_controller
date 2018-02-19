@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>654</height>
+    <width>518</width>
+    <height>662</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Hello Application</string>
+   <string>NeXtRAD Application</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="label">
@@ -38,10 +38,10 @@
    <widget class="QLabel" name="countdownLabel">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>290</x>
       <y>510</y>
       <width>211</width>
-      <height>41</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -59,15 +59,15 @@ recording active</string>
      <rect>
       <x>150</x>
       <y>80</y>
-      <width>331</width>
-      <height>421</height>
+      <width>351</width>
+      <height>431</height>
      </rect>
     </property>
    </widget>
    <widget class="QLCDNumber" name="Countdown">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>290</x>
       <y>560</y>
       <width>211</width>
       <height>51</height>
@@ -85,11 +85,17 @@ recording active</string>
    <widget class="QPushButton" name="goButton">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>560</y>
-      <width>129</width>
-      <height>47</height>
+      <x>150</x>
+      <y>550</y>
+      <width>131</width>
+      <height>65</height>
      </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>65</height>
+     </size>
     </property>
     <property name="maximumSize">
      <size>
@@ -101,35 +107,30 @@ recording active</string>
      <string>GO</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="goLaterButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>510</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>16777215</width>
-      <height>48</height>
-     </size>
-    </property>
-    <property name="text">
-     <string>GO LATER</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>80</y>
-      <width>131</width>
-      <height>421</height>
+      <width>132</width>
+      <height>541</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="editHeaderFileButton">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>65</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Edit Header
+File</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="testConnectionButton">
        <property name="maximumSize">
@@ -141,20 +142,6 @@ recording active</string>
        <property name="text">
         <string>Check Network
 Connection</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="editHeaderFileButton">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>48</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Edit Header
-File</string>
        </property>
       </widget>
      </item>
@@ -181,7 +168,8 @@ Positions</string>
         </size>
        </property>
        <property name="text">
-        <string>Receive Bearings</string>
+        <string>Receive
+Pedestal Bearings</string>
        </property>
       </widget>
      </item>
@@ -237,6 +225,19 @@ NeXtLook</string>
        </property>
        <property name="text">
         <string>Abort GO</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="goLaterButton">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>48</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>GO LATER</string>
        </property>
       </widget>
      </item>

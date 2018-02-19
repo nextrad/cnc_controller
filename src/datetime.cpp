@@ -127,10 +127,10 @@ QString Datetime::getCountDownTime(time_t timeLeft)
 
 
 //=============================================================================
-// convertToUnixTime()
+// convertToStructTm()
 //=============================================================================
-//Method to convert time to 'yyyy-MM-dd hh:mm:ss' format then to data type time_t
-time_t Datetime::convertToUnixTime(string timestamp)
+//Method to convert time to 'yyyy-MM-dd hh:mm:ss' format then to struct tm
+struct tm Datetime::convertToStructTm(string timestamp)
 {
     string str = timestamp;
     string s   = "";
@@ -148,11 +148,34 @@ time_t Datetime::convertToUnixTime(string timestamp)
     {
         s = str;
     }
+    else if ((str.substr(4,1) == "-") && (str.substr(6,1) == "-") && (str.substr(9,1) == " "))
+    {
+        s = str;
+    }
+    else if ((str.substr(4,1) == "-") && (str.substr(6,1) == "-") && (str.substr(8,1) == " "))
+    {
+        s = str;
+    }
 
     // Convert the date from 'yyyy-MM-dd hh:mm:ss' format to get correct Unix time!
     struct tm tm;
-    strptime(s.c_str(), "%Y-%m-%d %H:%M:%S", &tm);
-    return mktime(&tm);
+    if (strptime(s.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL)
+    {
+        cout << "convertToStructTm() " << timestamp << "->" << s << " ERROR !!!! " << endl;
+    }
+
+    return tm;
+}
+
+
+
+//=============================================================================
+// convertToUnixTime()
+//=============================================================================
+//Method to convert struct tm format to data type time_t
+time_t Datetime::convertToUnixTime(struct tm tm1)
+{
+    return mktime(&tm1);
 }
 
 
