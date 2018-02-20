@@ -152,23 +152,23 @@ int TimingDialog::on_buttonBox_clicked()
     year = ss.str();
     ss.str("");             //clear stringstream
 
-    ss << ui->monthcomboBox->currentIndex() + 1 << endl;
+    ss << setfill('0') << setw(2) << ui->monthcomboBox->currentIndex() + 1 << endl;
     month = ss.str();
     ss.str("");             //clear stringstream
 
-    ss << ui->daycomboBox->currentIndex() + 1 << endl;
+    ss << setfill('0') << setw(2) << ui->daycomboBox->currentIndex() + 1 << endl;
     day = ss.str();
     ss.str("");             //clear stringstream
 
-    ss << ui->hourcomboBox->currentIndex() << endl;
+    ss << setfill('0') << setw(2) << ui->hourcomboBox->currentIndex() << endl;
     hour = ss.str();
     ss.str("");             //clear stringstream
 
-    ss << ui->minutecomboBox->currentIndex() << endl;
+    ss << setfill('0') << setw(2) << ui->minutecomboBox->currentIndex() << endl;
     minute = ss.str();
     ss.str("");             //clear stringstream
 
-    ss << ui->secondcomboBox->currentIndex() << endl;
+    ss << setfill('0') << setw(2) << ui->secondcomboBox->currentIndex() << endl;
     second = ss.str();
     ss.str("");             //clear stringstream
 

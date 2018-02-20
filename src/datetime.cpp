@@ -157,6 +157,8 @@ struct tm Datetime::convertToStructTm(string timestamp)
         s = str;
     }
 
+    cout << "convertToStructTm() = " << s << endl;
+
     // Convert the date from 'yyyy-MM-dd hh:mm:ss' format to get correct Unix time!
     struct tm tm;
     if (strptime(s.c_str(), "%Y-%m-%d %H:%M:%S", &tm) == NULL)

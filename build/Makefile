@@ -996,6 +996,7 @@ moc_mainwindow.cpp: /opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/QWidget \
 		../src/weatherdialog.h \
 		../src/geometrydialog.h \
 		../src/quicklookdialog.h \
+		../src/digitalclock.h \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/qmainwindow.h \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/qtabwidget.h \
@@ -2327,6 +2328,7 @@ main.o: ../src/main.cpp /opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/QApplication \
 		../src/weatherdialog.h \
 		../src/geometrydialog.h \
 		../src/quicklookdialog.h \
+		../src/digitalclock.h \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/qmainwindow.h \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/qtabwidget.h
@@ -2474,6 +2476,7 @@ mainwindow.o: ../src/mainwindow.cpp ../src/mainwindow.h \
 		../src/weatherdialog.h \
 		../src/geometrydialog.h \
 		../src/quicklookdialog.h \
+		../src/digitalclock.h \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/qmainwindow.h \
 		/opt/Qt5.8.0/5.8/gcc_64/include/QtWidgets/qtabwidget.h \

@@ -25,14 +25,14 @@ BearingsDialog::BearingsDialog(QWidget *parent) :
     ui->dtg_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "DTG"));
     ui->baseline_bisector_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "BASELINE_BISECTOR"));
 
-    ui->node0_range_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "N0_RANGE"));
-    ui->node0_bearing_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "N0_BEARING"));
+    ui->node0_range_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "NODE0_RANGE"));
+    ui->node0_bearing_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "NODE0_BEARING"));
 
-    ui->node1_range_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "N1_RANGE"));
-    ui->node1_bearing_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "N1_BEARING"));
+    ui->node1_range_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "NODE1_RANGE"));
+    ui->node1_bearing_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "NODE1_BEARING"));
 
-    ui->node2_range_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "N2_RANGE"));
-    ui->node2_bearing_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "N2_BEARING"));
+    ui->node2_range_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "NODE2_RANGE"));
+    ui->node2_bearing_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "NODE2_BEARING"));
 
 }
 
@@ -61,13 +61,13 @@ void BearingsDialog::on_buttonBox_clicked()
     headerarmfiles.writeToHeaderFile("Bearings", "DTG", dtg);
     headerarmfiles.writeToHeaderFile("Bearings", "BASELINE_BISECTOR", baseline_bisector);
 
-    headerarmfiles.writeToHeaderFile("Bearings", "N0_RANGE", node0_range);
-    headerarmfiles.writeToHeaderFile("Bearings", "N0_BEARING", node0_bearing);
+    headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", node0_range);
+    headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", node0_bearing);
 
-    headerarmfiles.writeToHeaderFile("Bearings", "N1_RANGE", node1_range);
-    headerarmfiles.writeToHeaderFile("Bearings", "N1_BEARING", node1_bearing);
+    headerarmfiles.writeToHeaderFile("Bearings", "NODE1_RANGE", node1_range);
+    headerarmfiles.writeToHeaderFile("Bearings", "NODE1_BEARING", node1_bearing);
 
-    headerarmfiles.writeToHeaderFile("Bearings", "N2_RANGE", node2_range);
-    headerarmfiles.writeToHeaderFile("Bearings", "N2_BEARING", node2_bearing);
+    headerarmfiles.writeToHeaderFile("Bearings", "NODE2_RANGE", node2_range);
+    headerarmfiles.writeToHeaderFile("Bearings", "NODE2_BEARING", node2_bearing);
 
 }

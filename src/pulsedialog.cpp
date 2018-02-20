@@ -127,9 +127,7 @@ void PulseDialog::on_buttonBox_clicked()
     headerarmfiles.writeToHeaderFile("PulseParameters", "ADC_DELAY", svalue);
 
     svalue = ui->pol_order->toPlainText().toStdString();
-    int len = svalue.length() - 2;
-    svalue1 = svalue.substr(0, len) + "\"";
-    headerarmfiles.writeToHeaderFile("PulseParameters", "POL_ORDER", svalue1);
+    headerarmfiles.writeToHeaderFile("PulseParameters", "POL_ORDER", svalue);
 
     svalue = ui->pri->toPlainText().toStdString();
     headerarmfiles.writeToHeaderFile("PulseParameters", "PRI", svalue);
@@ -147,72 +145,102 @@ void PulseDialog::on_buttonBox_clicked()
 
 void PulseDialog::on_radioButton0_clicked()
 {
-    if (ss.str() == "")
+    if (pol_order_str == "")
     {
-        ss << "\"";
+        pol_order_str = "\"0\"";
+    }
+    else
+    {
+        string svalue = ui->pol_order->toPlainText().toStdString();
+        int len = svalue.length() - 1;
+        pol_order_str = svalue.substr(0, len) + ", 0\"";
     }
 
-    ss << "0, ";
-    QString pol_order_qstr = QString::fromStdString(ss.str());
+    QString pol_order_qstr = QString::fromStdString(pol_order_str);
     ui->pol_order->setText(pol_order_qstr);
 }
 
 void PulseDialog::on_radioButton1_clicked()
 {
-    if (ss.str() == "")
+    if (pol_order_str == "")
     {
-        ss << "\"";
+        pol_order_str = "\"1\"";
+    }
+    else
+    {
+        string svalue = ui->pol_order->toPlainText().toStdString();
+        int len = svalue.length() - 1;
+        pol_order_str = svalue.substr(0, len) + ", 1\"";
     }
 
-    ss << "1, ";
-    QString pol_order_qstr = QString::fromStdString(ss.str());
+    QString pol_order_qstr = QString::fromStdString(pol_order_str);
     ui->pol_order->setText(pol_order_qstr);
 }
 
 void PulseDialog::on_radioButton2_clicked()
 {
-    if (ss.str() == "")
+    if (pol_order_str == "")
     {
-        ss << "\"";
+        pol_order_str = "\"2\"";
+    }
+    else
+    {
+        string svalue = ui->pol_order->toPlainText().toStdString();
+        int len = svalue.length() - 1;
+        pol_order_str = svalue.substr(0, len) + ", 2\"";
     }
 
-    ss << "2, ";
-    QString pol_order_qstr = QString::fromStdString(ss.str());
+    QString pol_order_qstr = QString::fromStdString(pol_order_str);
     ui->pol_order->setText(pol_order_qstr);
 }
 
 void PulseDialog::on_radioButton3_clicked()
 {
-    if (ss.str() == "")
+    if (pol_order_str == "")
     {
-        ss << "\"";
+        pol_order_str = "\"3\"";
+    }
+    else
+    {
+        string svalue = ui->pol_order->toPlainText().toStdString();
+        int len = svalue.length() - 1;
+        pol_order_str = svalue.substr(0, len) + ", 3\"";
     }
 
-    ss << "3, ";
-    QString pol_order_qstr = QString::fromStdString(ss.str());
+    QString pol_order_qstr = QString::fromStdString(pol_order_str);
     ui->pol_order->setText(pol_order_qstr);
 }
 
 void PulseDialog::on_radioButton4_clicked()
 {
-    if (ss.str() == "")
+    if (pol_order_str == "")
     {
-        ss << "\"";
+        pol_order_str = "\"4\"";
+    }
+    else
+    {
+        string svalue = ui->pol_order->toPlainText().toStdString();
+        int len = svalue.length() - 1;
+        pol_order_str = svalue.substr(0, len) + ", 4\"";
     }
 
-    ss << "4, ";
-    QString pol_order_qstr = QString::fromStdString(ss.str());
+    QString pol_order_qstr = QString::fromStdString(pol_order_str);
     ui->pol_order->setText(pol_order_qstr);
 }
 
 void PulseDialog::on_radioButton5_clicked()
 {
-    if (ss.str() == "")
+    if (pol_order_str == "")
     {
-        ss << "\"";
+        pol_order_str = "\"5\"";
+    }
+    else
+    {
+        string svalue = ui->pol_order->toPlainText().toStdString();
+        int len = svalue.length() - 1;
+        pol_order_str = svalue.substr(0, len) + ", 5\"";
     }
 
-    ss << "5, ";
-    QString pol_order_qstr = QString::fromStdString(ss.str());
+    QString pol_order_qstr = QString::fromStdString(pol_order_str);
     ui->pol_order->setText(pol_order_qstr);
 }

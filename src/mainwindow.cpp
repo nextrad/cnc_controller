@@ -659,7 +659,7 @@ bool MainWindow::checkCountdown(void)
     QString minute = headerarmfiles.readFromHeaderFile("Timing", "MINUTE");
     QString second = headerarmfiles.readFromHeaderFile("Timing", "SECOND");
 
-    //cout << year.toStdString() << " " << month.toStdString() << " " << day.toStdString() << " " << hour.toStdString() << " " << minute.toStdString() << " " << second.toStdString() << endl;
+    cout << "checkCountdown1() = " << year.toStdString() << " " << month.toStdString() << " " << day.toStdString() << " " << hour.toStdString() << " " << minute.toStdString() << " " << second.toStdString() << endl;
 
     // calculate ENDTIMESECS from Header File values
     int num_pris = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "NUM_PRIS").toStdString().c_str());
@@ -667,8 +667,10 @@ bool MainWindow::checkCountdown(void)
     EXPERIMENT_LENGTH = num_pris * pri * 1e-6;  // = 60000 * 1000/1000000 = 60
 
     //required format: YYYY-MM-DD HH:MM:SS
-    ss_unixtime << year.toStdString() << "-" << month.toStdString() << "-" << day.toStdString() << " ";
-    ss_unixtime << hour.toStdString() << ":" << minute.toStdString() << ":" << second.toStdString();
+    ss_unixtime << year.toStdString() << "-" << setfill('0') << setw(2) << month.toStdString() << "-" << setfill('0') << setw(2) << day.toStdString() << " ";
+    ss_unixtime << hour.toStdString() << ":" << setfill('0') << setw(2) << minute.toStdString() << ":" << setfill('0') << setw(2) << second.toStdString();
+
+    cout << "checkCountdown2() = " << ss_unixtime.str() << endl;
 
     struct tm tm1;
     tm1 = datetime.convertToStructTm(ss_unixtime.str());
@@ -680,7 +682,7 @@ bool MainWindow::checkCountdown(void)
     imonth = tm1.tm_mon + 1;
     iday = tm1.tm_mday;
 
-    //cout << iyear << " " << imonth << " " << iday << endl;
+    cout << "checkCountdown3() = " << iyear << " " << imonth << " " << iday << endl;
 
     if (((imonth == 2) && (iday > 28) && (remainder (iyear, 4) != 0)) ||
         ((imonth == 2) && (iday > 29) && (remainder (iyear, 4) == 0)) ||
@@ -709,6 +711,7 @@ bool MainWindow::checkCountdown(void)
     {
         // start countdown to armtime
         starttimer->start((strtUnixTime - currentUnixTime)*1000);
+        cout << "armtime = " << (strtUnixTime - currentUnixTime)*1000 << endl;
         ui->countdownLabel->setText("Countdown to armtime");
         experiment_state = WAITING;
         ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
@@ -900,13 +903,13 @@ void MainWindow::runTCU(int tcu_num)
 
         if(ret==0)
         {
-            cout<< "TCU" << tcu_num << "init successful\n" <<endl;
+            cout << "TCU" << tcu_num << "init successful\n" <<endl;
             ui->statusBox->setTextColor("green");
             ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + "tcu" + QString::number(tcu_num));
         }
         else
         {
-            cout<< "TCU" << tcu_num << " init FAILED" <<endl;
+            cout << "TCU" << tcu_num << " init FAILED" <<endl;
             ui->statusBox->setTextColor("red");
             ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + "tcu" + QString::number(tcu_num) + "\n" \
                        + "return value=" + QString::number(ret));
@@ -930,7 +933,7 @@ void MainWindow::on_goLaterButton_clicked()
         {
             // initialise TCUs
             runTCUs();
-        }    
+        }
     }
 
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
@@ -988,12 +991,14 @@ void MainWindow::updateCountDownLCD(void)
     {
         ui->Countdown->display("00:00:00");
     }
-    else if(experiment_state == WAITING)
+    else if (experiment_state == WAITING)
     {
         ui->Countdown->display(getCountDownTime(strtUnixTime - currentUnixTime));
+        cout << "WAITING " << strtUnixTime - currentUnixTime << endl;
     }
-    else if(experiment_state == ACTIVE)
+    else if (experiment_state == ACTIVE)
     {
         ui->Countdown->display(getCountDownTime(stopUnixTime - currentUnixTime));
+        cout << "ACTIVE " << stopUnixTime - currentUnixTime << endl;
     }
 }

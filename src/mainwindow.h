@@ -17,6 +17,7 @@
 #include "header_arm_files.h"
 #include "networkmanager.h"
 #include "timingdialog.h"
+#include "digitalclock.h"
 
 #include <thread>
 #include <iostream>
@@ -58,6 +59,10 @@ private slots:
      void on_goButton_clicked();
 
      void on_goLaterButton_clicked();
+
+     void startRecording(void);
+     void stopRecording(void);
+     void updateCountDownLCD(void);
 
 private:
     Ui::MainWindow *ui;
@@ -107,9 +112,8 @@ private:
     void runTCU(int tcu_num);
 
     QString getCountDownTime(time_t timeLeft);
-    void updateCountDownLCD(void);
-    void startRecording(void);
-    void stopRecording(void);
+
+
 };
 
 #endif // MAINWINDOW_H

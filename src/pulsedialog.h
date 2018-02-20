@@ -38,7 +38,7 @@ private:
 
     HeaderArmFiles headerarmfiles;
 
-    std::stringstream ss;
+    std::string pol_order_str;
 };
 
 #endif // PULSEDIALOG_H

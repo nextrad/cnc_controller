@@ -38,9 +38,9 @@
    <widget class="QLabel" name="countdownLabel">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>300</x>
       <y>510</y>
-      <width>211</width>
+      <width>191</width>
       <height>51</height>
      </rect>
     </property>
@@ -141,7 +141,7 @@ File</string>
        </property>
        <property name="text">
         <string>Check Network
-Connection</string>
+Connections</string>
        </property>
       </widget>
      </item>
