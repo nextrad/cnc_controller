@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'headerfilewindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.8.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.2.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,35 +12,32 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'headerfilewindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.8.0. It"
+#error "This file was generated using the moc from 5.2.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
 
 QT_BEGIN_MOC_NAMESPACE
-QT_WARNING_PUSH
-QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_HeaderFileWindow_t {
     QByteArrayData data[9];
-    char stringdata0[264];
+    char stringdata[265];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_HeaderFileWindow_t, stringdata0) + ofs \
-        - idx * sizeof(QByteArrayData)) \
+    offsetof(qt_meta_stringdata_HeaderFileWindow_t, stringdata) + ofs \
+        - idx * sizeof(QByteArrayData) \
     )
 static const qt_meta_stringdata_HeaderFileWindow_t qt_meta_stringdata_HeaderFileWindow = {
     {
-QT_MOC_LITERAL(0, 0, 16), // "HeaderFileWindow"
-QT_MOC_LITERAL(1, 17, 33), // "on_timingParametersButton_cli..."
-QT_MOC_LITERAL(2, 51, 0), // ""
-QT_MOC_LITERAL(3, 52, 35), // "on_geometryParametersButton_c..."
-QT_MOC_LITERAL(4, 88, 39), // "on_targetPositionSettingsButt..."
-QT_MOC_LITERAL(5, 128, 32), // "on_bearingsButtonClicked_clicked"
-QT_MOC_LITERAL(6, 161, 34), // "on_weatherParametersButton_cl..."
-QT_MOC_LITERAL(7, 196, 32), // "on_pulseParametersButton_clicked"
-QT_MOC_LITERAL(8, 229, 34) // "on_quicklookSettingsButton_cl..."
-
+QT_MOC_LITERAL(0, 0, 16),
+QT_MOC_LITERAL(1, 17, 33),
+QT_MOC_LITERAL(2, 51, 0),
+QT_MOC_LITERAL(3, 52, 35),
+QT_MOC_LITERAL(4, 88, 39),
+QT_MOC_LITERAL(5, 128, 32),
+QT_MOC_LITERAL(6, 161, 34),
+QT_MOC_LITERAL(7, 196, 32),
+QT_MOC_LITERAL(8, 229, 34)
     },
     "HeaderFileWindow\0on_timingParametersButton_clicked\0"
     "\0on_geometryParametersButton_clicked\0"
@@ -48,7 +45,7 @@ QT_MOC_LITERAL(8, 229, 34) // "on_quicklookSettingsButton_cl..."
     "on_bearingsButtonClicked_clicked\0"
     "on_weatherParametersButton_clicked\0"
     "on_pulseParametersButton_clicked\0"
-    "on_quicklookSettingsButton_clicked"
+    "on_quicklookSettingsButton_clicked\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -66,13 +63,13 @@ static const uint qt_meta_data_HeaderFileWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   49,    2, 0x08 /* Private */,
-       3,    0,   50,    2, 0x08 /* Private */,
-       4,    0,   51,    2, 0x08 /* Private */,
-       5,    0,   52,    2, 0x08 /* Private */,
-       6,    0,   53,    2, 0x08 /* Private */,
-       7,    0,   54,    2, 0x08 /* Private */,
-       8,    0,   55,    2, 0x08 /* Private */,
+       1,    0,   49,    2, 0x08,
+       3,    0,   50,    2, 0x08,
+       4,    0,   51,    2, 0x08,
+       5,    0,   52,    2, 0x08,
+       6,    0,   53,    2, 0x08,
+       7,    0,   54,    2, 0x08,
+       8,    0,   55,    2, 0x08,
 
  // slots: parameters
     QMetaType::Void,
@@ -90,7 +87,6 @@ void HeaderFileWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         HeaderFileWindow *_t = static_cast<HeaderFileWindow *>(_o);
-        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->on_timingParametersButton_clicked(); break;
         case 1: _t->on_geometryParametersButton_clicked(); break;
@@ -107,7 +103,7 @@ void HeaderFileWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
 
 const QMetaObject HeaderFileWindow::staticMetaObject = {
     { &QDialog::staticMetaObject, qt_meta_stringdata_HeaderFileWindow.data,
-      qt_meta_data_HeaderFileWindow,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+      qt_meta_data_HeaderFileWindow,  qt_static_metacall, 0, 0}
 };
 
 
@@ -118,8 +114,8 @@ const QMetaObject *HeaderFileWindow::metaObject() const
 
 void *HeaderFileWindow::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
-    if (!strcmp(_clname, qt_meta_stringdata_HeaderFileWindow.stringdata0))
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_HeaderFileWindow.stringdata))
         return static_cast<void*>(const_cast< HeaderFileWindow*>(this));
     return QDialog::qt_metacast(_clname);
 }
@@ -140,5 +136,4 @@ int HeaderFileWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     }
     return _id;
 }
-QT_WARNING_POP
 QT_END_MOC_NAMESPACE

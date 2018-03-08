@@ -35,7 +35,6 @@ SOURCES += audio_connection_manager.cpp \
     headerfilewindow.cpp \
     main.cpp \
     mainwindow.cpp \
-    networkmanager.cpp \
     timingdialog.cpp \
     pulsedialog.cpp \
     targetdialog.cpp \
@@ -52,7 +51,6 @@ HEADERS  +=  audio_connection_manager.h \
     headerfilewindow.h \
     includes.h \
     mainwindow.h \
-    networkmanager.h \
     parameters.h \
     timingdialog.h \
     pulsedialog.h \

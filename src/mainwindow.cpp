@@ -71,10 +71,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(countdowntimer, SIGNAL(timeout()), this, SLOT(updateCountDownLCD()));
     countdowntimer->start(1000);
 
+    /*
     for(int i=0; i<3; i++)
     {
         server.resetError(i);       //This is to try get rid of a bug where server.error
     }
+    */
 
 }
 
@@ -93,7 +95,7 @@ MainWindow::~MainWindow()
 //=============================================================================
 void MainWindow::closeServer()
 {
-    server.closeServer();
+    //server.closeServer();
 }
 
 //=============================================================================
@@ -105,7 +107,10 @@ void MainWindow::on_editHeaderFileButton_clicked()
     headerfilewindow = new HeaderFileWindow(this);
     headerfilewindow->show();
 
+    ui->statusBox->setTextColor("black");
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
     ui->goLaterButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    ui->countdownLabel->setText("");
 }
 
 
@@ -121,6 +126,9 @@ void MainWindow::on_testConnectionButton_clicked()
     testSubNetwork("3");
 
     ui->statusBox->setTextColor("black");
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    ui->countdownLabel->setText("");
 }
 
 //=============================================================================
@@ -304,6 +312,10 @@ void MainWindow::on_receiveNodePositionsButton_clicked()
 
     ui->statusBox->append("");
     ui->statusBox->setTextColor("black");
+    ui->statusBox->setTextColor("black");
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    ui->countdownLabel->setText("");
 }
 
 //=============================================================================
@@ -398,18 +410,21 @@ void MainWindow::on_receiveBearingsButton_clicked()
 
     ui->statusBox->append("");
     ui->statusBox->setTextColor("black");
+    ui->statusBox->setTextColor("black");
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    ui->countdownLabel->setText("");
 }
 
 //=============================================================================
 // receiveBearings()
 
-/*  tardat2cc.rtf
-(*171207*)
-DTG	061855Z 1217
-Target Lat/Lon 	{-34.1813,18.46}
-n1: Range	1.82952
-n1: Bearing	46.5192
-*/
+//  tardat2cc.rtf
+//(*171207*)
+//DTG	061855Z 1217
+//Target Lat/Lon 	{-34.1813,18.46}
+//n1: Range	1.82952
+//n1: Bearing	46.5192
 //=============================================================================
 void MainWindow::receiveBearings(int node_num)
 {
@@ -525,6 +540,10 @@ void MainWindow::on_showVideoButton_clicked()
             std::cout << "Failed to execute command properly" << endl;
          }
     }
+    ui->statusBox->setTextColor("black");
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    ui->countdownLabel->setText("");
 }
 
 //=============================================================================
@@ -546,8 +565,11 @@ void MainWindow::on_abortAudioRecordingButton_clicked()
         endtimer->stop();
     }
     experiment_state = INACTIVE;
-    ui->countdownLabel->setText("Audio recording aborted!");
+    ui->statusBox->setTextColor("black");
     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio recording aborted!");
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    ui->countdownLabel->setText("Audio recording aborted!");
 }
 
 //=============================================================================
@@ -568,6 +590,10 @@ void MainWindow::on_runNextlookButton_clicked()
             std::cout << "Failed to execute command properly" << endl;
          }
     }
+    ui->statusBox->setTextColor("black");
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+    ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    ui->countdownLabel->setText("");
 }
 
 //=============================================================================
@@ -576,8 +602,10 @@ void MainWindow::on_runNextlookButton_clicked()
 //=============================================================================
 void MainWindow::on_abortGoButton_clicked()
 {
+    ui->statusBox->setTextColor("black");
     ui->goButton->setStyleSheet(setButtonColour(RED).c_str());
     ui->goLaterButton->setStyleSheet(setButtonColour(RED).c_str());
+    ui->countdownLabel->setText("");
 }
 
 //=============================================================================
@@ -607,7 +635,7 @@ void MainWindow::on_goButton_clicked()
         ui->goButton->setStyleSheet(setButtonColour(RED).c_str());
     }
 
-    ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+    ui->statusBox->setTextColor("black");
 
 }
 
@@ -936,6 +964,8 @@ void MainWindow::on_goLaterButton_clicked()
         }
     }
 
+    ui->statusBox->setTextColor("black");
+    ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
 
 }
@@ -966,7 +996,7 @@ void MainWindow::stopRecording(void)
     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio stopped");
     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio saved to /var/spool/Asterisk/");
     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Audio relocated to /home/nextrad/Documents/Audio/output");
-    ui->countdownLabel->setText("Stopped recording");
+    ui->countdownLabel->setText("Audio recording stopped");
 }
 
 //=======================================================================
@@ -994,11 +1024,11 @@ void MainWindow::updateCountDownLCD(void)
     else if (experiment_state == WAITING)
     {
         ui->Countdown->display(getCountDownTime(strtUnixTime - currentUnixTime));
-        cout << "WAITING " << strtUnixTime - currentUnixTime << endl;
+//        cout << "WAITING " << strtUnixTime - currentUnixTime << endl;
     }
     else if (experiment_state == ACTIVE)
     {
         ui->Countdown->display(getCountDownTime(stopUnixTime - currentUnixTime));
-        cout << "ACTIVE " << stopUnixTime - currentUnixTime << endl;
+//        cout << "ACTIVE " << stopUnixTime - currentUnixTime << endl;
     }
 }

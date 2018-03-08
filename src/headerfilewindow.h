@@ -20,7 +20,6 @@
 #include <QDateTime>
 #include "connection_manager.h"
 #include "audio_connection_manager.h"
-#include "networkmanager.h"
 #include "includes.h"
 #include "parameters.h"
 #include "datetime.h"
@@ -67,7 +66,6 @@ private:
     Ui::HeaderFileWindow *ui;
 
     time_t currentTime;
-    NetworkManager server;
     HeaderArmFiles headerarmfiles;
     TimingDialog *timingdialog;
     PulseDialog *pulsedialog;

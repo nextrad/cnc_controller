@@ -15,9 +15,7 @@
 #include "datetime.h"
 #include "headerfilewindow.h"
 #include "header_arm_files.h"
-#include "networkmanager.h"
 #include "timingdialog.h"
-#include "digitalclock.h"
 
 #include <thread>
 #include <iostream>
@@ -91,7 +89,6 @@ private:
     AudioConnectionManager audioRecorder;
     HeaderFileWindow *headerfilewindow;
     HeaderArmFiles headerarmfiles;
-    NetworkManager server;
     TimingDialog *timingdialog;
 
     void closeServer();
