@@ -18,7 +18,6 @@
 #include <QTextEdit>
 #include <QSignalMapper>
 #include <QDateTime>
-#include "connection_manager.h"
 #include "audio_connection_manager.h"
 #include "includes.h"
 #include "parameters.h"

@@ -8,7 +8,6 @@
 #include <QTextEdit>
 #include <QString>
 
-#include "connection_manager.h"
 #include "audio_connection_manager.h"
 #include "includes.h"
 #include "parameters.h"
@@ -85,13 +84,10 @@ private:
     time_t currentUnixTime;
     int experiment_state;
 
-    ConnectionManager connectionManager;
     AudioConnectionManager audioRecorder;
     HeaderFileWindow *headerfilewindow;
     HeaderArmFiles headerarmfiles;
     TimingDialog *timingdialog;
-
-    void closeServer();
 
     void testSubNetwork(QString NetID);
     bool testConnection(string unitname);
@@ -109,7 +105,6 @@ private:
     void runTCU(int tcu_num);
 
     QString getCountDownTime(time_t timeLeft);
-
 
 };
 

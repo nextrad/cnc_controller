@@ -29,7 +29,6 @@ LIBS += -L/usr/lib/x86_64-linux-gnu -lboost_system -pthread
 QMAKE_CXXFLAGS += -std=c++0x -pthread   #using c++11 and multithreading
 
 SOURCES += audio_connection_manager.cpp \
-    connection_manager.cpp \
     datetime.cpp \
     header_arm_files.cpp \
     headerfilewindow.cpp \
@@ -45,7 +44,6 @@ SOURCES += audio_connection_manager.cpp \
 
 
 HEADERS  +=  audio_connection_manager.h \
-    connection_manager.h \
     datetime.h \
     header_arm_files.h \
     headerfilewindow.h \

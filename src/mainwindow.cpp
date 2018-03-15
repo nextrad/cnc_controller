@@ -71,13 +71,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(countdowntimer, SIGNAL(timeout()), this, SLOT(updateCountDownLCD()));
     countdowntimer->start(1000);
 
-    /*
-    for(int i=0; i<3; i++)
-    {
-        server.resetError(i);       //This is to try get rid of a bug where server.error
-    }
-    */
-
 }
 
 //=============================================================================
@@ -85,18 +78,9 @@ MainWindow::MainWindow(QWidget *parent) :
 //=============================================================================
 MainWindow::~MainWindow()
 {
-    closeServer();      //Close the CNC's server socket when the window closes
     delete ui;
 }
 
-//=============================================================================
-// Close Server()
-// Method to close the CNC's server socket
-//=============================================================================
-void MainWindow::closeServer()
-{
-    //server.closeServer();
-}
 
 //=============================================================================
 // editHeaderFileButton()
@@ -116,7 +100,7 @@ void MainWindow::on_editHeaderFileButton_clicked()
 
 
 //=============================================================================
-// connectionTestButtonClicked()
+// on_testConnectionButton_clicked()
 // Tests the connections to CNC
 //=============================================================================
 void MainWindow::on_testConnectionButton_clicked()
@@ -418,13 +402,13 @@ void MainWindow::on_receiveBearingsButton_clicked()
 
 //=============================================================================
 // receiveBearings()
-
+//
 //  tardat2cc.rtf
-//(*171207*)
-//DTG	061855Z 1217
-//Target Lat/Lon 	{-34.1813,18.46}
-//n1: Range	1.82952
-//n1: Bearing	46.5192
+// (*171207*)
+// DTG	061855Z 1217
+// Target Lat/Lon 	{-34.1813,18.46}
+// n1: Range	1.82952
+// n1: Bearing 46.5192
 //=============================================================================
 void MainWindow::receiveBearings(int node_num)
 {
