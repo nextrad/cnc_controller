@@ -27,14 +27,6 @@ string Datetime::getTimeAndDate(const char *format)
     return dateTime;
 }
 //=============================================================================
-/*
-time_t now = time(0);
-struct tm tstruct;
-char buf[80];
-tstruct = *localtime(&now);
-strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
-*/
-//=============================================================================
 // This time rolls over if add seconds
 string Datetime::getNowPlusSecs(int secs)
 {
@@ -77,7 +69,6 @@ string Datetime::getNowInDays(void)
     string now = eTime.toString("dd").toUtf8().constData();
     return now.c_str();
 }
-
 //=============================================================================
 //"yyyy-MM-dd hh:mm:ss"  Local time (SAST)
 string Datetime::getNowInHours(void)
@@ -102,7 +93,6 @@ string Datetime::getNowInSeconds(void)
     string now = eTime.toString("ss").toUtf8().constData();
     return now.c_str();
 }
-
 //=============================================================================
 // getCountDownTime()
 //=============================================================================

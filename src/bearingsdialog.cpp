@@ -4,10 +4,8 @@
 //[Bearings]
 
 //; DTG is date-time (in date-time group format) of getting bearings. EXAMPLE: 091630Z JUL 11 = 1630 UTC on 9 July 2011
-//; Baseline_Bisector and node ranges are in meters
 //; Node bearings are in degrees relative to true north
 //DTG = "061855Z 1217"
-//BASELINE_BISECTOR = 2
 //N0_RANGE = 1.82952
 //N0_BEARING = 46.5192
 //N1_RANGE = 1.82952
@@ -23,7 +21,6 @@ BearingsDialog::BearingsDialog(QWidget *parent) :
     ui->setupUi(this);
 
     ui->dtg_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "DTG"));
-    ui->baseline_bisector_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "BASELINE_BISECTOR"));
 
     ui->node0_range_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "NODE0_RANGE"));
     ui->node0_bearing_Edit->setText(headerarmfiles.readFromHeaderFile("Bearings", "NODE0_BEARING"));
@@ -44,10 +41,9 @@ BearingsDialog::~BearingsDialog()
 void BearingsDialog::on_buttonBox_clicked()
 {
 
-    string dtg, baseline_bisector, node0_range, node0_bearing, node1_range, node1_bearing, node2_range, node2_bearing;
+    string dtg, node0_range, node0_bearing, node1_range, node1_bearing, node2_range, node2_bearing;
 
     dtg = ui->dtg_Edit->toPlainText().toStdString();
-    baseline_bisector = ui->baseline_bisector_Edit->toPlainText().toStdString();
 
     node0_range = ui->node0_range_Edit->toPlainText().toStdString();
     node0_bearing = ui->node0_bearing_Edit->toPlainText().toStdString();
@@ -59,7 +55,6 @@ void BearingsDialog::on_buttonBox_clicked()
     node2_bearing = ui->node2_bearing_Edit->toPlainText().toStdString();
 
     headerarmfiles.writeToHeaderFile("Bearings", "DTG", dtg);
-    headerarmfiles.writeToHeaderFile("Bearings", "BASELINE_BISECTOR", baseline_bisector);
 
     headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", node0_range);
     headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", node0_bearing);
