@@ -128,6 +128,9 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
 {
     try
     {
+
+        // Brad Kahn - replace this code below with a system call (see examples in mainwindow.cpp) to call your code !!!
+
         pulsedialog = new PulseDialog(this);
         pulsedialog->show();
     }
@@ -145,9 +148,9 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
 //; lats and longs are in decimal degrees
 //; height is in meters as WGS84 and above geoid
 
-/*TGT_LOCATION_LAT = -34.1874
-TGT_LOCATION_LON = 18.4280
-TGT_LOCATION_HT = 0*/
+//TGT_LOCATION_LAT = -34.1874
+//TGT_LOCATION_LON = 18.4280
+//TGT_LOCATION_HT = 0
 //=============================================================================
 void HeaderFileWindow::on_targetPositionSettingsButton_clicked()
 {
@@ -171,7 +174,6 @@ void HeaderFileWindow::on_targetPositionSettingsButton_clicked()
 //; Baseline_Bisector and node ranges are in meters
 //; Node bearings are in degrees relative to true north
 //DTG = "061855Z 1217"
-//BASELINE_BISECTOR = 2
 //NODE0_RANGE = 1.82952
 //NODE0_BEARING = 46.5192
 //NODE1_RANGE = 1.82952
@@ -258,10 +260,8 @@ void HeaderFileWindow::on_geometryParametersButton_clicked()
 //quicklookSettingsButton()
 
 //[Quicklook]
-//; ADC_CHANNEL 0 = L, 1 = X, 2 = X
-//ADC_CHANNEL = 0
-//; MPA = 0, HPA = 1
-//AMPLIFIER = 1
+//ADC_CHANNEL 0 = L, 1 = X, 2 = X
+//AMPLIFIER = (MPA = 0, HPA = 1)
 //DYNAMIC_RANGE = 50
 //SPECTROGRAM_BIN = 1000
 //DOPPLER_FFT = 256
