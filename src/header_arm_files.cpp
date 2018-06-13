@@ -64,8 +64,32 @@ QString HeaderArmFiles::readFromHeaderFile(string section, string var)
     return  QString::fromUtf8(value.c_str());
 }
 
-// TODO: create readFromPulseParamsFile, that interacts with
-// temporary pulseparams.ini file created by Brad's python program.
+
+//=============================================================================
+// readFromPulseParamsFile()
+//=============================================================================
+//method to return a variable's value from the PulseParams.ini file
+QString HeaderArmFiles::readFromPulseParamsFile(string section, string var)
+{
+
+    std::ifstream check (PULSE_PARAMS_PATH);
+    if (!check.good())
+    {
+        printf("Please check location of PulseParams.ini file and try again.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    CSimpleIniA ini;
+
+    ini.LoadFile(PULSE_PARAMS_PATH);
+
+    std::string value = (ini.GetValue(section.c_str(), var.c_str()));
+
+    check.close();
+
+    return  QString::fromUtf8(value.c_str());
+}
+
 
 //=============================================================================
 // readFromGPSInfoFile()
@@ -173,4 +197,3 @@ string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
 
     return data;
 }
-

@@ -37,7 +37,8 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define HEADER_FILE                 "NeXtRAD.ini"
 #define HEADER_PATH                 "/home/nextrad/Documents/nextrad_header/" HEADER_FILE
 
-// Brad Pulse...
+#define PULSE_PARAMS_FILE           "PulseParams.ini"
+#define PULSE_PARAMS_PATH           "/home/nextrad/Documents/" PULSE_PARAMS_FILE
 
 #define GPS_INFO_FILE               "gps_info.ini"
 #define CNC_NODE0_GPS_INFO_PATH     "/home/nextrad/Documents/cnc_controller/node0/home/nextrad/Desktop/NextGPSDO/gps_info.ini"
