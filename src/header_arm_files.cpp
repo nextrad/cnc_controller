@@ -64,6 +64,8 @@ QString HeaderArmFiles::readFromHeaderFile(string section, string var)
     return  QString::fromUtf8(value.c_str());
 }
 
+// TODO: create readFromPulseParamsFile, that interacts with
+// temporary pulseparams.ini file created by Brad's python program.
 
 //=============================================================================
 // readFromGPSInfoFile()

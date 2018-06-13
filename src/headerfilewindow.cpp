@@ -128,11 +128,26 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
 {
     try
     {
+        cout << "BRAD NEEDS TO IMPLEMENT THIS!: " << endl;
 
         // Brad Kahn - replace this code below with a system call (see examples in mainwindow.cpp) to call your code !!!
 
-        pulsedialog = new PulseDialog(this);
-        pulsedialog->show();
+        // call brads python gui to edit pulse params
+        // this generates a temp pulseparams.ini
+
+        // cpp needs to read this pulseparams.ini and update NeXtRAD.ini
+         //   readFromPulseParamsFile('param1')
+
+        // string num_pris_str = headerarmfiles.readFromHeaderFile("PulseParameters", "NUM_PRIS");
+        // string other_stuffs_str = headerarmfiles.readFromHeaderFile("PulseParameters", "OTHER_STUFFS");
+
+        // headerarmfiles.writeToHeaderFile("PulseParameters", "NUM_PRIS", num_pris_str);
+        // headerarmfiles.writeToHeaderFile("PulseParameters", "NUM_PRIS", other_stuffs_str);
+
+
+//        old code before June 2018.
+//        pulsedialog = new PulseDialog(this);
+//        pulsedialog->show();
     }
     catch (exception &e)
     {
