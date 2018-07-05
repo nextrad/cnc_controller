@@ -138,8 +138,8 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
         int ret;
         int status;
 
-        ss << "../scripts/tcu/tcu_v2/tcu_creator.py ";
-        ss << " -f" << PULSE_PARAMS_PATH  << endl;
+        ss << "python3 /home/nextrad/Documents/tcu_software/creator.py";
+        ss << " -f " << HEADER_PATH << " -o " << PULSE_PARAMS_PATH << endl;
         cout << ss.str() << endl;
         status = system(ss.str().c_str());
 
@@ -157,7 +157,6 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
             }
         }
         ss.str("");
-
         // read PulseParams.ini
         QString waveform_index_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "WAVEFORM_INDEX");
         QString num_pris_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "NUM_PRIS");
@@ -168,7 +167,6 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
         QString x_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "X_AMP_DELAY");
         QString l_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "L_AMP_DELAY");
         QString pulses_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PULSES");
-
         // update NeXtRAD.ini
         headerarmfiles.writeToHeaderFile("PulseParameters", "WAVEFORM_INDEX", waveform_index_str.toStdString());
         headerarmfiles.writeToHeaderFile("PulseParameters", "NUM_PRIS", num_pris_str.toStdString());
