@@ -159,26 +159,26 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
         ss.str("");
 
         // read PulseParams.ini
-        string waveform_index_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "WAVEFORM_INDEX");
-        string num_pris_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "NUM_PRIS");
-        string dac_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "DAC_DELAY");
-        string adc_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "ADC_DELAY");
-        string pre_pulse_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PRE_PULSE");
-        string pri_pulse_width_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PRI_PULSE_WIDTH");
-        string x_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "X_AMP_DELAY");
-        string l_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "L_AMP_DELAY");
-        string pulses_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PULSES");
+        QString waveform_index_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "WAVEFORM_INDEX");
+        QString num_pris_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "NUM_PRIS");
+        QString dac_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "DAC_DELAY");
+        QString adc_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "ADC_DELAY");
+        QString pre_pulse_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PRE_PULSE");
+        QString pri_pulse_width_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PRI_PULSE_WIDTH");
+        QString x_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "X_AMP_DELAY");
+        QString l_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "L_AMP_DELAY");
+        QString pulses_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PULSES");
 
         // update NeXtRAD.ini
-        headerarmfiles.writeToHeaderFile("PulseParameters", "WAVEFORM_INDEX", waveform_index_str);
-        headerarmfiles.writeToHeaderFile("PulseParameters", "NUM_PRIS", num_pris_str);
-        headerarmfiles.writeToHeaderFile("PulseParameters", "DAC_DELAY", dac_delay_str);
-        headerarmfiles.writeToHeaderFile("PulseParameters", "ADC_DELAY", adc_delay_str);
-        headerarmfiles.writeToHeaderFile("PulseParameters", "PRE_PULSE", pre_pulse_str);
-        headerarmfiles.writeToHeaderFile("PulseParameters", "PRI_PULSE_WIDTH", pri_pulse_width_str);
-        headerarmfiles.writeToHeaderFile("PulseParameters", "X_AMP_DELAY", x_amp_delay_str);
-        headerarmfiles.writeToHeaderFile("PulseParameters", "L_AMP_DELAY", l_amp_delay_str);
-        headerarmfiles.writeToHeaderFile("PulseParameters", "PULSES", pulses_str);
+        headerarmfiles.writeToHeaderFile("PulseParameters", "WAVEFORM_INDEX", waveform_index_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "NUM_PRIS", num_pris_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "DAC_DELAY", dac_delay_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "ADC_DELAY", adc_delay_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "PRE_PULSE", pre_pulse_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "PRI_PULSE_WIDTH", pri_pulse_width_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "X_AMP_DELAY", x_amp_delay_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "L_AMP_DELAY", l_amp_delay_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "PULSES", pulses_str.toStdString());
     }
     catch (exception &e)
     {
