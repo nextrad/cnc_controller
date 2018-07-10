@@ -605,8 +605,8 @@ void MainWindow::on_goButton_clicked()
     {
         ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
-        // sends out header file to all units
-        if (sendFilesOverNetwork() == 0)
+        // sends out header file to ALL units
+        if (sendFilesOverNetwork()== 0)
         {
             // initialise TCUs
             runTCUs();
@@ -669,12 +669,13 @@ bool MainWindow::checkCountdown(void)
     QString minute = headerarmfiles.readFromHeaderFile("Timing", "MINUTE");
     QString second = headerarmfiles.readFromHeaderFile("Timing", "SECOND");
 
-    cout << "checkCountdown1() = " << year.toStdString() << " " << month.toStdString() << " " << day.toStdString() << " " << hour.toStdString() << " " << minute.toStdString() << " " << second.toStdString() << endl;
+    cout << "checkCountdown1() = " << year.toStdString() << "-" << month.toStdString()<< "-" << day.toStdString();
+    cout << " " << hour.toStdString() << ":" << minute.toStdString() << ":" << second.toStdString() << endl;
 
     // calculate ENDTIMESECS from Header File values
     int num_pris = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "NUM_PRIS").toStdString().c_str());
     int pri = atoi(headerarmfiles.readFromHeaderFile("PulseParameters", "PRI").toStdString().c_str());    // microseconds
-    EXPERIMENT_LENGTH = num_pris * pri * 1e-6;  // = 60000 * 1000/1000000 = 60
+    EXPERIMENT_LENGTH = num_pris * pri * 1e-6;  // = 60000 * 1000/1000000 = 60 //  PULSES = "5.0,1000.0,0,1300.0|10.0,1000.0,1,1300.0|10.0,1000.0,2,1300.0|10.0,1000.0,3,1300.0"
 
     //required format: YYYY-MM-DD HH:MM:SS
     ss_unixtime << year.toStdString() << "-" << setfill('0') << setw(2) << month.toStdString() << "-" << setfill('0') << setw(2) << day.toStdString() << " ";
@@ -692,7 +693,7 @@ bool MainWindow::checkCountdown(void)
     imonth = tm1.tm_mon + 1;
     iday = tm1.tm_mday;
 
-    cout << "checkCountdown3() = " << iyear << " " << imonth << " " << iday << endl;
+    cout << "checkCountdown3() = " << iyear << "-" << imonth << setw(2) << "-" << iday << setw(2) << endl;
 
     if (((imonth == 2) && (iday > 28) && (remainder (iyear, 4) != 0)) ||
         ((imonth == 2) && (iday > 29) && (remainder (iyear, 4) == 0)) ||
@@ -727,6 +728,7 @@ bool MainWindow::checkCountdown(void)
         ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Countdown to armtime");
 
         return true;
+
     }
 }
 
@@ -855,7 +857,7 @@ int MainWindow::sendFilesOverNetwork(void)
          }
          ss.str("");             //clear stringstream
 
-        return ret;
+         return ret;
 
     }
     catch(exception &e)
@@ -874,9 +876,18 @@ void MainWindow::runTCUs(void)
     ui->statusBox->append("");
     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Initialising TCUs");
 
-    runTCU(0);
-    runTCU(1);
-    runTCU(2);
+    if (testConnection(TCU0))
+    {
+        runTCU(0);
+    }
+    if (testConnection(TCU1))
+    {
+        runTCU(1);
+    }
+    if (testConnection(TCU2))
+    {
+       runTCU(2);
+    }
 
     ui->statusBox->setTextColor("black");
 }
@@ -890,7 +901,7 @@ void MainWindow::runTCU(int tcu_num)
     int ret;
     int status;
 
-    ss << "../scripts/tcu/tcu_v2/tcu_project.py ";
+    ss << "python3 /home/nextrad/Documents/tcu_software/controller.py ";
     if (tcu_num == 0)
     {
         ss << TCU0;
