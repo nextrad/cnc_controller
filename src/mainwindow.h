@@ -104,6 +104,7 @@ private:
     void runTCUs(void);
     void runTCU(int tcu_num);
 
+    int calcExperimentLength(void);
     QString getCountDownTime(time_t timeLeft);
 
 };
