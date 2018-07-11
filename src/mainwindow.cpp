@@ -738,11 +738,12 @@ int MainWindow::calcExperimentLength(void)
 
     cout << "num_pris =" << num_pris << "\nnum_rpts = " << num_rpts << endl;
 
-    int texperiment = tblock * num_rpts;
+    int texperiment = tblock * num_rpts * 1e-6;  //  secs
+                                                // num_pris * pri * 1e-6;  // = 60000 * 1000/1000000 = 60
 
-    cout << "texperiment = " << texperiment << endl;
+    cout << "texperiment = " << texperiment << " secs" << endl;
 
-    return texperiment; // num_pris * pri * 1e-6;  // = 60000 * 1000/1000000 = 60
+    return texperiment;
 }
 
 
@@ -788,7 +789,7 @@ bool MainWindow::checkCountdown(void)
     imonth = tm1.tm_mon + 1;
     iday = tm1.tm_mday;
 
-    cout << "checkCountdown3() = " << iyear << "-" << imonth << setw(2) << "-" << iday << setw(2) << endl;
+    cout << "checkCountdown3() = " << iyear << "-" << imonth << "-" << iday << endl;
 
     if (((imonth == 2) && (iday > 28) && (remainder (iyear, 4) != 0)) ||
         ((imonth == 2) && (iday > 29) && (remainder (iyear, 4) == 0)) ||
