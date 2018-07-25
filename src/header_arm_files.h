@@ -19,8 +19,11 @@ class HeaderArmFiles
         HeaderArmFiles(void);
         void writeToHeaderFile(string section, string key, string value);
         QString readFromHeaderFile(string section, string var);
+        QString readFromPulseParamsFile(string section, string var);
         string readFromGPSInfoFile(int nodeno, string var);
         string readFromBearingsFile(int nodeno, string var, int strsize);
+
+
 
     private:
 };

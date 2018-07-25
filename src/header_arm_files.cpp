@@ -66,6 +66,32 @@ QString HeaderArmFiles::readFromHeaderFile(string section, string var)
 
 
 //=============================================================================
+// readFromPulseParamsFile()
+//=============================================================================
+//method to return a variable's value from the PulseParams.ini file
+QString HeaderArmFiles::readFromPulseParamsFile(string section, string var)
+{
+
+    std::ifstream check (PULSE_PARAMS_PATH);
+    if (!check.good())
+    {
+        printf("Please check location of PulseParams.ini file and try again.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    CSimpleIniA ini;
+
+    ini.LoadFile(PULSE_PARAMS_PATH);
+
+    std::string value = (ini.GetValue(section.c_str(), var.c_str()));
+
+    check.close();
+
+    return  QString::fromUtf8(value.c_str());
+}
+
+
+//=============================================================================
 // readFromGPSInfoFile()
 //=============================================================================
 //method to return a variable's value from a GPSInfo file
@@ -110,7 +136,6 @@ string HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
 string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
 {
     string path, data;
-    int c;
 
     switch (nodeno)
     {
@@ -172,4 +197,3 @@ string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
 
     return data;
 }
-

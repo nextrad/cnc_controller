@@ -6,6 +6,8 @@
 //Edited by:    David Bissett
 //Revision      2.0 (December 2016)
 //Edited by:    Shirley Coetzee
+//Revision      3.0 (May 2018)
+//Edited by:    Shirley Coetzee
 
 #include "audio_connection_manager.h"
 
@@ -33,13 +35,11 @@ void AudioConnectionManager::connectToSocket(void)
     {
         socket.connect(socketEndpoint); //attempt to connect to the endpoint, if no exception is thrown the connection is successful
         printf("Connection Active!\n\n");
-        //readFromSocket();
     }
     catch (boost::system::system_error const& e) //exception was thrown, connection failed
     {
         cout << "Exiting: could not " << e.what();
         exit(0);
-        //connectToSocket(); //restart connection
     }
 }
 
@@ -95,7 +95,6 @@ void AudioConnectionManager::readFromSocket(void)
 {
     clearSocketBuffer();
     socket.read_some(buffer(socketBuffer)); //read terminal response to the buffer array
-    //cout << socketBuffer << endl;         	//echo to console
 }
 
 
@@ -111,52 +110,10 @@ void AudioConnectionManager::startRecording(void)
     writeToSocket("Conference: 100");
     writeToSocket(record_command);
     writeToSocket("");
-
     printf("\nWaiting for audio recording to begin...\n");
-    //waiting in a while loop would make the whole program hang and should rather be done with a QTimer
-    //I thought it would be better to be able to start and stop the audio recording with a button
-/*
-    time_t oldTime;
-    time_t currentTime = time(NULL);
-
-    while (currentTime != startTime)
-    {
-        currentTime = time(NULL);
-
-        if (currentTime == startTime)
-        {
-            cout << startTime - currentTime << "s to start\n";
-            break;
-        }
-
-        if (currentTime != oldTime)
-        {
-            cout << startTime - currentTime << "s to start\n";
-        }
-
-        oldTime = currentTime;
-    }
-*/
     printf("Recording audio ...\n");
     writeToSocket("");
-/*
-    while (currentTime <= endTime)
-    {
-        currentTime = time(NULL);
 
-        if (currentTime == endTime)
-        {
-            cout << "Time Elapsed: " << currentTime - startTime << "s" << endl;
-            break;
-        }
-
-        if (currentTime != oldTime)
-        {
-            beepAMI();
-            cout << "Time Elapsed: " << currentTime - startTime << "s" << endl;
-        }
-        oldTime = currentTime;
-    }*/
 }
 
 void AudioConnectionManager::stopRecording(void)
@@ -179,7 +136,6 @@ void AudioConnectionManager::logoutAMI()
     writeToSocket("Action: Logoff");
     writeToSocket("ActionID: 5");
     writeToSocket("");
-    //readFromSocket();
     exit(0);
 }
 

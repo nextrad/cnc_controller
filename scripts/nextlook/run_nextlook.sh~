@@ -1,1 +1,0 @@
-ansible cobalt0 -m shell -a "nextlook -n 0" && ansible cobalt1 -m shell -a "nextlook -n 1" && ansible cobalt2 -m shell -a "nextlook -n 2"

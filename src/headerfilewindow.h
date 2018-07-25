@@ -5,6 +5,8 @@
 //Last Edited:  May 2016
 //Edited by:    Shirley Coetzee
 //Revision      3.0 (December 2017)
+//Edited by:    Shirley Coetzee
+//Revision      4.0 (February 2018)
 
 #ifndef HEADERFILEWINDOW_H
 #define HEADERFILEWINDOW_H
@@ -16,96 +18,64 @@
 #include <QTextEdit>
 #include <QSignalMapper>
 #include <QDateTime>
-#include <stdio.h>
-#include "connection_manager.h"
 #include "audio_connection_manager.h"
-#include "networkmanager.h"
 #include "includes.h"
 #include "parameters.h"
 #include "datetime.h"
 #include "header_arm_files.h"
+#include "timingdialog.h"
+#include "pulsedialog.h"
+#include "targetdialog.h"
+#include "bearingsdialog.h"
+#include "weatherdialog.h"
+#include "geometrydialog.h"
+#include "quicklookdialog.h"
+
+
+#include <QDialog>
+
+namespace Ui {
+class HeaderFileWindow;
+}
 
 class HeaderFileWindow : public QDialog
 {
     Q_OBJECT
-    public:
-        HeaderFileWindow(QWidget *parent = 0);
-        bool newtime;
 
-    private:
-        void initGUI(void);
-        NetworkManager server;
+public:
+    explicit HeaderFileWindow(QWidget *parent = 0);
+    ~HeaderFileWindow();
 
-        QLabel *label;
+private slots:
+    void on_timingParametersButton_clicked();
 
-        QPushButton *timingParametersButton;
-        QPushButton *geometryParametersButton;
-        QPushButton *targetPositionSettingsButton;
-        QPushButton *bearingsButton;
-        QPushButton *weatherParametersButton;
-        QPushButton *pulseParametersButton;
-        QPushButton *quicklookSettingsButton;
+    void on_geometryParametersButton_clicked();
 
-        QPushButton *cancelButton;
-        QPushButton *okButton;
+    void on_targetPositionSettingsButton_clicked();
 
-        QLabel *text1;
-        QLabel *text2;
-        QLabel *text3;
-        QLabel *text4;
-        QLabel *text5;
-        QLabel *text6;
-        QLabel *text7;
-        QLabel *text8;
-        QLabel *text9;
-        QLabel *text10;
-        QLabel *text11;
-        QLabel *text12;
-        QLabel *text13;
-        QLabel *text14;
-        QLabel *text15;
-        QLabel *text16;
+    void on_bearingsButtonClicked_clicked();
 
-        QTextEdit *textbox1;
-        QTextEdit *textbox2;
-        QTextEdit *textbox3;
-        QTextEdit *textbox4;
-        QTextEdit *textbox5;
-        QTextEdit *textbox6;
-        QTextEdit *textbox7;
-        QTextEdit *textbox8;
-        QTextEdit *textbox9;
-        QTextEdit *textbox10;
-/*
-        QPushButton *Rx1SwitchButton;
-        QPushButton *Rx2SwitchButton;
-        QPushButton *Rx3SwitchButton;
-        QPushButton *adcButton;
+    void on_weatherParametersButton_clicked();
 
-        QSignalMapper *signalMapper;
-        QSignalMapper *pulseSignalMapper;
-*/
-        time_t currentTime;
-        HeaderArmFiles headerarmfiles;
+    void on_pulseParametersButton_clicked();
 
-        short menu;
-        void clearMenu(void);
-        void showFirstMenu(void);
+    void on_quicklookSettingsButton_clicked();
 
-    private slots:
-        void timingParametersButtonClicked(void);
-        void geometryParametersButtonClicked(void);
-        void targetPositionSettingsButtonClicked(void);
-        void bearingsButtonClicked(void);
-        void weatherParametersButtonClicked(void);
-        void pulseParametersButtonClicked(void);
-        void quicklookSettingsButtonClicked(void);
+private:
+    Ui::HeaderFileWindow *ui;
 
-        void cancelButtonClicked(void);
-        void okButtonClicked(void);
-      
-    signals:
-    public slots:
+    time_t currentTime;
+    HeaderArmFiles headerarmfiles;
+    TimingDialog *timingdialog;
+    PulseDialog *pulsedialog;
+    TargetDialog *targetdialog;
+    BearingsDialog *bearingsdialog;
+    WeatherDialog *weatherdialog;
+    GeometryDialog *geometrydialog;
+    QuicklookDialog *quicklookdialog;
+
+    short menu;
+
 };
 
 #endif // HEADERFILEWINDOW_H
