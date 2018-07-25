@@ -103,6 +103,7 @@ private:
     int sendFilesOverNetwork(void);
     void runTCUs(void);
     void runTCU(int tcu_num);
+    void killTCU(int tcu_num);
 
     int calcExperimentLength(void);
     QString getCountDownTime(time_t timeLeft);

@@ -586,10 +586,50 @@ void MainWindow::on_runNextlookButton_clicked()
 //=============================================================================
 void MainWindow::on_abortGoButton_clicked()
 {
-    ui->statusBox->setTextColor("black");
-    ui->goButton->setStyleSheet(setButtonColour(RED).c_str());
-    ui->goLaterButton->setStyleSheet(setButtonColour(RED).c_str());
-    ui->countdownLabel->setText("");
+    try
+    {
+        stringstream ss;
+        int status;
+        int ret = -1;
+
+        ui->statusBox->append("");
+        ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Aborting experiment!");
+
+        ss << "ansible cobalts -m shell -a \"./killscript.sh\"";
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
+        {
+            ret = WEXITSTATUS(status);
+
+            if (ret==0)
+            {
+                cout<< "Aborted all cobalts successfully\n" <<endl;
+                ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Aborted all cobalts successfully");
+             }
+            else
+            {
+                cout<< "Not all Cobalts were aborted successfully\n" <<endl;
+                ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "All cobalts not aborted successfully");
+            }
+            ui->statusBox->append("");
+        }
+        ss.str("");             //clear stringstream
+
+        cout<< "Aborting TCUs...\n" <<endl;
+        killTCU(0);
+        killTCU(1);
+//        killTCU(2);
+
+        ui->statusBox->setTextColor("black");
+        ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
+        ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
+        ui->countdownLabel->setText("");
+    }
+    catch(exception &e)
+    {
+        cout << "sendFilesOverNetwork() exception: " << e.what() << endl;
+    }
+
 }
 
 //=============================================================================
@@ -1010,7 +1050,7 @@ void MainWindow::runTCU(int tcu_num)
     {
         ss << TCU2;
     }
-    ss << " " << HEADER_PATH << " &" << endl;
+    ss << " -f" << HEADER_PATH << " &" << endl;
     cout << ss.str() << endl;
     status = system(ss.str().c_str());
 
@@ -1027,6 +1067,54 @@ void MainWindow::runTCU(int tcu_num)
         else
         {
             cout << "TCU" << tcu_num << " init FAILED" <<endl;
+            ui->statusBox->setTextColor("red");
+            ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + "tcu" + QString::number(tcu_num) + "\n" \
+                       + "return value=" + QString::number(ret));
+        }
+        ui->statusBox->append("");
+    }
+    ss.str("");             //clear stringstream
+}
+
+//=============================================================================
+// killTCU()
+//=============================================================================
+void MainWindow::killTCU(int tcu_num)
+{
+    stringstream ss;
+    int ret;
+    int status;
+
+    ss << "python3 /home/nextrad/Documents/tcu_software/controller.py ";
+    if (tcu_num == 0)
+    {
+        ss << TCU0;
+    }
+    else if (tcu_num == 1)
+    {
+        ss << TCU1;
+    }
+    else
+    {
+        ss << TCU2;
+    }
+    ss << " -k &" << endl;
+    cout << ss.str() << endl;
+    status = system(ss.str().c_str());
+
+    if (-1 != status)
+    {
+        ret = WEXITSTATUS(status);
+
+        if(ret==0)
+        {
+            cout << "TCU" << tcu_num << "kill successful\n" <<endl;
+            ui->statusBox->setTextColor("green");
+            ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _     ") + "tcu" + QString::number(tcu_num));
+        }
+        else
+        {
+            cout << "TCU" << tcu_num << "kill FAILED" <<endl;
             ui->statusBox->setTextColor("red");
             ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + "tcu" + QString::number(tcu_num) + "\n" \
                        + "return value=" + QString::number(ret));

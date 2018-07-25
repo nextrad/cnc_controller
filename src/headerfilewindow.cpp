@@ -167,6 +167,9 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
         QString x_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "X_AMP_DELAY");
         QString l_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "L_AMP_DELAY");
         QString pulses_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PULSES");
+        QString samples_per_pri_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "SAMPLES_PER_PRI");
+        QString rex_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "REX_DELAY");
+
         // update NeXtRAD.ini
         headerarmfiles.writeToHeaderFile("PulseParameters", "WAVEFORM_INDEX", waveform_index_str.toStdString());
         headerarmfiles.writeToHeaderFile("PulseParameters", "NUM_PRIS", num_pris_str.toStdString());
@@ -177,6 +180,9 @@ void HeaderFileWindow::on_pulseParametersButton_clicked()
         headerarmfiles.writeToHeaderFile("PulseParameters", "X_AMP_DELAY", x_amp_delay_str.toStdString());
         headerarmfiles.writeToHeaderFile("PulseParameters", "L_AMP_DELAY", l_amp_delay_str.toStdString());
         headerarmfiles.writeToHeaderFile("PulseParameters", "PULSES", pulses_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "SAMPLES_PER_PRI", samples_per_pri_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "REX_DELAY", rex_delay_str.toStdString());
+
     }
     catch (exception &e)
     {
