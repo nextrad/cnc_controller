@@ -298,7 +298,6 @@ void MainWindow::on_receiveNodePositionsButton_clicked()
 
     ui->statusBox->append("");
     ui->statusBox->setTextColor("black");
-    ui->statusBox->setTextColor("black");
     ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
     ui->countdownLabel->setText("");
@@ -381,29 +380,83 @@ void MainWindow::receiveNodePosition(int node_num)
 }
 
 //=============================================================================
-// receiveBearingsButtonClicked()
+// viewMapButtonClicked()
 // method to receive the bearings from the GPSDO.
 //=============================================================================
-void MainWindow::on_receiveBearingsButton_clicked()
+void MainWindow::on_viewMapButton_clicked()
 {
     ui->statusBox->append("");
-    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching node bearings file from Mission Control");
+    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Viewing Map");
     ui->statusBox->append("");
 
-    receiveBearings(0);
-    receiveBearings(1);
-    receiveBearings(2);
+    try
+    {
+        // launch Google Earth
+        // this will output in the Header file
+        stringstream ss;
+        int ret;
+        int status;
+
+
+        ss << "cd " << GOOGLE_EARTH_PATH " && ./google-earth-pro";
+        cout << ss.str() << endl;
+        status = system(ss.str().c_str());
+        if (-1 != status)
+        {
+            ret = WEXITSTATUS(status);
+            if(ret==0)
+            {
+                cout << "view map successful\n" << endl;
+            }
+            else
+            {
+                cout << "view map FAILED" << endl;
+            }
+        }
+        ss.str("");
+        /*
+        // read PulseParams.ini
+        QString waveform_index_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "WAVEFORM_INDEX");
+        QString num_pris_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "NUM_PRIS");
+        QString dac_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "DAC_DELAY");
+        QString adc_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "ADC_DELAY");
+        QString pre_pulse_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PRE_PULSE");
+        QString pri_pulse_width_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PRI_PULSE_WIDTH");
+        QString x_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "X_AMP_DELAY");
+        QString l_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "L_AMP_DELAY");
+        QString pulses_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PULSES");
+        QString samples_per_pri_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "SAMPLES_PER_PRI");
+        QString rex_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "REX_DELAY");
+
+        // update NeXtRAD.ini
+        headerarmfiles.writeToHeaderFile("PulseParameters", "WAVEFORM_INDEX", waveform_index_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "NUM_PRIS", num_pris_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "DAC_DELAY", dac_delay_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "ADC_DELAY", adc_delay_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "PRE_PULSE", pre_pulse_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "PRI_PULSE_WIDTH", pri_pulse_width_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "X_AMP_DELAY", x_amp_delay_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "L_AMP_DELAY", l_amp_delay_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "PULSES", pulses_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "SAMPLES_PER_PRI", samples_per_pri_str.toStdString());
+        headerarmfiles.writeToHeaderFile("PulseParameters", "REX_DELAY", rex_delay_str.toStdString());
+*/
+    }
+    catch (exception &e)
+    {
+        cout << "on_viewMapButton_clicked() exception: " << e.what() << endl;
+    }
+
 
     ui->statusBox->append("");
-    ui->statusBox->setTextColor("black");
     ui->statusBox->setTextColor("black");
     ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
     ui->countdownLabel->setText("");
 }
-
+/*
 //=============================================================================
-// receiveBearings()
+// viewMap()
 //
 //  tardat2cc.rtf
 // (*171207*)
@@ -412,8 +465,10 @@ void MainWindow::on_receiveBearingsButton_clicked()
 // n1: Range	1.82952
 // n1: Bearing 46.5192
 //=============================================================================
-void MainWindow::receiveBearings(int node_num)
+void MainWindow::viewMap(int node_num)
 {
+
+
     string lat, lon, dtg;
     string n0range, n0bearing, n1range, n1bearing, n2range, n2bearing;
     stringstream ss;
@@ -502,10 +557,10 @@ void MainWindow::receiveBearings(int node_num)
     }
     catch(exception &e)
     {
-        cout << "receiveBearings exception: " << e.what() << endl;
+        cout << "viewMap exception: " << e.what() << endl;
     }
 }
-
+*/
 //=============================================================================
 // showVideoButtonClicked()
 // Method to show the video mosaic.

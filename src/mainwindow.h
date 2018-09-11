@@ -7,6 +7,7 @@
 #include <QLCDNumber>
 #include <QTextEdit>
 #include <QString>
+#include <QProcess>
 
 #include "audio_connection_manager.h"
 #include "includes.h"
@@ -43,7 +44,7 @@ private slots:
 
      void on_receiveNodePositionsButton_clicked();
 
-     void on_receiveBearingsButton_clicked();
+     void on_viewMapButton_clicked();
 
      void on_showVideoButton_clicked();
 
@@ -95,7 +96,7 @@ private:
 
     void receiveNodePosition(int node_num);
 
-    void receiveBearings(int node_num);
+//    void receiveBearings(int node_num);
 
     void resetHeaderFileTimes(void);
     string setButtonColour(int colourno);

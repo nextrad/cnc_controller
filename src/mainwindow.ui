@@ -159,7 +159,7 @@ Positions</string>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="receiveBearingsButton">
+      <widget class="QPushButton" name="viewMapButton">
        <property name="maximumSize">
         <size>
          <width>16777215</width>
@@ -167,8 +167,7 @@ Positions</string>
         </size>
        </property>
        <property name="text">
-        <string>Receive
-Pedestal Bearings</string>
+        <string>View Map</string>
        </property>
       </widget>
      </item>

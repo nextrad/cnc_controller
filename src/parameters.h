@@ -54,6 +54,7 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 
 #define ICON_PATH                   "../media/icons/favicon2.ico"
 #define TONES_PATH                  "/var/lib/asterisk/sounds/custom/tone"
+#define GOOGLE_EARTH_PATH           "/usr/bin"
 
 #define STARTTIMESECS               40
 
