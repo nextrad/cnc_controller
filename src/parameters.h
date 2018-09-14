@@ -52,6 +52,10 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define CNC_NODE2_BEARINGS_PATH     "/home/nextrad/Documents/cnc_controller/node2/home/nextrad/Desktop/NextGPSDO/tardat2cc.rtf"
 #define NODE_BEARINGS_PATH          "/home/nextrad/tardat2cc.rtf"
 
+#define GOOGLE_EARTH_PATH           "/usr/bin"
+#define GOOGLE_EARTH_FILE           "/home/nextrad/Documents/cnc_controller/src/My Places.kml"
+#define GOOGLE_EARTH_FULLFILE       "/home/nextrad/Documents/cnc_controller/src/\"My Places.kml\""
+
 #define ICON_PATH                   "../media/icons/favicon2.ico"
 #define TONES_PATH                  "/var/lib/asterisk/sounds/custom/tone"
 #define GOOGLE_EARTH_PATH           "/usr/bin"

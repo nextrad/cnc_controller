@@ -197,3 +197,76 @@ string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
 
     return data;
 }
+
+
+//=============================================================================
+// writeToGoogleEarthFile()
+//=============================================================================
+//method to return a variable's value from a Google Earth file
+void HeaderArmFiles::writeToGoogleEarthFile(string section, string key, string var)
+{
+    //Read from Google Earth file
+    std::ifstream original_file (GOOGLE_EARTH_FILE);
+    if (original_file.good() != 1)
+    {
+        printf("Please check location of Google Earth file and try again.\n");
+    }
+    else
+    {
+        std::string original_substr, replacement ;
+        std::string line;
+
+        // get a temporary file name
+        char tmp_file_name[ L_tmpnam ] ;
+        std::tmpnam(tmp_file_name) ;
+        std::ofstream temp_file(tmp_file_name) ;
+
+        while ( std::getline( original_file, line) )
+        {
+            // find section
+            std::size_t found = line.find(section);
+            if (found!=std::string::npos)
+            {
+                temp_file << line << endl;
+
+                // find key
+                while ( std::getline( original_file, line) )
+                {
+                    found = line.find(key);
+                    if (found!=std::string::npos)
+                    {
+                        original_substr = line;
+
+                        std::string key1 = key.substr(1,key.length()-2);
+                        replacement = key + var + "</" + key1 + ">";
+
+                        line.replace( found, original_substr.size(), replacement ) ;
+                        found += replacement.size() ;
+
+                        temp_file << line << endl;
+
+                        break;
+                    }
+                    else
+                    {
+                        temp_file << line << endl;
+                    }
+                }
+            }
+            else
+            {
+                temp_file << line << endl;
+            }
+        }
+
+        // overwrite the original file with the temporary file
+        {
+            std::ifstream temp_file(tmp_file_name) ;
+            std::ofstream original_file(GOOGLE_EARTH_FILE) ;
+            original_file << temp_file.rdbuf() ;
+        }
+
+        // delete the temporary file
+        std::remove(tmp_file_name) ;
+    }
+}

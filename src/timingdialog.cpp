@@ -179,6 +179,7 @@ int TimingDialog::on_buttonBox_clicked()
     headerarmfiles.writeToHeaderFile("Timing", "MINUTE", minute);
     headerarmfiles.writeToHeaderFile("Timing", "SECOND", second);
 
+    return 0;
 }
 
 

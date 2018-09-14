@@ -385,20 +385,56 @@ void MainWindow::receiveNodePosition(int node_num)
 //=============================================================================
 void MainWindow::on_viewMapButton_clicked()
 {
+    string lat0, lon0, ht0, lat1, lon1, ht1, lat2, lon2, ht2;
+
     ui->statusBox->append("");
     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Viewing Map");
     ui->statusBox->append("");
 
     try
     {
+        // Read node positions
+
+  //      on_receiveNodePositionsButton_clicked();
+
+        lat0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT").toStdString();
+        lon0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_LON").toStdString();
+        ht0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_HT").toStdString();
+        lat1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT").toStdString();
+        lon1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_LON").toStdString();
+        ht1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_HT").toStdString();
+        lat2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT").toStdString();
+        lon2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_LON").toStdString();
+        ht2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_HT").toStdString();
+
+        // save node positions to Google Earth file
+        headerarmfiles.writeToGoogleEarthFile("node0", "<longitude>", lon0);
+        headerarmfiles.writeToGoogleEarthFile("node0", "<latitude>", lat0);
+        headerarmfiles.writeToGoogleEarthFile("node0", "<altitude>", ht0);
+        headerarmfiles.writeToGoogleEarthFile("node0", "<coordinates>", lon0 + "," + lat0 + "," + ht0);
+
+        headerarmfiles.writeToGoogleEarthFile("node1", "<longitude>", lon1);
+        headerarmfiles.writeToGoogleEarthFile("node1", "<latitude>", lat1);
+        headerarmfiles.writeToGoogleEarthFile("node1", "<altitude>", ht1);
+        headerarmfiles.writeToGoogleEarthFile("node1", "<coordinates>", lon1 + "," + lat1 + "," + ht1);
+
+        headerarmfiles.writeToGoogleEarthFile("node2", "<longitude>", lon2);
+        headerarmfiles.writeToGoogleEarthFile("node2", "<latitude>", lat2);
+        headerarmfiles.writeToGoogleEarthFile("node2", "<altitude>", ht2);
+        headerarmfiles.writeToGoogleEarthFile("node2", "<coordinates>", lon2 + "," + lat2 + "," + ht2);
+
+
+
+
+
+/*
         // launch Google Earth
         // this will output in the Header file
         stringstream ss;
         int ret;
         int status;
 
-
-        ss << "cd " << GOOGLE_EARTH_PATH " && ./google-earth-pro";
+        ss << "cd " << GOOGLE_EARTH_PATH " && ./google-earth-pro " << GOOGLE_EARTH_FULLFILE;
         cout << ss.str() << endl;
         status = system(ss.str().c_str());
         if (-1 != status)
@@ -413,7 +449,7 @@ void MainWindow::on_viewMapButton_clicked()
                 cout << "view map FAILED" << endl;
             }
         }
-        ss.str("");
+        ss.str("");*/
         /*
         // read PulseParams.ini
         QString waveform_index_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "WAVEFORM_INDEX");

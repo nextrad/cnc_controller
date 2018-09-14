@@ -22,10 +22,10 @@ class HeaderArmFiles
         QString readFromPulseParamsFile(string section, string var);
         string readFromGPSInfoFile(int nodeno, string var);
         string readFromBearingsFile(int nodeno, string var, int strsize);
-
-
+        void writeToGoogleEarthFile(string section, string key, string var);
 
     private:
+
 };
 
 
