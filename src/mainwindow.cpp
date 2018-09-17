@@ -11,6 +11,8 @@
 //Revision      7.0 (Feb 2018)
 //Edited by:    Shirley Coetzee
 //Revision      8.0 (Jul 2018)
+//Edited by:    Shirley Coetzee
+//Revision      9.0 (Sep 2018)
 
 
 //=============================================================================
@@ -385,8 +387,6 @@ void MainWindow::receiveNodePosition(int node_num)
 //=============================================================================
 void MainWindow::on_viewMapButton_clicked()
 {
-    string lat0, lon0, ht0, lat1, lon1, ht1, lat2, lon2, ht2;
-
     ui->statusBox->append("");
     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Viewing Map");
     ui->statusBox->append("");
@@ -394,18 +394,18 @@ void MainWindow::on_viewMapButton_clicked()
     try
     {
         // Read node positions
+        on_receiveNodePositionsButton_clicked();
 
-  //      on_receiveNodePositionsButton_clicked();
-
-        lat0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT").toStdString();
-        lon0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_LON").toStdString();
-        ht0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_HT").toStdString();
-        lat1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT").toStdString();
-        lon1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_LON").toStdString();
-        ht1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_HT").toStdString();
-        lat2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT").toStdString();
-        lon2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_LON").toStdString();
-        ht2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_HT").toStdString();
+        // Place node positions on Google Earth
+        string lat0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT").toStdString();
+        string lon0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_LON").toStdString();
+        string ht0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_HT").toStdString();
+        string lat1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT").toStdString();
+        string lon1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_LON").toStdString();
+        string ht1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_HT").toStdString();
+        string lat2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT").toStdString();
+        string lon2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_LON").toStdString();
+        string ht2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_HT").toStdString();
 
         // save node positions to Google Earth file
         headerarmfiles.writeToGoogleEarthFile("node0", "<longitude>", lon0);
@@ -423,13 +423,7 @@ void MainWindow::on_viewMapButton_clicked()
         headerarmfiles.writeToGoogleEarthFile("node2", "<altitude>", ht2);
         headerarmfiles.writeToGoogleEarthFile("node2", "<coordinates>", lon2 + "," + lat2 + "," + ht2);
 
-
-
-
-
-/*
-        // launch Google Earth
-        // this will output in the Header file
+        // Launch Google Earth
         stringstream ss;
         int ret;
         int status;
@@ -449,34 +443,17 @@ void MainWindow::on_viewMapButton_clicked()
                 cout << "view map FAILED" << endl;
             }
         }
-        ss.str("");*/
-        /*
-        // read PulseParams.ini
-        QString waveform_index_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "WAVEFORM_INDEX");
-        QString num_pris_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "NUM_PRIS");
-        QString dac_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "DAC_DELAY");
-        QString adc_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "ADC_DELAY");
-        QString pre_pulse_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PRE_PULSE");
-        QString pri_pulse_width_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PRI_PULSE_WIDTH");
-        QString x_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "X_AMP_DELAY");
-        QString l_amp_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "L_AMP_DELAY");
-        QString pulses_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "PULSES");
-        QString samples_per_pri_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "SAMPLES_PER_PRI");
-        QString rex_delay_str = headerarmfiles.readFromPulseParamsFile("PulseParameters", "REX_DELAY");
+        ss.str("");
 
-        // update NeXtRAD.ini
-        headerarmfiles.writeToHeaderFile("PulseParameters", "WAVEFORM_INDEX", waveform_index_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "NUM_PRIS", num_pris_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "DAC_DELAY", dac_delay_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "ADC_DELAY", adc_delay_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "PRE_PULSE", pre_pulse_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "PRI_PULSE_WIDTH", pri_pulse_width_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "X_AMP_DELAY", x_amp_delay_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "L_AMP_DELAY", l_amp_delay_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "PULSES", pulses_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "SAMPLES_PER_PRI", samples_per_pri_str.toStdString());
-        headerarmfiles.writeToHeaderFile("PulseParameters", "REX_DELAY", rex_delay_str.toStdString());
-*/
+        // Read target positions from Google Earth
+        string lont = headerarmfiles.readFromGoogleEarthFile("target", "<longitude>");
+        string latt = headerarmfiles.readFromGoogleEarthFile("target", "<latitude>");
+        string htt = headerarmfiles.readFromGoogleEarthFile("target", "<altitude>");
+
+        // Save target positions to Header file
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lont);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", htt);
     }
     catch (exception &e)
     {

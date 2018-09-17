@@ -202,12 +202,12 @@ string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
 //=============================================================================
 // writeToGoogleEarthFile()
 //=============================================================================
-//method to return a variable's value from a Google Earth file
+//method to place a variable's value into a Google Earth file
 void HeaderArmFiles::writeToGoogleEarthFile(string section, string key, string var)
 {
-    //Read from Google Earth file
-    std::ifstream original_file (GOOGLE_EARTH_FILE);
-    if (original_file.good() != 1)
+    // Open Google Earth file
+    std::ifstream file (GOOGLE_EARTH_FILE);
+    if (file.good() != 1)
     {
         printf("Please check location of Google Earth file and try again.\n");
     }
@@ -221,7 +221,7 @@ void HeaderArmFiles::writeToGoogleEarthFile(string section, string key, string v
         std::tmpnam(tmp_file_name) ;
         std::ofstream temp_file(tmp_file_name) ;
 
-        while ( std::getline( original_file, line) )
+        while ( std::getline( file, line) )
         {
             // find section
             std::size_t found = line.find(section);
@@ -230,7 +230,7 @@ void HeaderArmFiles::writeToGoogleEarthFile(string section, string key, string v
                 temp_file << line << endl;
 
                 // find key
-                while ( std::getline( original_file, line) )
+                while ( std::getline( file, line) )
                 {
                     found = line.find(key);
                     if (found!=std::string::npos)
@@ -262,11 +262,68 @@ void HeaderArmFiles::writeToGoogleEarthFile(string section, string key, string v
         // overwrite the original file with the temporary file
         {
             std::ifstream temp_file(tmp_file_name) ;
-            std::ofstream original_file(GOOGLE_EARTH_FILE) ;
-            original_file << temp_file.rdbuf() ;
+            std::ofstream file(GOOGLE_EARTH_FILE) ;
+            file << temp_file.rdbuf() ;
         }
 
         // delete the temporary file
         std::remove(tmp_file_name) ;
     }
+}
+
+
+//=============================================================================
+// readFromGoogleEarthFile()
+//=============================================================================
+//method to return a variable's value from a Google Earth file
+string HeaderArmFiles::readFromGoogleEarthFile(string section, string key)
+{   
+    string data = "";
+
+    // Open Google Earth file
+    std::ifstream file (GOOGLE_EARTH_FILE);
+    if (file.good() != 1)
+    {
+        printf("Please check location of Google Earth file and try again.\n");
+    }
+    else
+    {
+        std::string line;
+
+        while ( std::getline( file, line) )
+        {
+            // find section
+            std::size_t found = line.find(section);
+            if (found!=std::string::npos)
+            {
+                // find key
+                while ( std::getline( file, line) )
+                {
+                    found = line.find(key);
+                    if (found!=std::string::npos)
+                    {
+                        // get data
+                        found = line.find('>');
+                        if (found!=std::string::npos)
+                        {
+                            string str = line.substr(found + 1);
+                            found = str.find(".");
+                            if (found!=std::string::npos)
+                            {
+                                data = str.substr(0, found + 5);
+                            }
+                            else
+                            {
+                                found = str.find("<");
+                                data = str.substr(0, found);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return data;
 }

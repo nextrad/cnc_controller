@@ -23,6 +23,7 @@ class HeaderArmFiles
         string readFromGPSInfoFile(int nodeno, string var);
         string readFromBearingsFile(int nodeno, string var, int strsize);
         void writeToGoogleEarthFile(string section, string key, string var);
+        string readFromGoogleEarthFile(string section, string key);
 
     private:
 
