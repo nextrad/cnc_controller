@@ -12,6 +12,8 @@
 #include "SimpleIni.h"
 #include <cctype>
 #include <string>
+#include <cstring>
+
 
 class HeaderArmFiles
 {

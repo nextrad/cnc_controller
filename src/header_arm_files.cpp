@@ -1,8 +1,13 @@
 //Class:        Datetime
 //For:          University of Cape Town, Dept. Elec. Eng., RRSG NeXtRAD
-//Author:       Shirley Coetzee
-//Created:      December 2017
 //Version       1.0 (December 2017)
+//Created by:   Shirley Coetzee
+//Revision      2.0 (July 2018)
+//Edited by:    Shirley Coetzee and Brad Kahn
+//Revision      3.0 (September 2018)
+//Edited by:    Shirley Coetzee
+
+
 
 
 #include "includes.h"
@@ -217,57 +222,62 @@ void HeaderArmFiles::writeToGoogleEarthFile(string section, string key, string v
         std::string line;
 
         // get a temporary file name
-        char tmp_file_name[ L_tmpnam ] ;
-        std::tmpnam(tmp_file_name) ;
-        std::ofstream temp_file(tmp_file_name) ;
-
-        while ( std::getline( file, line) )
+        char tempFileName[20]; // name only valid till next invocation of tempFileOpen
+        std::ofstream temp_file;
+        strcpy(tempFileName, "/tmp/XXXXXX");
+        if (mkstemp(tempFileName) != -1)
         {
-            // find section
-            std::size_t found = line.find(section);
-            if (found!=std::string::npos)
+
+            temp_file.open(tempFileName);
+
+            while ( std::getline( file, line) )
             {
-                temp_file << line << endl;
-
-                // find key
-                while ( std::getline( file, line) )
+                // find section
+                std::size_t found = line.find(section);
+                if (found!=std::string::npos)
                 {
-                    found = line.find(key);
-                    if (found!=std::string::npos)
+                    temp_file << line << endl;
+
+                    // find key
+                    while ( std::getline( file, line) )
                     {
-                        original_substr = line;
+                        found = line.find(key);
+                        if (found!=std::string::npos)
+                        {
+                            original_substr = line;
 
-                        std::string key1 = key.substr(1,key.length()-2);
-                        replacement = key + var + "</" + key1 + ">";
+                            std::string key1 = key.substr(1,key.length()-2);
+                            replacement = key + var + "</" + key1 + ">";
 
-                        line.replace( found, original_substr.size(), replacement ) ;
-                        found += replacement.size() ;
+                            line.replace( found, original_substr.size(), replacement ) ;
+                            found += replacement.size() ;
 
-                        temp_file << line << endl;
+                            temp_file << line << endl;
 
-                        break;
-                    }
-                    else
-                    {
-                        temp_file << line << endl;
+                            break;
+                        }
+                        else
+                        {
+                            temp_file << line << endl;
+                        }
                     }
                 }
+                else
+                {
+                    temp_file << line << endl;
+                }
             }
-            else
+
+            // overwrite the original file with the temporary file
             {
-                temp_file << line << endl;
+                std::ifstream temp_file(tempFileName) ;
+                std::ofstream file(GOOGLE_EARTH_FILE) ;
+                file << temp_file.rdbuf() ;
             }
-        }
 
-        // overwrite the original file with the temporary file
-        {
-            std::ifstream temp_file(tmp_file_name) ;
-            std::ofstream file(GOOGLE_EARTH_FILE) ;
-            file << temp_file.rdbuf() ;
+            // delete the temporary file
+            std::remove(tempFileName) ;
         }
-
-        // delete the temporary file
-        std::remove(tmp_file_name) ;
     }
 }
 
