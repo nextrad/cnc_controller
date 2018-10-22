@@ -97,9 +97,9 @@
 			<Placemark>
 				<name>node1</name>
 				<LookAt>
-					<longitude>18.4458</longitude>
-					<latitude>-34.1926</latitude>
-					<altitude>51.89</altitude>
+					<longitude>18.4599</longitude>
+					<latitude>-33.9585</latitude>
+					<altitude>172.32</altitude>
 					<heading>-2.672479230635799e-05</heading>
 					<tilt>28.0359347158305</tilt>
 					<range>84.96366267921488</range>
@@ -108,7 +108,7 @@
 				<styleUrl>#m_ylw-pushpin0</styleUrl>
 				<Point>
 					<gx:drawOrder>1</gx:drawOrder>
-					<coordinates>18.4458,-34.1926,51.89</coordinates>
+					<coordinates>18.4599,-33.9585,172.32</coordinates>
 				</Point>
 			</Placemark>
 			<Placemark>

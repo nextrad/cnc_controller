@@ -467,113 +467,7 @@ void MainWindow::on_viewMapButton_clicked()
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
     ui->countdownLabel->setText("");
 }
-/*
-//=============================================================================
-// viewMap()
-//
-//  tardat2cc.rtf
-// (*171207*)
-// DTG	061855Z 1217
-// Target Lat/Lon 	{-34.1813,18.46}
-// n1: Range	1.82952
-// n1: Bearing 46.5192
-//=============================================================================
-void MainWindow::viewMap(int node_num)
-{
 
-
-    string lat, lon, dtg;
-    string n0range, n0bearing, n1range, n1bearing, n2range, n2bearing;
-    stringstream ss;
-    int status;
-    int ret;
-
-    try
-    {
-        ss << "ansible node" << node_num << " -m fetch -a \"src=/home/nextrad/tardat2cc.rtf dest=~/Documents/cnc_controller/" << "\"";
-        cout << ss.str().c_str() << endl;
-
-        status = system(stringToCharPntr(ss.str()));
-        if (-1 != status)
-        {
-            ret = WEXITSTATUS(status);
-
-            if (ret==0)
-            {
-                // Parse tardat2cc.rtf file
-                dtg = headerarmfiles.readFromBearingsFile(node_num, "DTG", 12);
-                lat = headerarmfiles.readFromBearingsFile(node_num, "Lat", 8);
-                lon = headerarmfiles.readFromBearingsFile(node_num, "Lon", 5);
-                n0range = headerarmfiles.readFromBearingsFile(node_num, "n0: Range", 7);
-                n0bearing = headerarmfiles.readFromBearingsFile(node_num, "n0: Bearing", 7);
-                n1range = headerarmfiles.readFromBearingsFile(node_num, "n1: Range", 7);
-                n1bearing = headerarmfiles.readFromBearingsFile(node_num, "n1: Bearing", 7);
-                n2range = headerarmfiles.readFromBearingsFile(node_num, "n2: Range", 7);
-                n2bearing = headerarmfiles.readFromBearingsFile(node_num, "n2: Bearing", 7);
-
-                if ((lat == "Fault") || (lon == "Fault") || (dtg == "Fault"))
-                {
-                    // Display data on screen in red X per node
-                    ui->statusBox->setTextColor("red");
-                    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "\tnode" + QString::number(node_num));
-                }
-                else
-                {
-                    // Update Header file
-                    headerarmfiles.writeToHeaderFile("Bearings", "DTG", dtg);
-                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", lat);
-                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lon);
-                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", "0.00");
-
-                    if (node_num == 0)
-                    {
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", n0range);
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", n0bearing);
-                    }
-                    else if (node_num == 1)
-                    {
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE1_RANGE", n1range);
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE1_BEARING", n1bearing);
-                    }
-                    else if (node_num == 2)
-                    {
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE2_RANGE", n2range);
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE2_BEARING", n2bearing);
-                    }
-
-                    // Display data on screen in green values per node
-                    ui->statusBox->setTextColor("green");
-                    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n" \
-                                + "lat=" + QString::fromStdString(lat) + "\tlong=" + QString::fromStdString(lon) + "\n" \
-                                + "DTG=" + QString::fromStdString(dtg));
-
-                    switch(node_num)
-                    {
-                    case 0: ui->statusBox->append("n0 range=" + QString::fromStdString(n0range) + "\tn0 bearing=" + QString::fromStdString(n0bearing));
-                            break;
-                    case 1: ui->statusBox->append("n1 range=" + QString::fromStdString(n1range) + "\tn1 bearing=" + QString::fromStdString(n1bearing));
-                            break;
-                    case 2: ui->statusBox->append("n2 range=" + QString::fromStdString(n2range) + "\tn2 bearing=" + QString::fromStdString(n2bearing));
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                // Display data on screen in red X per node
-                ui->statusBox->setTextColor("red");
-                ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
-            }
-        }
-        ss.str("");             //clear stringstream
-        ui->statusBox->append("");
-    }
-    catch(exception &e)
-    {
-        cout << "viewMap exception: " << e.what() << endl;
-    }
-}
-*/
 //=============================================================================
 // showVideoButtonClicked()
 // Method to show the video mosaic.
@@ -1268,12 +1162,16 @@ void MainWindow::updateCountDownLCD(void)
     }
     else if (experiment_state == WAITING)
     {
-        ui->Countdown->display(getCountDownTime(strtUnixTime - currentUnixTime));
-//        cout << "WAITING " << strtUnixTime - currentUnixTime << endl;
+        if((strtUnixTime - currentUnixTime) >= 0)
+        {
+            ui->Countdown->display(getCountDownTime(strtUnixTime - currentUnixTime));
+        }
     }
     else if (experiment_state == ACTIVE)
     {
-        ui->Countdown->display(getCountDownTime(stopUnixTime - currentUnixTime));
-//        cout << "ACTIVE " << stopUnixTime - currentUnixTime << endl;
+        if((stopUnixTime - currentUnixTime) >= 0)
+        {
+            ui->Countdown->display(getCountDownTime(stopUnixTime - currentUnixTime));
+        }
     }
 }
