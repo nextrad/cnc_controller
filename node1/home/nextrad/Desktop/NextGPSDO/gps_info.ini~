@@ -17,9 +17,9 @@ ALTITUDE = 50.32
 ; Position Hold Values
 ;=================================
 ; PH_Latitude = -33.9585
-POS_HOLD_LAT = -34.1926
+POS_HOLD_LAT = 4172716849
 ; PH_Longitude = 18.4599
-POS_HOLD_LONG = 18.4457
+POS_HOLD_LONG = 66455717
 POS_HOLD_HEIGHT = 50.32
 ;=================================
 ; GPS Config

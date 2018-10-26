@@ -454,6 +454,7 @@ void MainWindow::on_viewMapButton_clicked()
         headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);
         headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lont);
         headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", htt);
+
     }
     catch (exception &e)
     {
