@@ -30,6 +30,8 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define IS_MOSAIC_MODE              true
 #define H_FILE_LENGTH               112
 
+#define TCU_INIT_SCRIPT             "python3 /home/nextrad/Documents/tcu_software/controller_v2.py "
+
 #define TCU0                        "192.168.1.16"
 #define TCU1                        "192.168.1.26"
 #define TCU2                        "192.168.1.36"

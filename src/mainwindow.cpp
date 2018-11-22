@@ -428,7 +428,8 @@ void MainWindow::on_viewMapButton_clicked()
         int ret;
         int status;
 
-        ss << "cd " << GOOGLE_EARTH_PATH " && ./google-earth-pro " << GOOGLE_EARTH_FULLFILE;
+        ss << "cd " << GOOGLE_EARTH_PATH " && ./google-earth-pro " << GOOGLE_EARTH_FULLFILE << " &";
+
         cout << ss.str() << endl;
         status = system(ss.str().c_str());
         if (-1 != status)
@@ -444,17 +445,6 @@ void MainWindow::on_viewMapButton_clicked()
             }
         }
         ss.str("");
-
-        // Read target positions from Google Earth
-        string lont = headerarmfiles.readFromGoogleEarthFile("target", "<longitude>");
-        string latt = headerarmfiles.readFromGoogleEarthFile("target", "<latitude>");
-        string htt = headerarmfiles.readFromGoogleEarthFile("target", "<altitude>");
-
-        // Save target positions to Header file
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lont);
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", htt);
-
     }
     catch (exception &e)
     {
@@ -610,6 +600,17 @@ void MainWindow::on_goButton_clicked()
     {
         ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
+        cout << "Fetching target positions from Google Earth File" <<endl;
+        // Read target positions from Google Earth
+        string lont = headerarmfiles.readFromGoogleEarthFile("target", "<longitude>");
+        string latt = headerarmfiles.readFromGoogleEarthFile("target", "<latitude>");
+        string htt = headerarmfiles.readFromGoogleEarthFile("target", "<altitude>");
+
+        // Save target positions to Header file
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lont);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", htt);
+
         // sends out header file to ALL units
         if (sendFilesOverNetwork()== 0)
         {
@@ -668,7 +669,6 @@ int MainWindow::calcExperimentLength(void)
     // e.g. PULSES = "5.0,1000.0,0,1300.0|10.0,2000.0,1,1300.0|10.0,3000.0,2,1300.0|10.0,4000.0,3,1300.0";
 
     // ====================================================
-
     // Split into blocks separated by "|", put into pulses_arr
 
     std::string s = pulses_str;
@@ -756,6 +756,7 @@ int MainWindow::calcExperimentLength(void)
 // converts the times from dd-MM-yyyy hh:mm:ss to yyyy-MM-dd hh:mm:ss formats for timer and NTP
 // If countdown time is valid, this method starts the countdown timer
 //=============================================================================
+
 bool MainWindow::checkCountdown(void)
 {
     Datetime datetime;
@@ -1000,7 +1001,7 @@ void MainWindow::runTCU(int tcu_num)
     int ret;
     int status;
 
-    ss << "python3 /home/nextrad/Documents/tcu_software/controller.py ";
+    ss << TCU_INIT_SCRIPT;
     if (tcu_num == 0)
     {
         ss << TCU0;
@@ -1048,7 +1049,7 @@ void MainWindow::killTCU(int tcu_num)
     int ret;
     int status;
 
-    ss << "python3 /home/nextrad/Documents/tcu_software/controller.py ";
+    ss << TCU_INIT_SCRIPT;
     if (tcu_num == 0)
     {
         ss << TCU0;
@@ -1096,6 +1097,17 @@ void MainWindow::on_goLaterButton_clicked()
     // if countdown time valid, start display
     if (checkCountdown())
     {
+        cout << "Fetching target positions from Google Earth File" <<endl;
+        // Read target positions from Google Earth
+        string lont = headerarmfiles.readFromGoogleEarthFile("target", "<longitude>");
+        string latt = headerarmfiles.readFromGoogleEarthFile("target", "<latitude>");
+        string htt = headerarmfiles.readFromGoogleEarthFile("target", "<altitude>");
+
+        // Save target positions to Header file
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lont);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", htt);
+
         // sends out header file to all units
         if (sendFilesOverNetwork() == 0)
         {
