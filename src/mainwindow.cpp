@@ -274,6 +274,7 @@ bool MainWindow::testConnection(string address)
     return false;
 }
 
+
 //=============================================================================
 // stringToCharPntr()
 // Takes in a string and converts it to char*
@@ -600,16 +601,7 @@ void MainWindow::on_goButton_clicked()
     {
         ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
-        cout << "Fetching target positions from Google Earth File" <<endl;
-        // Read target positions from Google Earth
-        string lont = headerarmfiles.readFromGoogleEarthFile("target", "<longitude>");
-        string latt = headerarmfiles.readFromGoogleEarthFile("target", "<latitude>");
-        string htt = headerarmfiles.readFromGoogleEarthFile("target", "<altitude>");
-
-        // Save target positions to Header file
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lont);
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", htt);
+        saveTarget();
 
         // sends out header file to ALL units
         if (sendFilesOverNetwork()== 0)
@@ -1004,17 +996,17 @@ void MainWindow::runTCU(int tcu_num)
     ss << TCU_INIT_SCRIPT;
     if (tcu_num == 0)
     {
-        ss << TCU0;
+        ss << TCU0 << " -b " << TCU_BOF_ACTIVE;
     }
     else if (tcu_num == 1)
     {
-        ss << TCU1;
+        ss << TCU1 << " -b " << TCU_BOF_PASSIVE;
     }
     else
     {
-        ss << TCU2;
+        ss << TCU2 << " -b " << TCU_BOF_PASSIVE;
     }
-    ss << " -f" << HEADER_PATH << " &" << endl;
+    ss << " -f " << HEADER_PATH << " &" << endl;
     cout << ss.str() << endl;
     status = system(ss.str().c_str());
 
@@ -1089,14 +1081,11 @@ void MainWindow::killTCU(int tcu_num)
 }
 
 //=============================================================================
-// goLaterButtonClicked()
+// on_saveTarget()
 // sends out header file to all units then starts countdown to armtime
 //=============================================================================
-void MainWindow::on_goLaterButton_clicked()
+void MainWindow::saveTarget()
 {
-    // if countdown time valid, start display
-    if (checkCountdown())
-    {
         cout << "Fetching target positions from Google Earth File" <<endl;
         // Read target positions from Google Earth
         string lont = headerarmfiles.readFromGoogleEarthFile("target", "<longitude>");
@@ -1107,6 +1096,18 @@ void MainWindow::on_goLaterButton_clicked()
         headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);
         headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lont);
         headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", htt);
+}
+
+//=============================================================================
+// goLaterButtonClicked()
+// sends out header file to all units then starts countdown to armtime
+//=============================================================================
+void MainWindow::on_goLaterButton_clicked()
+{
+    // if countdown time valid, start display
+    if (checkCountdown())
+    {
+        saveTarget();
 
         // sends out header file to all units
         if (sendFilesOverNetwork() == 0)

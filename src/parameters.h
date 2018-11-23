@@ -36,6 +36,9 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define TCU1                        "192.168.1.26"
 #define TCU2                        "192.168.1.36"
 
+#define TCU_BOF_ACTIVE              "tcu_v2-1-3_active.bof"
+#define TCU_BOF_PASSIVE             "tcu_v2-1-3_passive.bof"
+
 #define HEADER_FILE                 "NeXtRAD.ini"
 #define HEADER_PATH                 "/home/nextrad/Documents/nextrad_header/" HEADER_FILE
 

@@ -106,6 +106,8 @@ private:
     void runTCU(int tcu_num);
     void killTCU(int tcu_num);
 
+    void saveTarget();
+
     int calcExperimentLength(void);
     QString getCountDownTime(time_t timeLeft);
 
