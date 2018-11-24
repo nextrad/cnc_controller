@@ -101,8 +101,6 @@ void MainWindow::on_editHeaderFileButton_clicked()
     ui->countdownLabel->setText("");
 }
 
-
-
 //=============================================================================
 // on_testConnectionButton_clicked()
 // Tests the connections to CNC
@@ -128,11 +126,11 @@ void MainWindow::testSubNetwork(QString NetID)
     string temp, name;
     string address = "192.168.1.";
     address.append(NetID.toUtf8().constData());
-    NetID = QString::number(NetID.toInt() - 1);    //This is because the node numbering actually starts from zero.
+    QString node_num_qstr = QString::number(NetID.toInt() - 1);    //This is because the node numbering actually starts from zero.
 
     //Test if Access Point bullet is connected
     name = "ap";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("2");
     if(!testConnection(temp))
@@ -148,7 +146,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if STAtion bullet is connected
     name = "sta";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("3");
     if(!testConnection(temp))
@@ -164,7 +162,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if PoE Switch is connected
     name = "switch";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("0");
     if(!testConnection(temp))
@@ -180,10 +178,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if Node Laptop is connected
     name = "node";
-    name.append(NetID.toUtf8().constData());
-    temp = address;
-    temp.append("1");
-    if(!testConnection(temp))
+    if(!testNodeConnection(NetID))
     {
         ui->statusBox->setTextColor("red");
         ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
@@ -196,7 +191,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if IP camera is connected
     name = "cam";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("4");
     if(!testConnection(temp))                   //Cameras have no ssh port and more security so it's easier to ping them
@@ -212,7 +207,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if Cobalt is connected
     name = "cobalt";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("5");
     if(!testConnection(temp))
@@ -228,7 +223,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if TCUs is connected
     name = "tcu";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("6");
     if(!testConnection(temp))
@@ -243,6 +238,31 @@ void MainWindow::testSubNetwork(QString NetID)
     }
 
     ui->statusBox->append("");
+}
+
+//=============================================================================
+// testNodeConnection()
+// Tests the node connections to CNC
+//=============================================================================
+bool MainWindow::testNodeConnection(QString NetID)
+{
+    bool connected = false;
+    string temp, name;
+    string address = "192.168.1.";
+    address.append(NetID.toUtf8().constData());
+    QString node_num_qstr = QString::number(NetID.toInt() - 1);    //This is because the node numbering actually starts from zero.
+
+    //Test if Node Laptop is connected
+    name = "node";
+    name.append(node_num_qstr.toUtf8().constData());
+    temp = address;
+    temp.append("1");
+    if(testConnection(temp))
+    {
+        connected = true;
+    }
+
+    return connected;
 }
 
 //=============================================================================
@@ -286,6 +306,7 @@ char* MainWindow::stringToCharPntr(string str)
     return cstr;
 }
 
+
 //=============================================================================
 // receiveNodePositionsButtonClicked()
 // method to receive the nodes' positions from the GPSDOs.
@@ -318,53 +339,62 @@ void MainWindow::receiveNodePosition(int node_num)
 
     try
     {
-        ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.ini dest=~/Documents/cnc_controller/" << "\"";
-        cout << ss.str().c_str() << endl;
-
-        status = system(stringToCharPntr(ss.str()));
-        if (-1 != status)
+        if (testNodeConnection(QString::number(node_num + 1)))
         {
-            ret = WEXITSTATUS(status);
+            ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.ini dest=~/Documents/cnc_controller/" << "\"";
+            cout << ss.str().c_str() << endl;
 
-            if (ret==0)
+            status = system(stringToCharPntr(ss.str()));
+            if (-1 != status)
             {
-                // Parse gpsinfo.ini file
-                lat = headerarmfiles.readFromGPSInfoFile(node_num,"LATITUDE");
-                lon = headerarmfiles.readFromGPSInfoFile(node_num,"LONGITUDE");
-                ht = headerarmfiles.readFromGPSInfoFile(node_num,"ALTITUDE");
+                ret = WEXITSTATUS(status);
 
-                if ((lat == "Fault") || (lon == "Fault") || (ht == "Fault"))
+                if (ret==0)
+                {
+                    // Parse gpsinfo.ini file
+                    lat = headerarmfiles.readFromGPSInfoFile(node_num,"LATITUDE");
+                    lon = headerarmfiles.readFromGPSInfoFile(node_num,"LONGITUDE");
+                    ht = headerarmfiles.readFromGPSInfoFile(node_num,"ALTITUDE");
+
+                    if ((lat == "Fault") || (lon == "Fault") || (ht == "Fault"))
+                    {
+                        // Display data on screen in red X per node
+                        ui->statusBox->setTextColor("red");
+                        ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+                    }
+                    else
+                    {
+                        // Display data on screen in green values per node
+                        ui->statusBox->setTextColor("green");
+                        ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n " \
+                                    + "lat=" + QString::fromStdString(lat) + ", \tlong=" + QString::fromStdString(lon) + ", \tht=" + QString::fromStdString(ht));
+
+                        if (node_num == 0)
+                        {
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
+                        }
+                        else if (node_num == 1)
+                        {
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
+                        }
+                        else if (node_num == 2)
+                        {
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
+                        }
+                    }
+                }
+                else
                 {
                     // Display data on screen in red X per node
                     ui->statusBox->setTextColor("red");
                     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
                 }
-                else
-                {
-                    if (node_num == 0)
-                    {
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
-                    }
-                    else if (node_num == 1)
-                    {
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
-                    }
-                    else if (node_num == 2)
-                    {
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
-                    }
-
-                    // Display data on screen in green values per node
-                    ui->statusBox->setTextColor("green");
-                    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n " \
-                                + "lat=" + QString::fromStdString(lat) + ", \tlong=" + QString::fromStdString(lon) + ", \tht=" + QString::fromStdString(ht));
-               }
             }
             else
             {
@@ -373,6 +403,13 @@ void MainWindow::receiveNodePosition(int node_num)
                 ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
             }
         }
+        else
+        {
+            // Display data on screen in red X per node
+            ui->statusBox->setTextColor("red");
+            ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+        }
+
         ss.str("");             //clear stringstream
         ui->statusBox->append("");
     }
@@ -985,7 +1022,7 @@ void MainWindow::runTCUs(void)
 }
 
 //=============================================================================
-// runTCU()
+// runTCU()TCU0
 //=============================================================================
 void MainWindow::runTCU(int tcu_num)
 {
@@ -1006,7 +1043,7 @@ void MainWindow::runTCU(int tcu_num)
     {
         ss << TCU2 << " -b " << TCU_BOF_PASSIVE;
     }
-    ss << " -f " << HEADER_PATH << " &" << endl;
+    ss << " -i -f " << HEADER_PATH << " &" << endl;
     cout << ss.str() << endl;
     status = system(ss.str().c_str());
 

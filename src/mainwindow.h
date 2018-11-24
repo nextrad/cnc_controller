@@ -95,8 +95,7 @@ private:
     char* stringToCharPntr(string str);
 
     void receiveNodePosition(int node_num);
-
-//    void receiveBearings(int node_num);
+    bool testNodeConnection(QString NetID);
 
     void resetHeaderFileTimes(void);
     string setButtonColour(int colourno);
