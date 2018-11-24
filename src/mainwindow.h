@@ -22,7 +22,7 @@
 #include <iomanip>
 #include <ctime>
 #include <sstream>
-
+#include <QMessageBox>
 #include <QMainWindow>
 
 namespace Ui {
@@ -94,7 +94,7 @@ private:
     bool testConnection(string unitname);
     char* stringToCharPntr(string str);
 
-    void receiveNodePosition(int node_num);
+    bool receiveNodePosition(int node_num);
     bool testNodeConnection(QString NetID);
 
     void resetHeaderFileTimes(void);

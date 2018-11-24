@@ -107,6 +107,10 @@ void MainWindow::on_editHeaderFileButton_clicked()
 //=============================================================================
 void MainWindow::on_testConnectionButton_clicked()
 {
+    ui->statusBox->append("");
+    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Network Connections");
+    ui->statusBox->append("");
+
     testSubNetwork("1");
     testSubNetwork("2");
     testSubNetwork("3");
@@ -314,7 +318,8 @@ char* MainWindow::stringToCharPntr(string str)
 void MainWindow::on_receiveNodePositionsButton_clicked()
 {
     ui->statusBox->append("");
-    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching GPS info files from GPSDOs");
+    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Node Positions");
+    ui->statusBox->append("");
 
     receiveNodePosition(0);
     receiveNodePosition(1);
@@ -330,17 +335,20 @@ void MainWindow::on_receiveNodePositionsButton_clicked()
 //=============================================================================
 // receiveNodePosition()
 //=============================================================================
-void MainWindow::receiveNodePosition(int node_num)
+bool MainWindow::receiveNodePosition(int node_num)
 {
     stringstream ss;
     int status;
     int ret;
     string lat, lon, ht;
+    bool connected = false;
 
     try
     {
         if (testNodeConnection(QString::number(node_num + 1)))
         {
+            connected = true;
+
             ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.ini dest=~/Documents/cnc_controller/" << "\"";
             cout << ss.str().c_str() << endl;
 
@@ -412,11 +420,14 @@ void MainWindow::receiveNodePosition(int node_num)
 
         ss.str("");             //clear stringstream
         ui->statusBox->append("");
+
     }
     catch(exception &e)
     {
         cout << "receiveNodePosition exception: " << e.what() << endl;
     }
+
+    return connected;
 }
 
 //=============================================================================
@@ -426,63 +437,100 @@ void MainWindow::receiveNodePosition(int node_num)
 void MainWindow::on_viewMapButton_clicked()
 {
     ui->statusBox->append("");
-    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Viewing Map");
+    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "View Map");
     ui->statusBox->append("");
+
+    string lat, lon, ht;
+    string namebig = "NODE";
+    string namesmall = "node";
+    string temp;
+
+    bool connected = false;
 
     try
     {
-        // Read node positions
-        on_receiveNodePositionsButton_clicked();
-
-        // Place node positions on Google Earth
-        string lat0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT").toStdString();
-        string lon0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_LON").toStdString();
-        string ht0 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE0_LOCATION_HT").toStdString();
-        string lat1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT").toStdString();
-        string lon1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_LON").toStdString();
-        string ht1 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE1_LOCATION_HT").toStdString();
-        string lat2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT").toStdString();
-        string lon2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_LON").toStdString();
-        string ht2 = headerarmfiles.readFromHeaderFile("GeometrySettings", "NODE2_LOCATION_HT").toStdString();
-
         // save node positions to Google Earth file
-        headerarmfiles.writeToGoogleEarthFile("node0", "<longitude>", lon0);
-        headerarmfiles.writeToGoogleEarthFile("node0", "<latitude>", lat0);
-        headerarmfiles.writeToGoogleEarthFile("node0", "<altitude>", ht0);
-        headerarmfiles.writeToGoogleEarthFile("node0", "<coordinates>", lon0 + "," + lat0 + "," + ht0);
-
-        headerarmfiles.writeToGoogleEarthFile("node1", "<longitude>", lon1);
-        headerarmfiles.writeToGoogleEarthFile("node1", "<latitude>", lat1);
-        headerarmfiles.writeToGoogleEarthFile("node1", "<altitude>", ht1);
-        headerarmfiles.writeToGoogleEarthFile("node1", "<coordinates>", lon1 + "," + lat1 + "," + ht1);
-
-        headerarmfiles.writeToGoogleEarthFile("node2", "<longitude>", lon2);
-        headerarmfiles.writeToGoogleEarthFile("node2", "<latitude>", lat2);
-        headerarmfiles.writeToGoogleEarthFile("node2", "<altitude>", ht2);
-        headerarmfiles.writeToGoogleEarthFile("node2", "<coordinates>", lon2 + "," + lat2 + "," + ht2);
-
-        // Launch Google Earth
-        stringstream ss;
-        int ret;
-        int status;
-
-        ss << "cd " << GOOGLE_EARTH_PATH " && ./google-earth-pro " << GOOGLE_EARTH_FULLFILE << " &";
-
-        cout << ss.str() << endl;
-        status = system(ss.str().c_str());
-        if (-1 != status)
+        for( int node_num = 0; node_num < 3; node_num++ )
         {
-            ret = WEXITSTATUS(status);
-            if(ret==0)
+            if (!receiveNodePosition(node_num))             // TODO - set to if(receiveNodePosition)
             {
-                cout << "view map successful\n" << endl;
-            }
-            else
-            {
-                cout << "view map FAILED" << endl;
+                connected = true;
+
+                string numbigstr = std::to_string(node_num);
+                string numbigfull = namebig + numbigstr;
+
+                temp = numbigfull + "_LOCATION_LAT";
+                lat = headerarmfiles.readFromHeaderFile("GeometrySettings", temp).toStdString();
+
+                temp = numbigfull + "_LOCATION_LON";
+                lon = headerarmfiles.readFromHeaderFile("GeometrySettings", temp).toStdString();
+
+                temp = numbigfull + "_LOCATION_HT";
+                ht = headerarmfiles.readFromHeaderFile("GeometrySettings", temp).toStdString();
+
+                string numsmallstr = std::to_string(node_num);
+                string numsmallfull = namesmall + numsmallstr;
+
+                headerarmfiles.writeToGoogleEarthFile(numsmallfull, "<longitude>", lon);
+                headerarmfiles.writeToGoogleEarthFile(numsmallfull, "<latitude>", lat);
+                headerarmfiles.writeToGoogleEarthFile(numsmallfull, "<altitude>", ht);
+                headerarmfiles.writeToGoogleEarthFile(numsmallfull, "<coordinates>", lon + "," + lat + "," + ht);
             }
         }
-        ss.str("");
+
+//        if (connected)                  // TODO - set to connected
+//        {
+            // Define Google Earth selections
+            QMessageBox::information(
+                this,
+                tr("Google Earth"),
+                tr("Unselect \"Temporary Places\"\nSave to \"My Places.kml\"\nDiscard \"Temporary Places\""));
+
+
+            // Launch Google Earth
+            stringstream ss;
+            int ret;
+            int status;
+            bool closed = false;
+
+            // Remove any existing Google Earth programs
+            ss << "pkill googleearth-bin";
+            while (closed == false)
+            {
+                status = system(ss.str().c_str());
+                if (-1 != status)
+                {
+                    ret = WEXITSTATUS(status);
+                    if(ret==0)
+                    {
+                        cout << "Closed current Google Earth program\n" << endl;
+                    }
+                    else
+                    {
+                        closed = true;
+                    }
+                }
+            }
+            ss.str("");
+
+            // Run Google Earth
+            ss << "cd " << GOOGLE_EARTH_PATH " && ./google-earth-pro " << GOOGLE_EARTH_FULLFILE << " & exit";
+            status = system(ss.str().c_str());
+            if (-1 != status)
+            {
+                ret = WEXITSTATUS(status);
+                if(ret==0)
+                {
+                    cout << "view map successful\n" << endl;
+                }
+                else
+                {
+                    cout << "view map FAILED" << endl;
+                }
+            }
+            ss.str("");
+      //  }
+
     }
     catch (exception &e)
     {
@@ -609,7 +657,7 @@ void MainWindow::on_abortGoButton_clicked()
         cout<< "Aborting TCUs...\n" <<endl;
         killTCU(0);
         killTCU(1);
-//        killTCU(2);
+//        killTCU(2);                                                       // TODO - uncomment line and reset ansible hosts
 
         ui->statusBox->setTextColor("black");
         ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
