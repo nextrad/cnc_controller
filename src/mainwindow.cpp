@@ -402,7 +402,8 @@ bool MainWindow::receiveNodePosition(int node_num)
                     // Display data on screen in red X per node
                     ui->statusBox->setTextColor("red");
                     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
-                }
+
+                 }
             }
             else
             {
@@ -484,7 +485,7 @@ void MainWindow::on_viewMapButton_clicked()
             QMessageBox::information(
                 this,
                 tr("Google Earth"),
-                tr("Unselect \"Temporary Places\"\nSave to \"My Places.kml\"\nDiscard \"Temporary Places\""));
+                tr("Do not use Temporary Places - Unselect it and discard results. \n\nSave by selecting \"My Places.kml\" and\nright click Save Place As... \"My Places.kml\""));
 
 
             // Launch Google Earth
@@ -1061,10 +1062,10 @@ void MainWindow::runTCUs(void)
     {
         runTCU(1);
     }
-    if (testConnection(TCU2))
-    {
-       runTCU(2);
-    }
+//    if (testConnection(TCU2))  // TODO - uncomment line and reset ansible hosts
+//    {
+//       runTCU(2);
+//    }
 
     ui->statusBox->setTextColor("black");
 }
@@ -1172,10 +1173,17 @@ void MainWindow::killTCU(int tcu_num)
 void MainWindow::saveTarget()
 {
         cout << "Fetching target positions from Google Earth File" <<endl;
+
         // Read target positions from Google Earth
-        string lont = headerarmfiles.readFromGoogleEarthFile("target", "<longitude>");
-        string latt = headerarmfiles.readFromGoogleEarthFile("target", "<latitude>");
-        string htt = headerarmfiles.readFromGoogleEarthFile("target", "<altitude>");
+        string coordt = headerarmfiles.readFromGoogleEarthFile("target", "<coordinates>");
+        string lont = coordt.substr(0,7);
+        string latt = coordt.substr(8,8);
+        string htt = coordt.substr(17,1);
+
+        std::cout << "target coord = " << coordt << std::endl;
+        std::cout << "target lon = " << lont << std::endl;
+        std::cout << "target lat = " << latt << std::endl;
+        std::cout << "target ht = " << htt << std::endl;
 
         // Save target positions to Header file
         headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);

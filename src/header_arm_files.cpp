@@ -320,7 +320,7 @@ string HeaderArmFiles::readFromGoogleEarthFile(string section, string key)
                             found = str.find(".");
                             if (found!=std::string::npos)
                             {
-                                data = str.substr(0, found + 5);
+                                data = str.substr(0, found + 16);
                             }
                             else
                             {
