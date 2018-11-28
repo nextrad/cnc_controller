@@ -1170,11 +1170,16 @@ void MainWindow::saveTarget()
         cout << "Fetching target positions from Google Earth File" <<endl;
 
         // Read target positions from Google Earth
-        string coordt = headerarmfiles.readFromGoogleEarthFile("target", "<coordinates>");
+        string input = headerarmfiles.readFromGoogleEarthFile("target", "<coordinates>");
+        std::cout << "target from GE = " << input << std::endl;
 
         string str[3];
         int i = 0;
-        std::size_t found = coordt.find_first_of(",</");
+        std::size_t found = input.find_first_of(">");
+        string coordt = input.substr(found+1);
+        std::cout << "target = " << coordt << std::endl;
+
+        found = coordt.find_first_of(",>");
         while (found!=std::string::npos)
         {
             str[i] = coordt.substr(0,found);
@@ -1183,10 +1188,10 @@ void MainWindow::saveTarget()
 
             i++;
 
-            found=coordt.find_first_of(",</",found+1);
+            found=coordt.find_first_of(",<",found+1);
         }
 
-        found=coordt.find_first_of(",</",found+1);
+        found=coordt.find_first_of(",<",found+1);
         str[i] = coordt.substr(0,found);
 
         std::cout << "target lon = " << str[0] << std::endl;
