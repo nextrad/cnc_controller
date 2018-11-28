@@ -250,7 +250,7 @@ string HeaderArmFiles::readFromGoogleEarthFile(string section, string key)
                             found = str.find(".");
                             if (found!=std::string::npos)
                             {
-                                data = line; //str.substr(found);
+                                data = line;
                             }
                             else
                             {
