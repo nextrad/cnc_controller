@@ -182,6 +182,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if Node Laptop is connected
     name = "node";
+    name.append(node_num_qstr.toUtf8().constData());
     if(!testNodeConnection(NetID))
     {
         ui->statusBox->setTextColor("red");
@@ -198,7 +199,7 @@ void MainWindow::testSubNetwork(QString NetID)
     name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("4");
-    if(!testConnection(temp))                   //Cameras have no ssh port and more security so it's easier to ping them
+    if(!testConnection(temp))                  //Cameras have no ssh port and more security so it's easier to ping them
     {
         ui->statusBox->setTextColor("red");
         ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
@@ -251,17 +252,11 @@ void MainWindow::testSubNetwork(QString NetID)
 bool MainWindow::testNodeConnection(QString NetID)
 {
     bool connected = false;
-    string temp, name;
+
     string address = "192.168.1.";
     address.append(NetID.toUtf8().constData());
-    QString node_num_qstr = QString::number(NetID.toInt() - 1);    //This is because the node numbering actually starts from zero.
-
-    //Test if Node Laptop is connected
-    name = "node";
-    name.append(node_num_qstr.toUtf8().constData());
-    temp = address;
-    temp.append("1");
-    if(testConnection(temp))
+    address.append("1");
+    if(testConnection(address))
     {
         connected = true;
     }
@@ -453,7 +448,7 @@ void MainWindow::on_viewMapButton_clicked()
         // save node positions to Google Earth file
         for( int node_num = 0; node_num < 3; node_num++ )
         {
-            if (!receiveNodePosition(node_num))             // TODO - set to if(receiveNodePosition)
+            if (receiveNodePosition(node_num))
             {
                 connected = true;
 
@@ -479,8 +474,8 @@ void MainWindow::on_viewMapButton_clicked()
             }
         }
 
-//        if (connected)                  // TODO - set to connected
-//        {
+        if (connected)
+        {
             // Define Google Earth selections
             QMessageBox::information(
                 this,
@@ -530,7 +525,7 @@ void MainWindow::on_viewMapButton_clicked()
                 }
             }
             ss.str("");
-      //  }
+        }
 
     }
     catch (exception &e)
@@ -689,12 +684,12 @@ void MainWindow::on_goButton_clicked()
 
         saveTarget();
 
-//        // sends out header file to ALL units
-//        if (sendFilesOverNetwork()== 0)
-//        {
-//            // initialise TCUs
-//            runTCUs();
-//        }
+        // sends out header file to ALL units
+        if (sendFilesOverNetwork()== 0)
+        {
+            // initialise TCUs
+            runTCUs();
+        }
     }
     else
     {
