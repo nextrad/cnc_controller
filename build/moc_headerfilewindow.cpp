@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_HeaderFileWindow_t {
-    QByteArrayData data[9];
-    char stringdata[265];
+    QByteArrayData data[8];
+    char stringdata[232];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,15 +34,13 @@ QT_MOC_LITERAL(1, 17, 33),
 QT_MOC_LITERAL(2, 51, 0),
 QT_MOC_LITERAL(3, 52, 35),
 QT_MOC_LITERAL(4, 88, 39),
-QT_MOC_LITERAL(5, 128, 32),
-QT_MOC_LITERAL(6, 161, 34),
-QT_MOC_LITERAL(7, 196, 32),
-QT_MOC_LITERAL(8, 229, 34)
+QT_MOC_LITERAL(5, 128, 34),
+QT_MOC_LITERAL(6, 163, 32),
+QT_MOC_LITERAL(7, 196, 34)
     },
     "HeaderFileWindow\0on_timingParametersButton_clicked\0"
     "\0on_geometryParametersButton_clicked\0"
     "on_targetPositionSettingsButton_clicked\0"
-    "on_bearingsButtonClicked_clicked\0"
     "on_weatherParametersButton_clicked\0"
     "on_pulseParametersButton_clicked\0"
     "on_quicklookSettingsButton_clicked\0"
@@ -55,7 +53,7 @@ static const uint qt_meta_data_HeaderFileWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -63,16 +61,14 @@ static const uint qt_meta_data_HeaderFileWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   49,    2, 0x08,
-       3,    0,   50,    2, 0x08,
-       4,    0,   51,    2, 0x08,
-       5,    0,   52,    2, 0x08,
-       6,    0,   53,    2, 0x08,
-       7,    0,   54,    2, 0x08,
-       8,    0,   55,    2, 0x08,
+       1,    0,   44,    2, 0x08,
+       3,    0,   45,    2, 0x08,
+       4,    0,   46,    2, 0x08,
+       5,    0,   47,    2, 0x08,
+       6,    0,   48,    2, 0x08,
+       7,    0,   49,    2, 0x08,
 
  // slots: parameters
-    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -91,10 +87,9 @@ void HeaderFileWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         case 0: _t->on_timingParametersButton_clicked(); break;
         case 1: _t->on_geometryParametersButton_clicked(); break;
         case 2: _t->on_targetPositionSettingsButton_clicked(); break;
-        case 3: _t->on_bearingsButtonClicked_clicked(); break;
-        case 4: _t->on_weatherParametersButton_clicked(); break;
-        case 5: _t->on_pulseParametersButton_clicked(); break;
-        case 6: _t->on_quicklookSettingsButton_clicked(); break;
+        case 3: _t->on_weatherParametersButton_clicked(); break;
+        case 4: _t->on_pulseParametersButton_clicked(); break;
+        case 5: _t->on_quicklookSettingsButton_clicked(); break;
         default: ;
         }
     }
@@ -126,13 +121,13 @@ int HeaderFileWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 6;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 6)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 7;
+        _id -= 6;
     }
     return _id;
 }

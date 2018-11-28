@@ -54,7 +54,6 @@ SOURCES       = ../src/audio_connection_manager.cpp \
 		../src/timingdialog.cpp \
 		../src/pulsedialog.cpp \
 		../src/targetdialog.cpp \
-		../src/bearingsdialog.cpp \
 		../src/weatherdialog.cpp \
 		../src/geometrydialog.cpp \
 		../src/quicklookdialog.cpp moc_headerfilewindow.cpp \
@@ -62,7 +61,6 @@ SOURCES       = ../src/audio_connection_manager.cpp \
 		moc_timingdialog.cpp \
 		moc_pulsedialog.cpp \
 		moc_targetdialog.cpp \
-		moc_bearingsdialog.cpp \
 		moc_weatherdialog.cpp \
 		moc_geometrydialog.cpp \
 		moc_quicklookdialog.cpp
@@ -75,7 +73,6 @@ OBJECTS       = audio_connection_manager.o \
 		timingdialog.o \
 		pulsedialog.o \
 		targetdialog.o \
-		bearingsdialog.o \
 		weatherdialog.o \
 		geometrydialog.o \
 		quicklookdialog.o \
@@ -84,7 +81,6 @@ OBJECTS       = audio_connection_manager.o \
 		moc_timingdialog.o \
 		moc_pulsedialog.o \
 		moc_targetdialog.o \
-		moc_bearingsdialog.o \
 		moc_weatherdialog.o \
 		moc_geometrydialog.o \
 		moc_quicklookdialog.o
@@ -177,7 +173,7 @@ first: all
 
 all: Makefile $(TARGET)
 
-$(TARGET): ui_mainwindow.h ui_headerfilewindow.h ui_timingdialog.h ui_pulsedialog.h ui_targetdialog.h ui_bearingsdialog.h ui_weatherdialog.h ui_geometrydialog.h ui_quicklookdialog.h $(OBJECTS)  
+$(TARGET): ui_mainwindow.h ui_headerfilewindow.h ui_timingdialog.h ui_pulsedialog.h ui_targetdialog.h ui_weatherdialog.h ui_geometrydialog.h ui_quicklookdialog.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../src/cnc_controller.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -312,7 +308,7 @@ qmake_all: FORCE
 
 dist: 
 	@test -d .tmp/cnc_controller1.0.0 || mkdir -p .tmp/cnc_controller1.0.0
-	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/cnc_controller1.0.0/ && $(COPY_FILE) --parents ../src/audio_connection_manager.h ../src/datetime.h ../src/header_arm_files.h ../src/headerfilewindow.h ../src/includes.h ../src/mainwindow.h ../src/parameters.h ../src/timingdialog.h ../src/pulsedialog.h ../src/targetdialog.h ../src/bearingsdialog.h ../build/ui_headerfilewindow.h ../build/ui_mainwindow.h ../build/ui_bearingsdialog.h ../build/ui_pulsedialog.h ../build/ui_targetdialog.h ../build/ui_timingdialog.h ../src/weatherdialog.h ../src/geometrydialog.h ../src/quicklookdialog.h .tmp/cnc_controller1.0.0/ && $(COPY_FILE) --parents ../src/audio_connection_manager.cpp ../src/datetime.cpp ../src/header_arm_files.cpp ../src/headerfilewindow.cpp ../src/main.cpp ../src/mainwindow.cpp ../src/timingdialog.cpp ../src/pulsedialog.cpp ../src/targetdialog.cpp ../src/bearingsdialog.cpp ../src/weatherdialog.cpp ../src/geometrydialog.cpp ../src/quicklookdialog.cpp .tmp/cnc_controller1.0.0/ && $(COPY_FILE) --parents ../src/mainwindow.ui ../src/headerfilewindow.ui ../src/timingdialog.ui ../src/pulsedialog.ui ../src/targetdialog.ui ../src/bearingsdialog.ui ../src/weatherdialog.ui ../src/geometrydialog.ui ../src/quicklookdialog.ui .tmp/cnc_controller1.0.0/ && (cd `dirname .tmp/cnc_controller1.0.0` && $(TAR) cnc_controller1.0.0.tar cnc_controller1.0.0 && $(COMPRESS) cnc_controller1.0.0.tar) && $(MOVE) `dirname .tmp/cnc_controller1.0.0`/cnc_controller1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/cnc_controller1.0.0
+	$(COPY_FILE) --parents $(SOURCES) $(DIST) .tmp/cnc_controller1.0.0/ && $(COPY_FILE) --parents ../src/audio_connection_manager.h ../src/datetime.h ../src/header_arm_files.h ../src/headerfilewindow.h ../src/includes.h ../src/mainwindow.h ../src/parameters.h ../src/timingdialog.h ../src/pulsedialog.h ../src/targetdialog.h ../build/ui_headerfilewindow.h ../build/ui_mainwindow.h ui_bearingsdialog.h ../build/ui_pulsedialog.h ../build/ui_targetdialog.h ../build/ui_timingdialog.h ../src/weatherdialog.h ../src/geometrydialog.h ../src/quicklookdialog.h .tmp/cnc_controller1.0.0/ && $(COPY_FILE) --parents ../src/audio_connection_manager.cpp ../src/datetime.cpp ../src/header_arm_files.cpp ../src/headerfilewindow.cpp ../src/main.cpp ../src/mainwindow.cpp ../src/timingdialog.cpp ../src/pulsedialog.cpp ../src/targetdialog.cpp ../src/weatherdialog.cpp ../src/geometrydialog.cpp ../src/quicklookdialog.cpp .tmp/cnc_controller1.0.0/ && $(COPY_FILE) --parents ../src/mainwindow.ui ../src/headerfilewindow.ui ../src/timingdialog.ui ../src/pulsedialog.ui ../src/targetdialog.ui ../src/weatherdialog.ui ../src/geometrydialog.ui ../src/quicklookdialog.ui .tmp/cnc_controller1.0.0/ && (cd `dirname .tmp/cnc_controller1.0.0` && $(TAR) cnc_controller1.0.0.tar cnc_controller1.0.0 && $(COMPRESS) cnc_controller1.0.0.tar) && $(MOVE) `dirname .tmp/cnc_controller1.0.0`/cnc_controller1.0.0.tar.gz . && $(DEL_FILE) -r .tmp/cnc_controller1.0.0
 
 
 clean:compiler_clean 
@@ -335,9 +331,9 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_headerfilewindow.cpp moc_mainwindow.cpp moc_timingdialog.cpp moc_pulsedialog.cpp moc_targetdialog.cpp moc_bearingsdialog.cpp moc_weatherdialog.cpp moc_geometrydialog.cpp moc_quicklookdialog.cpp
+compiler_moc_header_make_all: moc_headerfilewindow.cpp moc_mainwindow.cpp moc_timingdialog.cpp moc_pulsedialog.cpp moc_targetdialog.cpp moc_weatherdialog.cpp moc_geometrydialog.cpp moc_quicklookdialog.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_headerfilewindow.cpp moc_mainwindow.cpp moc_timingdialog.cpp moc_pulsedialog.cpp moc_targetdialog.cpp moc_bearingsdialog.cpp moc_weatherdialog.cpp moc_geometrydialog.cpp moc_quicklookdialog.cpp
+	-$(DEL_FILE) moc_headerfilewindow.cpp moc_mainwindow.cpp moc_timingdialog.cpp moc_pulsedialog.cpp moc_targetdialog.cpp moc_weatherdialog.cpp moc_geometrydialog.cpp moc_quicklookdialog.cpp
 moc_headerfilewindow.cpp: /usr/include/qt5/QtWidgets/QWidget \
 		/usr/include/qt5/QtWidgets/qwidget.h \
 		/usr/include/qt5/QtGui/qwindowdefs.h \
@@ -476,7 +472,6 @@ moc_headerfilewindow.cpp: /usr/include/qt5/QtWidgets/QWidget \
 		../src/timingdialog.h \
 		../src/pulsedialog.h \
 		../src/targetdialog.h \
-		../src/bearingsdialog.h \
 		../src/weatherdialog.h \
 		../src/geometrydialog.h \
 		../src/quicklookdialog.h \
@@ -628,7 +623,6 @@ moc_mainwindow.cpp: /usr/include/qt5/QtWidgets/QWidget \
 		../src/timingdialog.h \
 		../src/pulsedialog.h \
 		../src/targetdialog.h \
-		../src/bearingsdialog.h \
 		../src/weatherdialog.h \
 		../src/geometrydialog.h \
 		../src/quicklookdialog.h \
@@ -1001,126 +995,6 @@ moc_targetdialog.cpp: /usr/include/qt5/QtWidgets/QDialog \
 		../src/targetdialog.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../src/targetdialog.h -o moc_targetdialog.cpp
 
-moc_bearingsdialog.cpp: /usr/include/qt5/QtWidgets/QDialog \
-		/usr/include/qt5/QtWidgets/qdialog.h \
-		/usr/include/qt5/QtWidgets/qwidget.h \
-		/usr/include/qt5/QtGui/qwindowdefs.h \
-		/usr/include/qt5/QtCore/qglobal.h \
-		/usr/include/qt5/QtCore/qconfig.h \
-		/usr/include/qt5/QtCore/qfeatures.h \
-		/usr/include/qt5/QtCore/qsystemdetection.h \
-		/usr/include/qt5/QtCore/qprocessordetection.h \
-		/usr/include/qt5/QtCore/qcompilerdetection.h \
-		/usr/include/qt5/QtCore/qglobalstatic.h \
-		/usr/include/qt5/QtCore/qatomic.h \
-		/usr/include/qt5/QtCore/qbasicatomic.h \
-		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
-		/usr/include/qt5/QtCore/qgenericatomic.h \
-		/usr/include/qt5/QtCore/qatomic_msvc.h \
-		/usr/include/qt5/QtCore/qatomic_integrity.h \
-		/usr/include/qt5/QtCore/qoldbasicatomic.h \
-		/usr/include/qt5/QtCore/qatomic_vxworks.h \
-		/usr/include/qt5/QtCore/qatomic_power.h \
-		/usr/include/qt5/QtCore/qatomic_alpha.h \
-		/usr/include/qt5/QtCore/qatomic_armv7.h \
-		/usr/include/qt5/QtCore/qatomic_armv6.h \
-		/usr/include/qt5/QtCore/qatomic_armv5.h \
-		/usr/include/qt5/QtCore/qatomic_bfin.h \
-		/usr/include/qt5/QtCore/qatomic_ia64.h \
-		/usr/include/qt5/QtCore/qatomic_mips.h \
-		/usr/include/qt5/QtCore/qatomic_s390.h \
-		/usr/include/qt5/QtCore/qatomic_sh4a.h \
-		/usr/include/qt5/QtCore/qatomic_sparc.h \
-		/usr/include/qt5/QtCore/qatomic_gcc.h \
-		/usr/include/qt5/QtCore/qatomic_x86.h \
-		/usr/include/qt5/QtCore/qatomic_cxx11.h \
-		/usr/include/qt5/QtCore/qatomic_unix.h \
-		/usr/include/qt5/QtCore/qmutex.h \
-		/usr/include/qt5/QtCore/qlogging.h \
-		/usr/include/qt5/QtCore/qflags.h \
-		/usr/include/qt5/QtCore/qtypeinfo.h \
-		/usr/include/qt5/QtCore/qtypetraits.h \
-		/usr/include/qt5/QtCore/qsysinfo.h \
-		/usr/include/qt5/QtCore/qobjectdefs.h \
-		/usr/include/qt5/QtCore/qnamespace.h \
-		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
-		/usr/include/qt5/QtGui/qwindowdefs_win.h \
-		/usr/include/qt5/QtCore/qobject.h \
-		/usr/include/qt5/QtCore/qstring.h \
-		/usr/include/qt5/QtCore/qchar.h \
-		/usr/include/qt5/QtCore/qbytearray.h \
-		/usr/include/qt5/QtCore/qrefcount.h \
-		/usr/include/qt5/QtCore/qarraydata.h \
-		/usr/include/qt5/QtCore/qstringbuilder.h \
-		/usr/include/qt5/QtCore/qlist.h \
-		/usr/include/qt5/QtCore/qalgorithms.h \
-		/usr/include/qt5/QtCore/qiterator.h \
-		/usr/include/qt5/QtCore/qcoreevent.h \
-		/usr/include/qt5/QtCore/qscopedpointer.h \
-		/usr/include/qt5/QtCore/qmetatype.h \
-		/usr/include/qt5/QtCore/qvarlengtharray.h \
-		/usr/include/qt5/QtCore/qcontainerfwd.h \
-		/usr/include/qt5/QtCore/qisenum.h \
-		/usr/include/qt5/QtCore/qobject_impl.h \
-		/usr/include/qt5/QtCore/qmargins.h \
-		/usr/include/qt5/QtCore/qrect.h \
-		/usr/include/qt5/QtCore/qsize.h \
-		/usr/include/qt5/QtCore/qpoint.h \
-		/usr/include/qt5/QtGui/qpaintdevice.h \
-		/usr/include/qt5/QtGui/qpalette.h \
-		/usr/include/qt5/QtGui/qcolor.h \
-		/usr/include/qt5/QtGui/qrgb.h \
-		/usr/include/qt5/QtCore/qstringlist.h \
-		/usr/include/qt5/QtCore/qdatastream.h \
-		/usr/include/qt5/QtCore/qiodevice.h \
-		/usr/include/qt5/QtCore/qpair.h \
-		/usr/include/qt5/QtCore/qregexp.h \
-		/usr/include/qt5/QtCore/qstringmatcher.h \
-		/usr/include/qt5/QtGui/qbrush.h \
-		/usr/include/qt5/QtCore/qvector.h \
-		/usr/include/qt5/QtGui/qmatrix.h \
-		/usr/include/qt5/QtGui/qpolygon.h \
-		/usr/include/qt5/QtGui/qregion.h \
-		/usr/include/qt5/QtCore/qline.h \
-		/usr/include/qt5/QtGui/qtransform.h \
-		/usr/include/qt5/QtGui/qpainterpath.h \
-		/usr/include/qt5/QtGui/qimage.h \
-		/usr/include/qt5/QtGui/qpixmap.h \
-		/usr/include/qt5/QtCore/qsharedpointer.h \
-		/usr/include/qt5/QtCore/qshareddata.h \
-		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
-		/usr/include/qt5/QtCore/qhash.h \
-		/usr/include/qt5/QtGui/qfont.h \
-		/usr/include/qt5/QtGui/qfontmetrics.h \
-		/usr/include/qt5/QtGui/qfontinfo.h \
-		/usr/include/qt5/QtWidgets/qsizepolicy.h \
-		/usr/include/qt5/QtGui/qcursor.h \
-		/usr/include/qt5/QtGui/qkeysequence.h \
-		/usr/include/qt5/QtGui/qevent.h \
-		/usr/include/qt5/QtCore/qvariant.h \
-		/usr/include/qt5/QtCore/qmap.h \
-		/usr/include/qt5/QtCore/qdebug.h \
-		/usr/include/qt5/QtCore/qtextstream.h \
-		/usr/include/qt5/QtCore/qlocale.h \
-		/usr/include/qt5/QtCore/qset.h \
-		/usr/include/qt5/QtCore/qcontiguouscache.h \
-		/usr/include/qt5/QtCore/qurl.h \
-		/usr/include/qt5/QtCore/qurlquery.h \
-		/usr/include/qt5/QtCore/qfile.h \
-		/usr/include/qt5/QtCore/qfiledevice.h \
-		/usr/include/qt5/QtGui/qvector2d.h \
-		/usr/include/qt5/QtGui/qtouchdevice.h \
-		../src/includes.h \
-		../src/datetime.h \
-		/usr/include/qt5/QtCore/QDateTime \
-		/usr/include/qt5/QtCore/qdatetime.h \
-		../src/parameters.h \
-		../src/header_arm_files.h \
-		../src/SimpleIni.h \
-		../src/ConvertUTF.h \
-		../src/bearingsdialog.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) $(INCPATH) -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../src/bearingsdialog.h -o moc_bearingsdialog.cpp
-
 moc_weatherdialog.cpp: /usr/include/qt5/QtWidgets/QDialog \
 		/usr/include/qt5/QtWidgets/qdialog.h \
 		/usr/include/qt5/QtWidgets/qwidget.h \
@@ -1483,9 +1357,9 @@ moc_quicklookdialog.cpp: /usr/include/qt5/QtWidgets/QDialog \
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h ui_headerfilewindow.h ui_timingdialog.h ui_pulsedialog.h ui_targetdialog.h ui_bearingsdialog.h ui_weatherdialog.h ui_geometrydialog.h ui_quicklookdialog.h
+compiler_uic_make_all: ui_mainwindow.h ui_headerfilewindow.h ui_timingdialog.h ui_pulsedialog.h ui_targetdialog.h ui_weatherdialog.h ui_geometrydialog.h ui_quicklookdialog.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h ui_headerfilewindow.h ui_timingdialog.h ui_pulsedialog.h ui_targetdialog.h ui_bearingsdialog.h ui_weatherdialog.h ui_geometrydialog.h ui_quicklookdialog.h
+	-$(DEL_FILE) ui_mainwindow.h ui_headerfilewindow.h ui_timingdialog.h ui_pulsedialog.h ui_targetdialog.h ui_weatherdialog.h ui_geometrydialog.h ui_quicklookdialog.h
 ui_mainwindow.h: ../src/mainwindow.ui
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../src/mainwindow.ui -o ui_mainwindow.h
 
@@ -1500,9 +1374,6 @@ ui_pulsedialog.h: ../src/pulsedialog.ui
 
 ui_targetdialog.h: ../src/targetdialog.ui
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../src/targetdialog.ui -o ui_targetdialog.h
-
-ui_bearingsdialog.h: ../src/bearingsdialog.ui
-	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../src/bearingsdialog.ui -o ui_bearingsdialog.h
 
 ui_weatherdialog.h: ../src/weatherdialog.ui
 	/usr/lib/x86_64-linux-gnu/qt5/bin/uic ../src/weatherdialog.ui -o ui_weatherdialog.h
@@ -1892,7 +1763,6 @@ headerfilewindow.o: ../src/headerfilewindow.cpp /usr/include/qt5/QtWidgets/QPush
 		../src/timingdialog.h \
 		../src/pulsedialog.h \
 		../src/targetdialog.h \
-		../src/bearingsdialog.h \
 		../src/weatherdialog.h \
 		../src/geometrydialog.h \
 		../src/quicklookdialog.h \
@@ -2056,7 +1926,6 @@ main.o: ../src/main.cpp /usr/include/qt5/QtWidgets/QApplication \
 		../src/timingdialog.h \
 		../src/pulsedialog.h \
 		../src/targetdialog.h \
-		../src/bearingsdialog.h \
 		../src/weatherdialog.h \
 		../src/geometrydialog.h \
 		../src/quicklookdialog.h \
@@ -2213,7 +2082,6 @@ mainwindow.o: ../src/mainwindow.cpp ../src/mainwindow.h \
 		../src/timingdialog.h \
 		../src/pulsedialog.h \
 		../src/targetdialog.h \
-		../src/bearingsdialog.h \
 		../src/weatherdialog.h \
 		../src/geometrydialog.h \
 		../src/quicklookdialog.h \
@@ -2599,127 +2467,6 @@ targetdialog.o: ../src/targetdialog.cpp ../src/targetdialog.h \
 		ui_targetdialog.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o targetdialog.o ../src/targetdialog.cpp
 
-bearingsdialog.o: ../src/bearingsdialog.cpp ../src/bearingsdialog.h \
-		/usr/include/qt5/QtWidgets/QDialog \
-		/usr/include/qt5/QtWidgets/qdialog.h \
-		/usr/include/qt5/QtWidgets/qwidget.h \
-		/usr/include/qt5/QtGui/qwindowdefs.h \
-		/usr/include/qt5/QtCore/qglobal.h \
-		/usr/include/qt5/QtCore/qconfig.h \
-		/usr/include/qt5/QtCore/qfeatures.h \
-		/usr/include/qt5/QtCore/qsystemdetection.h \
-		/usr/include/qt5/QtCore/qprocessordetection.h \
-		/usr/include/qt5/QtCore/qcompilerdetection.h \
-		/usr/include/qt5/QtCore/qglobalstatic.h \
-		/usr/include/qt5/QtCore/qatomic.h \
-		/usr/include/qt5/QtCore/qbasicatomic.h \
-		/usr/include/qt5/QtCore/qatomic_bootstrap.h \
-		/usr/include/qt5/QtCore/qgenericatomic.h \
-		/usr/include/qt5/QtCore/qatomic_msvc.h \
-		/usr/include/qt5/QtCore/qatomic_integrity.h \
-		/usr/include/qt5/QtCore/qoldbasicatomic.h \
-		/usr/include/qt5/QtCore/qatomic_vxworks.h \
-		/usr/include/qt5/QtCore/qatomic_power.h \
-		/usr/include/qt5/QtCore/qatomic_alpha.h \
-		/usr/include/qt5/QtCore/qatomic_armv7.h \
-		/usr/include/qt5/QtCore/qatomic_armv6.h \
-		/usr/include/qt5/QtCore/qatomic_armv5.h \
-		/usr/include/qt5/QtCore/qatomic_bfin.h \
-		/usr/include/qt5/QtCore/qatomic_ia64.h \
-		/usr/include/qt5/QtCore/qatomic_mips.h \
-		/usr/include/qt5/QtCore/qatomic_s390.h \
-		/usr/include/qt5/QtCore/qatomic_sh4a.h \
-		/usr/include/qt5/QtCore/qatomic_sparc.h \
-		/usr/include/qt5/QtCore/qatomic_gcc.h \
-		/usr/include/qt5/QtCore/qatomic_x86.h \
-		/usr/include/qt5/QtCore/qatomic_cxx11.h \
-		/usr/include/qt5/QtCore/qatomic_unix.h \
-		/usr/include/qt5/QtCore/qmutex.h \
-		/usr/include/qt5/QtCore/qlogging.h \
-		/usr/include/qt5/QtCore/qflags.h \
-		/usr/include/qt5/QtCore/qtypeinfo.h \
-		/usr/include/qt5/QtCore/qtypetraits.h \
-		/usr/include/qt5/QtCore/qsysinfo.h \
-		/usr/include/qt5/QtCore/qobjectdefs.h \
-		/usr/include/qt5/QtCore/qnamespace.h \
-		/usr/include/qt5/QtCore/qobjectdefs_impl.h \
-		/usr/include/qt5/QtGui/qwindowdefs_win.h \
-		/usr/include/qt5/QtCore/qobject.h \
-		/usr/include/qt5/QtCore/qstring.h \
-		/usr/include/qt5/QtCore/qchar.h \
-		/usr/include/qt5/QtCore/qbytearray.h \
-		/usr/include/qt5/QtCore/qrefcount.h \
-		/usr/include/qt5/QtCore/qarraydata.h \
-		/usr/include/qt5/QtCore/qstringbuilder.h \
-		/usr/include/qt5/QtCore/qlist.h \
-		/usr/include/qt5/QtCore/qalgorithms.h \
-		/usr/include/qt5/QtCore/qiterator.h \
-		/usr/include/qt5/QtCore/qcoreevent.h \
-		/usr/include/qt5/QtCore/qscopedpointer.h \
-		/usr/include/qt5/QtCore/qmetatype.h \
-		/usr/include/qt5/QtCore/qvarlengtharray.h \
-		/usr/include/qt5/QtCore/qcontainerfwd.h \
-		/usr/include/qt5/QtCore/qisenum.h \
-		/usr/include/qt5/QtCore/qobject_impl.h \
-		/usr/include/qt5/QtCore/qmargins.h \
-		/usr/include/qt5/QtCore/qrect.h \
-		/usr/include/qt5/QtCore/qsize.h \
-		/usr/include/qt5/QtCore/qpoint.h \
-		/usr/include/qt5/QtGui/qpaintdevice.h \
-		/usr/include/qt5/QtGui/qpalette.h \
-		/usr/include/qt5/QtGui/qcolor.h \
-		/usr/include/qt5/QtGui/qrgb.h \
-		/usr/include/qt5/QtCore/qstringlist.h \
-		/usr/include/qt5/QtCore/qdatastream.h \
-		/usr/include/qt5/QtCore/qiodevice.h \
-		/usr/include/qt5/QtCore/qpair.h \
-		/usr/include/qt5/QtCore/qregexp.h \
-		/usr/include/qt5/QtCore/qstringmatcher.h \
-		/usr/include/qt5/QtGui/qbrush.h \
-		/usr/include/qt5/QtCore/qvector.h \
-		/usr/include/qt5/QtGui/qmatrix.h \
-		/usr/include/qt5/QtGui/qpolygon.h \
-		/usr/include/qt5/QtGui/qregion.h \
-		/usr/include/qt5/QtCore/qline.h \
-		/usr/include/qt5/QtGui/qtransform.h \
-		/usr/include/qt5/QtGui/qpainterpath.h \
-		/usr/include/qt5/QtGui/qimage.h \
-		/usr/include/qt5/QtGui/qpixmap.h \
-		/usr/include/qt5/QtCore/qsharedpointer.h \
-		/usr/include/qt5/QtCore/qshareddata.h \
-		/usr/include/qt5/QtCore/qsharedpointer_impl.h \
-		/usr/include/qt5/QtCore/qhash.h \
-		/usr/include/qt5/QtGui/qfont.h \
-		/usr/include/qt5/QtGui/qfontmetrics.h \
-		/usr/include/qt5/QtGui/qfontinfo.h \
-		/usr/include/qt5/QtWidgets/qsizepolicy.h \
-		/usr/include/qt5/QtGui/qcursor.h \
-		/usr/include/qt5/QtGui/qkeysequence.h \
-		/usr/include/qt5/QtGui/qevent.h \
-		/usr/include/qt5/QtCore/qvariant.h \
-		/usr/include/qt5/QtCore/qmap.h \
-		/usr/include/qt5/QtCore/qdebug.h \
-		/usr/include/qt5/QtCore/qtextstream.h \
-		/usr/include/qt5/QtCore/qlocale.h \
-		/usr/include/qt5/QtCore/qset.h \
-		/usr/include/qt5/QtCore/qcontiguouscache.h \
-		/usr/include/qt5/QtCore/qurl.h \
-		/usr/include/qt5/QtCore/qurlquery.h \
-		/usr/include/qt5/QtCore/qfile.h \
-		/usr/include/qt5/QtCore/qfiledevice.h \
-		/usr/include/qt5/QtGui/qvector2d.h \
-		/usr/include/qt5/QtGui/qtouchdevice.h \
-		../src/includes.h \
-		../src/datetime.h \
-		/usr/include/qt5/QtCore/QDateTime \
-		/usr/include/qt5/QtCore/qdatetime.h \
-		../src/parameters.h \
-		../src/header_arm_files.h \
-		../src/SimpleIni.h \
-		../src/ConvertUTF.h \
-		ui_bearingsdialog.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o bearingsdialog.o ../src/bearingsdialog.cpp
-
 weatherdialog.o: ../src/weatherdialog.cpp ../src/weatherdialog.h \
 		/usr/include/qt5/QtWidgets/QDialog \
 		/usr/include/qt5/QtWidgets/qdialog.h \
@@ -3097,9 +2844,6 @@ moc_pulsedialog.o: moc_pulsedialog.cpp
 
 moc_targetdialog.o: moc_targetdialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_targetdialog.o moc_targetdialog.cpp
-
-moc_bearingsdialog.o: moc_bearingsdialog.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_bearingsdialog.o moc_bearingsdialog.cpp
 
 moc_weatherdialog.o: moc_weatherdialog.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_weatherdialog.o moc_weatherdialog.cpp

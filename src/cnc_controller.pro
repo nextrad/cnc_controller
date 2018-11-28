@@ -37,7 +37,6 @@ SOURCES += audio_connection_manager.cpp \
     timingdialog.cpp \
     pulsedialog.cpp \
     targetdialog.cpp \
-    bearingsdialog.cpp \
     weatherdialog.cpp \
     geometrydialog.cpp \
     quicklookdialog.cpp
@@ -53,7 +52,6 @@ HEADERS  +=  audio_connection_manager.h \
     timingdialog.h \
     pulsedialog.h \
     targetdialog.h \
-    bearingsdialog.h \
     ../build/ui_headerfilewindow.h \
     ../build/ui_mainwindow.h \
     ../build/ui_bearingsdialog.h \
@@ -69,7 +67,6 @@ FORMS    += mainwindow.ui \
     timingdialog.ui \
     pulsedialog.ui \
     targetdialog.ui \
-    bearingsdialog.ui \
     weatherdialog.ui \
     geometrydialog.ui \
     quicklookdialog.ui

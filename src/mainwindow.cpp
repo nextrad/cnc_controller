@@ -689,12 +689,12 @@ void MainWindow::on_goButton_clicked()
 
         saveTarget();
 
-        // sends out header file to ALL units
-        if (sendFilesOverNetwork()== 0)
-        {
-            // initialise TCUs
-            runTCUs();
-        }
+//        // sends out header file to ALL units
+//        if (sendFilesOverNetwork()== 0)
+//        {
+//            // initialise TCUs
+//            runTCUs();
+//        }
     }
     else
     {
@@ -1176,19 +1176,32 @@ void MainWindow::saveTarget()
 
         // Read target positions from Google Earth
         string coordt = headerarmfiles.readFromGoogleEarthFile("target", "<coordinates>");
-        string lont = coordt.substr(0,7);
-        string latt = coordt.substr(8,8);
-        string htt = coordt.substr(17,1);
 
-        std::cout << "target coord = " << coordt << std::endl;
-        std::cout << "target lon = " << lont << std::endl;
-        std::cout << "target lat = " << latt << std::endl;
-        std::cout << "target ht = " << htt << std::endl;
+        string str[3];
+        int i = 0;
+        std::size_t found = coordt.find_first_of(",</");
+        while (found!=std::string::npos)
+        {
+            str[i] = coordt.substr(0,found);
+
+            coordt = coordt.substr(found+1);
+
+            i++;
+
+            found=coordt.find_first_of(",</",found+1);
+        }
+
+        found=coordt.find_first_of(",</",found+1);
+        str[i] = coordt.substr(0,found);
+
+        std::cout << "target lon = " << str[0] << std::endl;
+        std::cout << "target lat = " << str[1] << std::endl;
+        std::cout << "target ht = " << str[2] << std::endl;
 
         // Save target positions to Header file
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", latt);
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lont);
-        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", htt);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", str[0]);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", str[1]);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", str[2]);
 }
 
 //=============================================================================
