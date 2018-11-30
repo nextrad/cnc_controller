@@ -13,7 +13,7 @@
 #include "parameters.h"
 
 
-
+bool NTP_ON;
 int EXPERIMENT_LENGTH;
 
 void testNTP(void);
@@ -40,6 +40,8 @@ int main(int argc, char **argv)
 //Method to test if the NTP server is running correctly
 void testNTP(void)
 {
+    NTP_ON = false;
+
     int status = system("sudo service ntp status > ../tmp/ntpStatus.txt");      //write the status of the NTP server to ntpStatus.txt
     if (-1 != status)
     {
@@ -70,6 +72,10 @@ void testNTP(void)
         }
 
         printf("\n");
+    }
+    else
+    {
+        NTP_ON = true;
     }
     printf("\n");
     ntpStatus.close();

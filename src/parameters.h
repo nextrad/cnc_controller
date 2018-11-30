@@ -65,7 +65,7 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define TONES_PATH                  "/var/lib/asterisk/sounds/custom/tone"
 #define GOOGLE_EARTH_PATH           "/usr/bin"
 
-#define STARTTIMESECS               40
+#define STARTTIMESECS               60
 
 
 

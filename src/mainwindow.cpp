@@ -27,6 +27,7 @@
 
 #define DEBUG "goLater"
 
+extern bool NTP_ON;
 extern int EXPERIMENT_LENGTH; //in seconds
 
 
@@ -44,6 +45,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->Countdown->display("00:00:00");
+
+    if (!NTP_ON)
+    {
+        ui->statusBox->append("");
+        ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Connect NTP server for correct datetime");
+        ui->statusBox->append("");
+    }
 
     ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
@@ -653,7 +661,7 @@ void MainWindow::on_abortGoButton_clicked()
         cout<< "Aborting TCUs...\n" <<endl;
         killTCU(0);
         killTCU(1);
-//        killTCU(2);                                                       // TODO - uncomment line and reset ansible hosts
+        killTCU(2);
 
         ui->statusBox->setTextColor("black");
         ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
@@ -1057,10 +1065,10 @@ void MainWindow::runTCUs(void)
     {
         runTCU(1);
     }
-//    if (testConnection(TCU2))  // TODO - uncomment line and reset ansible hosts
-//    {
-//       runTCU(2);
-//    }
+    if (testConnection(TCU2))
+    {
+       runTCU(2);
+    }
 
     ui->statusBox->setTextColor("black");
 }
