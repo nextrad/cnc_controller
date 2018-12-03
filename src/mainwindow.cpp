@@ -25,8 +25,6 @@
 #include <QDateTime>
 #include <QString>
 
-#define DEBUG "goLater"
-
 extern bool NTP_ON;
 extern int EXPERIMENT_LENGTH; //in seconds
 
@@ -55,12 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
-#ifdef DEBUG
     ui->goLaterButton->show();
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
-#else
-    ui->goLaterButton->hide();
-#endif
 
     //connect to asterisk server and set up audio recording
     audioRecorder.connectToSocket();
@@ -717,9 +711,11 @@ void MainWindow::resetHeaderFileTimes(void)
 {
     Datetime datetime;
     std::string nowplussecs, day, month, year, hour, minute, second;
+    int starttimesecs;
 
     // This time rolls over if add seconds
-    nowplussecs = datetime.getNowPlusSecs(STARTTIMESECS);
+    starttimesecs = headerarmfiles.readFromHeaderFile("Timing", "STARTTIMESECS").toInt();
+    nowplussecs = datetime.getNowPlusSecs(starttimesecs);
 
     year = nowplussecs.substr(0,4);
     month = nowplussecs.substr(5,2);

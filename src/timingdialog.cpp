@@ -10,6 +10,8 @@
 //HOUR    = 16
 //MINUTE  = 20
 //SECOND  = 00
+//STARTTIMESECS = 60
+
 
 TimingDialog::TimingDialog(QWidget *parent) :
     QDialog(parent),
@@ -23,6 +25,7 @@ TimingDialog::TimingDialog(QWidget *parent) :
     QString qsvalue;
     stringstream ss;
 
+    // year
     for (int i = 2018; i < 2031; i++)
     {
         ss << i;
@@ -31,6 +34,7 @@ TimingDialog::TimingDialog(QWidget *parent) :
         ss.str("");             //clear stringstream
     }
 
+    // (month or day) < 10
     for (int i = 1; i < 10; i++)
     {
         ss << "0" << i;
@@ -40,6 +44,7 @@ TimingDialog::TimingDialog(QWidget *parent) :
         ss.str("");             //clear stringstream
     }
 
+    // (month or day) between 10 and 12
     for (int i = 10; i < 13; i++)
     {
         ss << i;
@@ -49,6 +54,7 @@ TimingDialog::TimingDialog(QWidget *parent) :
         ss.str("");             //clear stringstream
     }
 
+    // (month or day) from 13 to 31
     for (int i = 13; i < 32; i++)
     {
         ss << i;
@@ -57,6 +63,7 @@ TimingDialog::TimingDialog(QWidget *parent) :
         ss.str("");             //clear stringstream
     }
 
+    // (hour, minute or second) < 10
     for (int i = 0; i < 10; i++)
     {
         ss << "0" << i;
@@ -67,6 +74,7 @@ TimingDialog::TimingDialog(QWidget *parent) :
         ss.str("");             //clear stringstream
     }
 
+    // (hour, minute or second) < between 10 and 23
     for (int i = 10; i < 24; i++)
     {
         ss << i;
@@ -77,6 +85,7 @@ TimingDialog::TimingDialog(QWidget *parent) :
         ss.str("");             //clear stringstream
     }
 
+    // (hour, minute or second) < between 24 and 59
     for (int i = 24; i < 60; i++)
     {
         ss << i;
@@ -92,10 +101,12 @@ TimingDialog::TimingDialog(QWidget *parent) :
     Datetime datetime;
     string str;
 
-    int year, month, day, hour, minute, second;
+    int year, month, day, hour, minute, second, starttimesecs;
 
     // This time rolls over if add seconds
-    string nowplussecs = datetime.getNowPlusSecs(STARTTIMESECS);
+    string starttimesecsstr = headerarmfiles.readFromHeaderFile("Timing", "STARTTIMESECS").toStdString();
+    starttimesecs = stoi(starttimesecsstr);
+    string nowplussecs = datetime.getNowPlusSecs(starttimesecs);
 
     ss << nowplussecs.substr(0,4) << endl;
     str = ss.str();
@@ -134,6 +145,7 @@ TimingDialog::TimingDialog(QWidget *parent) :
     ui->hourcomboBox->setCurrentIndex(hour);
     ui->minutecomboBox->setCurrentIndex(minute);
     ui->secondcomboBox->setCurrentIndex(second);
+    ui->starttimeedit->setText(QString::fromStdString(starttimesecsstr));
 
 }
 
@@ -145,7 +157,7 @@ TimingDialog::~TimingDialog()
 
 int TimingDialog::on_buttonBox_clicked()
 {
-    string year, month, day, hour, minute, second;
+    string year, month, day, hour, minute, second, starttime;
     stringstream ss;
 
     ss << ui->yearcomboBox->currentIndex() + 2018 << endl;
@@ -172,12 +184,17 @@ int TimingDialog::on_buttonBox_clicked()
     second = ss.str();
     ss.str("");             //clear stringstream
 
+    ss << ui->starttimeedit->toPlainText().toStdString() << endl;
+    starttime = ss.str();
+    ss.str("");             //clear stringstream
+
     headerarmfiles.writeToHeaderFile("Timing", "YEAR", year);
     headerarmfiles.writeToHeaderFile("Timing", "MONTH", month);
     headerarmfiles.writeToHeaderFile("Timing", "DAY", day);
     headerarmfiles.writeToHeaderFile("Timing", "HOUR", hour);
     headerarmfiles.writeToHeaderFile("Timing", "MINUTE", minute);
     headerarmfiles.writeToHeaderFile("Timing", "SECOND", second);
+    headerarmfiles.writeToHeaderFile("Timing", "STARTTIMESECS", starttime);
 
     return 0;
 }
