@@ -38,9 +38,11 @@ public:
     ~MainWindow();
 
 private slots:
-     void on_testConnectionButton_clicked();
-
      void on_editHeaderFileButton_clicked();
+
+     void on_sendHeaderFileButton_clicked();
+
+     void on_testConnectionButton_clicked();
 
      void on_receiveNodePositionsButton_clicked();
 

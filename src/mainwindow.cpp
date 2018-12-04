@@ -104,6 +104,48 @@ void MainWindow::on_editHeaderFileButton_clicked()
 }
 
 //=============================================================================
+// on_sendHeaderFileButton_clicked()
+// Sends the Header File to the nodes
+//=============================================================================
+void MainWindow::on_sendHeaderFileButton_clicked()
+{
+    stringstream ss;
+    int status;
+    int ret = -1;
+
+    try
+    {
+        // Nodes
+
+        ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=" << HEADER_PATH << "\"";
+
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
+        {
+             ret = WEXITSTATUS(status);
+
+             if (ret==0)
+             {
+                 cout<< "Header file to nodes all successful\n" <<endl;
+                 ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all nodes");
+              }
+             else
+             {
+                 cout<< "Header file to nodes not all successful\n" <<endl;
+                 ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all nodes");
+             }
+             ui->statusBox->append("");
+         }
+         ss.str("");             //clear stringstream
+    }
+    catch(exception &e)
+    {
+        cout << "on_sendHeaderFileButton_clicked() exception: " << e.what() << endl;
+    }
+}
+
+
+//=============================================================================
 // on_testConnectionButton_clicked()
 // Tests the connections to CNC
 //=============================================================================
