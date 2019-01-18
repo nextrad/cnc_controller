@@ -127,7 +127,15 @@ void AudioConnectionManager::stopRecording(void)
     sleep(2);
     readFromSocket();
 
-    system("sudo ../scripts/audio/relocate_audio_files.sh");
+    int status = system("sudo ../scripts/audio/relocate_audio_files.sh");
+    if (-1 != status)
+    {
+        int ret = WEXITSTATUS(status);
+        if(ret!=0)
+        {
+            cout << "Audio_files FAILED to relocate correctly" << endl;
+        }
+    }
 }
 
 

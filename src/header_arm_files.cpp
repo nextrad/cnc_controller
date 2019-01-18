@@ -1,8 +1,13 @@
 //Class:        Datetime
 //For:          University of Cape Town, Dept. Elec. Eng., RRSG NeXtRAD
-//Author:       Shirley Coetzee
-//Created:      December 2017
 //Version       1.0 (December 2017)
+//Created by:   Shirley Coetzee
+//Revision      2.0 (July 2018)
+//Edited by:    Shirley Coetzee and Brad Kahn
+//Revision      3.0 (September 2018)
+//Edited by:    Shirley Coetzee
+
+
 
 
 #include "includes.h"
@@ -130,66 +135,131 @@ string HeaderArmFiles::readFromGPSInfoFile(int nodeno, string var)
 
 
 //=============================================================================
-// readFromBearingsFile()
+// writeToGoogleEarthFile()
 //=============================================================================
-//method to return a variable's value from a Bearings file
-string HeaderArmFiles::readFromBearingsFile(int nodeno, string var, int strsize)
+//method to place a variable's value into a Google Earth file
+void HeaderArmFiles::writeToGoogleEarthFile(string section, string key, string var)
 {
-    string path, data;
-
-    switch (nodeno)
+    // Open Google Earth file
+    std::ifstream file (GOOGLE_EARTH_FILE);
+    if (file.good() != 1)
     {
-        case 0: path = CNC_NODE0_BEARINGS_PATH;
-                break;
-        case 1: path = CNC_NODE1_BEARINGS_PATH;
-                break;
-        case 2: path = CNC_NODE2_BEARINGS_PATH;
-                break;
+        printf("Please check location of Google Earth file and try again.\n");
     }
-
-    //Read from header file
-    std::ifstream check (path);
-    if (check.good() != 1)
+    else
     {
-        printf("Please check location of bearings file and try again.\n");
-        return "Fault";
-    }
+        std::string original_substr, replacement ;
+        std::string line;
 
-
-    std::string line;
-    while ( std::getline( check, line ) )
-    {
-        // find var
-        std::size_t found = line.find(var);
-        if (found!=std::string::npos)
+        // get a temporary file name
+        char tempFileName[20]; // name only valid till next invocation of tempFileOpen
+        std::ofstream temp_file;
+        strcpy(tempFileName, "/tmp/XXXXXX");
+        if (mkstemp(tempFileName) != -1)
         {
-            //cout << line[found] << endl;
 
-            // get rest of line
-            std::string str = line.substr (found + var.length() + 1);
-            //cout << "the rest of the string after " << var << " is " << str << endl;
+            temp_file.open(tempFileName);
 
-            if (var == "Lon")
+            while ( std::getline( file, line) )
             {
-                std::size_t found2 = str.find_first_of(",");
-                if (found2!=std::string::npos)
+                // find section
+                std::size_t found = line.find(section);
+                if (found!=std::string::npos)
                 {
-                    //cout << str.substr(found2 + 1) << endl;
-                    // print out value
-                    data = str.substr(found2 + 1, strsize);
-                    //cout << data << endl;
+                    temp_file << line << endl;
+
+                    // find key
+                    while ( std::getline( file, line) )
+                    {
+                        found = line.find(key);
+                        if (found!=std::string::npos)
+                        {
+                            original_substr = line;
+
+                            std::string key1 = key.substr(1,key.length()-2);
+                            replacement = key + var + "</" + key1 + ">";
+
+                            line.replace( found, original_substr.size(), replacement ) ;
+                            found += replacement.size() ;
+
+                            temp_file << line << endl;
+
+                            break;
+                        }
+                        else
+                        {
+                            temp_file << line << endl;
+                        }
+                    }
+                }
+                else
+                {
+                    temp_file << line << endl;
                 }
             }
-            else
+
+            // overwrite the original file with the temporary file
             {
-                // find a minus or number
-                std::size_t found2 = str.find_first_of("-1234567890");
-                if (found2!=std::string::npos)
+                std::ifstream temp_file(tempFileName) ;
+                std::ofstream file(GOOGLE_EARTH_FILE) ;
+                file << temp_file.rdbuf() ;
+            }
+
+            // delete the temporary file
+            std::remove(tempFileName) ;
+        }
+    }
+}
+
+
+//=============================================================================
+// readFromGoogleEarthFile()
+//=============================================================================
+//method to return a variable's value from a Google Earth file
+string HeaderArmFiles::readFromGoogleEarthFile(string section, string key)
+{   
+    string data = "";
+
+    // Open Google Earth file
+    std::ifstream file (GOOGLE_EARTH_FILE);
+    if (file.good() != 1)
+    {
+        printf("Please check location of Google Earth file and try again.\n");
+    }
+    else
+    {
+        std::string line;
+
+        while ( std::getline( file, line) )
+        {
+            // find section
+            std::size_t found = line.find(section);
+            if (found!=std::string::npos)
+            {
+                // find key
+                while ( std::getline( file, line) )
                 {
-                    //cout << str.substr(found2) << endl;
-                    // print out value
-                    data = str.substr(found2, strsize);
-                    //cout << data << endl;
+                    found = line.find(key);
+                    if (found!=std::string::npos)
+                    {
+                        // get data
+                        found = line.find('>');
+                        if (found!=std::string::npos)
+                        {
+                            string str = line.substr(found + 1);
+                            found = str.find(".");
+                            if (found!=std::string::npos)
+                            {
+                                data = line;
+                            }
+                            else
+                            {
+                                found = str.find("<");
+                                data = str.substr(0, found);
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }

@@ -7,6 +7,7 @@
 #include <QLCDNumber>
 #include <QTextEdit>
 #include <QString>
+#include <QProcess>
 
 #include "audio_connection_manager.h"
 #include "includes.h"
@@ -21,7 +22,7 @@
 #include <iomanip>
 #include <ctime>
 #include <sstream>
-
+#include <QMessageBox>
 #include <QMainWindow>
 
 namespace Ui {
@@ -37,13 +38,15 @@ public:
     ~MainWindow();
 
 private slots:
-     void on_testConnectionButton_clicked();
-
      void on_editHeaderFileButton_clicked();
+
+     void on_sendHeaderFileButton_clicked();
+
+     void on_testConnectionButton_clicked();
 
      void on_receiveNodePositionsButton_clicked();
 
-     void on_receiveBearingsButton_clicked();
+     void on_viewMapButton_clicked();
 
      void on_showVideoButton_clicked();
 
@@ -93,9 +96,8 @@ private:
     bool testConnection(string unitname);
     char* stringToCharPntr(string str);
 
-    void receiveNodePosition(int node_num);
-
-    void receiveBearings(int node_num);
+    bool receiveNodePosition(int node_num);
+    bool testNodeConnection(QString NetID);
 
     void resetHeaderFileTimes(void);
     string setButtonColour(int colourno);
@@ -104,6 +106,8 @@ private:
     void runTCUs(void);
     void runTCU(int tcu_num);
     void killTCU(int tcu_num);
+
+    void saveTarget();
 
     int calcExperimentLength(void);
     QString getCountDownTime(time_t timeLeft);

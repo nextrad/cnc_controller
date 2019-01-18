@@ -26,7 +26,6 @@
 #include "timingdialog.h"
 #include "pulsedialog.h"
 #include "targetdialog.h"
-#include "bearingsdialog.h"
 #include "weatherdialog.h"
 #include "geometrydialog.h"
 #include "quicklookdialog.h"
@@ -53,8 +52,6 @@ private slots:
 
     void on_targetPositionSettingsButton_clicked();
 
-    void on_bearingsButtonClicked_clicked();
-
     void on_weatherParametersButton_clicked();
 
     void on_pulseParametersButton_clicked();
@@ -69,7 +66,6 @@ private:
     TimingDialog *timingdialog;
     PulseDialog *pulsedialog;
     TargetDialog *targetdialog;
-    BearingsDialog *bearingsdialog;
     WeatherDialog *weatherdialog;
     GeometryDialog *geometrydialog;
     QuicklookDialog *quicklookdialog;

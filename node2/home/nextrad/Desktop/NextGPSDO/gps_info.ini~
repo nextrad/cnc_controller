@@ -6,22 +6,22 @@
 ;=================================
 ; GPS Status
 ;=================================
-DATE = 29/11/2018
-TIME = 13:51:30:512564
+DATE = 9/7/2018
+TIME = 13:48:16:754852
 LATITUDE = -34.1926
-; Lat_Unsigned = 4171873927
-LONGITUDE = 18.4457
-; Long_Unsigned = 66404346
-ALTITUDE = 52.6
+; Lat_Unsigned = 4171874041
+LONGITUDE = 18.4458
+; Long_Unsigned = 66404857
+ALTITUDE = 48.23
 ;=================================
 ; Position Hold Values
 ;=================================
 ; PH_Latitude = -34.1926
-POS_HOLD_LAT = 4171873980
-; PH_Longitude = 18.4456
-POS_HOLD_LONG = 66404232
-POS_HOLD_HEIGHT = 48.65
+POS_HOLD_LAT = 4171874041
+; PH_Longitude = 18.4458
+POS_HOLD_LONG = 66404857
+POS_HOLD_HEIGHT = 48.23
 ;=================================
 ; GPS Config
 ;=================================
-CABLE_DELAY = 46
+CABLE_DELAY = 49

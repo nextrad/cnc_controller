@@ -30,9 +30,14 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define IS_MOSAIC_MODE              true
 #define H_FILE_LENGTH               112
 
+#define TCU_INIT_SCRIPT             "python3 /home/nextrad/Documents/tcu_software/controller_v2.py "
+
 #define TCU0                        "192.168.1.16"
 #define TCU1                        "192.168.1.26"
 #define TCU2                        "192.168.1.36"
+
+#define TCU_BOF_ACTIVE              "tcu_v2-1-3_active.bof"
+#define TCU_BOF_PASSIVE             "tcu_v2-1-3_passive.bof"
 
 #define HEADER_FILE                 "NeXtRAD.ini"
 #define HEADER_PATH                 "/home/nextrad/Documents/nextrad_header/" HEADER_FILE
@@ -52,12 +57,13 @@ enum WritePrivacy {PUBLIC, PRIVATE};
 #define CNC_NODE2_BEARINGS_PATH     "/home/nextrad/Documents/cnc_controller/node2/home/nextrad/Desktop/NextGPSDO/tardat2cc.rtf"
 #define NODE_BEARINGS_PATH          "/home/nextrad/tardat2cc.rtf"
 
+#define GOOGLE_EARTH_PATH           "/usr/bin"
+#define GOOGLE_EARTH_FILE           "/home/nextrad/Documents/cnc_controller/src/My Places.kml"
+#define GOOGLE_EARTH_FULLFILE       "/home/nextrad/Documents/cnc_controller/src/\"My Places.kml\""
+
 #define ICON_PATH                   "../media/icons/favicon2.ico"
 #define TONES_PATH                  "/var/lib/asterisk/sounds/custom/tone"
-
-#define STARTTIMESECS               40
-
-
+#define GOOGLE_EARTH_PATH           "/usr/bin"
 
 
 #endif // PARAMETERS_H

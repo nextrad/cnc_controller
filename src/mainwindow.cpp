@@ -11,6 +11,8 @@
 //Revision      7.0 (Feb 2018)
 //Edited by:    Shirley Coetzee
 //Revision      8.0 (Jul 2018)
+//Edited by:    Shirley Coetzee
+//Revision      9.0 (Sep 2018)
 
 
 //=============================================================================
@@ -23,8 +25,7 @@
 #include <QDateTime>
 #include <QString>
 
-#define DEBUG "goLater"
-
+extern bool NTP_ON;
 extern int EXPERIMENT_LENGTH; //in seconds
 
 
@@ -43,14 +44,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->Countdown->display("00:00:00");
 
+    if (!NTP_ON)
+    {
+        ui->statusBox->append("");
+        ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Connect NTP server for correct datetime");
+        ui->statusBox->append("");
+    }
+
     ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
-#ifdef DEBUG
     ui->goLaterButton->show();
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
-#else
-    ui->goLaterButton->hide();
-#endif
 
     //connect to asterisk server and set up audio recording
     audioRecorder.connectToSocket();
@@ -99,6 +103,46 @@ void MainWindow::on_editHeaderFileButton_clicked()
     ui->countdownLabel->setText("");
 }
 
+//=============================================================================
+// on_sendHeaderFileButton_clicked()
+// Sends the Header File to the nodes
+//=============================================================================
+void MainWindow::on_sendHeaderFileButton_clicked()
+{
+    stringstream ss;
+    int status;
+    int ret = -1;
+
+    try
+    {
+        // Nodes
+
+        ss << "ansible nodes -m copy -a \"src=" << HEADER_PATH << " dest=" << HEADER_PATH << "\"";
+
+        status = system(stringToCharPntr(ss.str()));
+        if (-1 != status)
+        {
+             ret = WEXITSTATUS(status);
+
+             if (ret==0)
+             {
+                 cout<< "Header file to nodes all successful\n" <<endl;
+                 ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File sent to all nodes");
+              }
+             else
+             {
+                 cout<< "Header file to nodes not all successful\n" <<endl;
+                 ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Header File not sent to all nodes");
+             }
+             ui->statusBox->append("");
+         }
+         ss.str("");             //clear stringstream
+    }
+    catch(exception &e)
+    {
+        cout << "on_sendHeaderFileButton_clicked() exception: " << e.what() << endl;
+    }
+}
 
 
 //=============================================================================
@@ -107,6 +151,10 @@ void MainWindow::on_editHeaderFileButton_clicked()
 //=============================================================================
 void MainWindow::on_testConnectionButton_clicked()
 {
+    ui->statusBox->append("");
+    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Network Connections");
+    ui->statusBox->append("");
+
     testSubNetwork("1");
     testSubNetwork("2");
     testSubNetwork("3");
@@ -126,11 +174,11 @@ void MainWindow::testSubNetwork(QString NetID)
     string temp, name;
     string address = "192.168.1.";
     address.append(NetID.toUtf8().constData());
-    NetID = QString::number(NetID.toInt() - 1);    //This is because the node numbering actually starts from zero.
+    QString node_num_qstr = QString::number(NetID.toInt() - 1);    //This is because the node numbering actually starts from zero.
 
     //Test if Access Point bullet is connected
     name = "ap";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("2");
     if(!testConnection(temp))
@@ -146,7 +194,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if STAtion bullet is connected
     name = "sta";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("3");
     if(!testConnection(temp))
@@ -162,7 +210,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if PoE Switch is connected
     name = "switch";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("0");
     if(!testConnection(temp))
@@ -178,10 +226,8 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if Node Laptop is connected
     name = "node";
-    name.append(NetID.toUtf8().constData());
-    temp = address;
-    temp.append("1");
-    if(!testConnection(temp))
+    name.append(node_num_qstr.toUtf8().constData());
+    if(!testNodeConnection(NetID))
     {
         ui->statusBox->setTextColor("red");
         ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
@@ -194,10 +240,10 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if IP camera is connected
     name = "cam";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("4");
-    if(!testConnection(temp))                   //Cameras have no ssh port and more security so it's easier to ping them
+    if(!testConnection(temp))                  //Cameras have no ssh port and more security so it's easier to ping them
     {
         ui->statusBox->setTextColor("red");
         ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X     ") + QString::fromStdString(name) );
@@ -210,7 +256,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if Cobalt is connected
     name = "cobalt";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("5");
     if(!testConnection(temp))
@@ -226,7 +272,7 @@ void MainWindow::testSubNetwork(QString NetID)
 
     //Test if TCUs is connected
     name = "tcu";
-    name.append(NetID.toUtf8().constData());
+    name.append(node_num_qstr.toUtf8().constData());
     temp = address;
     temp.append("6");
     if(!testConnection(temp))
@@ -241,6 +287,25 @@ void MainWindow::testSubNetwork(QString NetID)
     }
 
     ui->statusBox->append("");
+}
+
+//=============================================================================
+// testNodeConnection()
+// Tests the node connections to CNC
+//=============================================================================
+bool MainWindow::testNodeConnection(QString NetID)
+{
+    bool connected = false;
+
+    string address = "192.168.1.";
+    address.append(NetID.toUtf8().constData());
+    address.append("1");
+    if(testConnection(address))
+    {
+        connected = true;
+    }
+
+    return connected;
 }
 
 //=============================================================================
@@ -272,6 +337,7 @@ bool MainWindow::testConnection(string address)
     return false;
 }
 
+
 //=============================================================================
 // stringToCharPntr()
 // Takes in a string and converts it to char*
@@ -283,6 +349,7 @@ char* MainWindow::stringToCharPntr(string str)
     return cstr;
 }
 
+
 //=============================================================================
 // receiveNodePositionsButtonClicked()
 // method to receive the nodes' positions from the GPSDOs.
@@ -290,14 +357,14 @@ char* MainWindow::stringToCharPntr(string str)
 void MainWindow::on_receiveNodePositionsButton_clicked()
 {
     ui->statusBox->append("");
-    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching GPS info files from GPSDOs");
+    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Node Positions");
+    ui->statusBox->append("");
 
     receiveNodePosition(0);
     receiveNodePosition(1);
     receiveNodePosition(2);
 
     ui->statusBox->append("");
-    ui->statusBox->setTextColor("black");
     ui->statusBox->setTextColor("black");
     ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
@@ -307,62 +374,75 @@ void MainWindow::on_receiveNodePositionsButton_clicked()
 //=============================================================================
 // receiveNodePosition()
 //=============================================================================
-void MainWindow::receiveNodePosition(int node_num)
+bool MainWindow::receiveNodePosition(int node_num)
 {
     stringstream ss;
     int status;
     int ret;
     string lat, lon, ht;
+    bool connected = false;
 
     try
     {
-        ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.ini dest=~/Documents/cnc_controller/" << "\"";
-        cout << ss.str().c_str() << endl;
-
-        status = system(stringToCharPntr(ss.str()));
-        if (-1 != status)
+        if (testNodeConnection(QString::number(node_num + 1)))
         {
-            ret = WEXITSTATUS(status);
+            connected = true;
 
-            if (ret==0)
+            ss << "ansible node" << node_num << " -m fetch -a \"src=~/Desktop/NextGPSDO/gps_info.ini dest=~/Documents/cnc_controller/" << "\"";
+            cout << ss.str().c_str() << endl;
+
+            status = system(stringToCharPntr(ss.str()));
+            if (-1 != status)
             {
-                // Parse gpsinfo.ini file
-                lat = headerarmfiles.readFromGPSInfoFile(node_num,"LATITUDE");
-                lon = headerarmfiles.readFromGPSInfoFile(node_num,"LONGITUDE");
-                ht = headerarmfiles.readFromGPSInfoFile(node_num,"ALTITUDE");
+                ret = WEXITSTATUS(status);
 
-                if ((lat == "Fault") || (lon == "Fault") || (ht == "Fault"))
+                if (ret==0)
+                {
+                    // Parse gpsinfo.ini file
+                    lat = headerarmfiles.readFromGPSInfoFile(node_num,"LATITUDE");
+                    lon = headerarmfiles.readFromGPSInfoFile(node_num,"LONGITUDE");
+                    ht = headerarmfiles.readFromGPSInfoFile(node_num,"ALTITUDE");
+
+                    if ((lat == "Fault") || (lon == "Fault") || (ht == "Fault"))
+                    {
+                        // Display data on screen in red X per node
+                        ui->statusBox->setTextColor("red");
+                        ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+                    }
+                    else
+                    {
+                        // Display data on screen in green values per node
+                        ui->statusBox->setTextColor("green");
+                        ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n " \
+                                    + "lat=" + QString::fromStdString(lat) + ", \tlong=" + QString::fromStdString(lon) + ", \tht=" + QString::fromStdString(ht));
+
+                        if (node_num == 0)
+                        {
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
+                        }
+                        else if (node_num == 1)
+                        {
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
+                        }
+                        else if (node_num == 2)
+                        {
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
+                            headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
+                        }
+                    }
+                }
+                else
                 {
                     // Display data on screen in red X per node
                     ui->statusBox->setTextColor("red");
                     ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
-                }
-                else
-                {
-                    if (node_num == 0)
-                    {
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE0_LOCATION_HT", ht);
-                    }
-                    else if (node_num == 1)
-                    {
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE1_LOCATION_HT", ht);
-                    }
-                    else if (node_num == 2)
-                    {
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LAT", lat);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_LON", lon);
-                        headerarmfiles.writeToHeaderFile("GeometrySettings", "NODE2_LOCATION_HT", ht);
-                    }
 
-                    // Display data on screen in green values per node
-                    ui->statusBox->setTextColor("green");
-                    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n " \
-                                + "lat=" + QString::fromStdString(lat) + ", \tlong=" + QString::fromStdString(lon) + ", \tht=" + QString::fromStdString(ht));
-               }
+                 }
             }
             else
             {
@@ -371,139 +451,138 @@ void MainWindow::receiveNodePosition(int node_num)
                 ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
             }
         }
+        else
+        {
+            // Display data on screen in red X per node
+            ui->statusBox->setTextColor("red");
+            ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
+        }
+
         ss.str("");             //clear stringstream
         ui->statusBox->append("");
+
     }
     catch(exception &e)
     {
         cout << "receiveNodePosition exception: " << e.what() << endl;
     }
+
+    return connected;
 }
 
 //=============================================================================
-// receiveBearingsButtonClicked()
+// viewMapButtonClicked()
 // method to receive the bearings from the GPSDO.
 //=============================================================================
-void MainWindow::on_receiveBearingsButton_clicked()
+void MainWindow::on_viewMapButton_clicked()
 {
     ui->statusBox->append("");
-    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "Fetching node bearings file from Mission Control");
+    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm   ") + "View Map");
     ui->statusBox->append("");
 
-    receiveBearings(0);
-    receiveBearings(1);
-    receiveBearings(2);
+    string lat, lon, ht;
+    string namebig = "NODE";
+    string namesmall = "node";
+    string temp;
+
+    bool connected = false;
+
+    try
+    {
+        // save node positions to Google Earth file
+        for( int node_num = 0; node_num < 3; node_num++ )
+        {
+            if (receiveNodePosition(node_num))
+            {
+                connected = true;
+
+                string numbigstr = std::to_string(node_num);
+                string numbigfull = namebig + numbigstr;
+
+                temp = numbigfull + "_LOCATION_LAT";
+                lat = headerarmfiles.readFromHeaderFile("GeometrySettings", temp).toStdString();
+
+                temp = numbigfull + "_LOCATION_LON";
+                lon = headerarmfiles.readFromHeaderFile("GeometrySettings", temp).toStdString();
+
+                temp = numbigfull + "_LOCATION_HT";
+                ht = headerarmfiles.readFromHeaderFile("GeometrySettings", temp).toStdString();
+
+                string numsmallstr = std::to_string(node_num);
+                string numsmallfull = namesmall + numsmallstr;
+
+                headerarmfiles.writeToGoogleEarthFile(numsmallfull, "<longitude>", lon);
+                headerarmfiles.writeToGoogleEarthFile(numsmallfull, "<latitude>", lat);
+                headerarmfiles.writeToGoogleEarthFile(numsmallfull, "<altitude>", ht);
+                headerarmfiles.writeToGoogleEarthFile(numsmallfull, "<coordinates>", lon + "," + lat + "," + ht);
+            }
+        }
+
+        if (connected)
+        {
+            // Define Google Earth selections
+            QMessageBox::information(
+                this,
+                tr("Google Earth"),
+                tr("Do not use Temporary Places - Unselect it and discard results. \n\nSave by selecting \"My Places.kml\" and\nright click Save Place As... \"My Places.kml\""));
+
+
+            // Launch Google Earth
+            stringstream ss;
+            int ret;
+            int status;
+            bool closed = false;
+
+            // Remove any existing Google Earth programs
+            ss << "pkill googleearth-bin";
+            while (closed == false)
+            {
+                status = system(ss.str().c_str());
+                if (-1 != status)
+                {
+                    ret = WEXITSTATUS(status);
+                    if(ret==0)
+                    {
+                        cout << "Closed current Google Earth program\n" << endl;
+                    }
+                    else
+                    {
+                        closed = true;
+                    }
+                }
+            }
+            ss.str("");
+
+            // Run Google Earth
+            ss << "cd " << GOOGLE_EARTH_PATH " && ./google-earth-pro " << GOOGLE_EARTH_FULLFILE << " & exit";
+            status = system(ss.str().c_str());
+            if (-1 != status)
+            {
+                ret = WEXITSTATUS(status);
+                if(ret==0)
+                {
+                    cout << "view map successful\n" << endl;
+                }
+                else
+                {
+                    cout << "view map FAILED" << endl;
+                }
+            }
+            ss.str("");
+        }
+
+    }
+    catch (exception &e)
+    {
+        cout << "on_viewMapButton_clicked() exception: " << e.what() << endl;
+    }
+
 
     ui->statusBox->append("");
-    ui->statusBox->setTextColor("black");
     ui->statusBox->setTextColor("black");
     ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
     ui->goLaterButton->setStyleSheet(setButtonColour(GRAY).c_str());
     ui->countdownLabel->setText("");
-}
-
-//=============================================================================
-// receiveBearings()
-//
-//  tardat2cc.rtf
-// (*171207*)
-// DTG	061855Z 1217
-// Target Lat/Lon 	{-34.1813,18.46}
-// n1: Range	1.82952
-// n1: Bearing 46.5192
-//=============================================================================
-void MainWindow::receiveBearings(int node_num)
-{
-    string lat, lon, dtg;
-    string n0range, n0bearing, n1range, n1bearing, n2range, n2bearing;
-    stringstream ss;
-    int status;
-    int ret;
-
-    try
-    {
-        ss << "ansible node" << node_num << " -m fetch -a \"src=/home/nextrad/tardat2cc.rtf dest=~/Documents/cnc_controller/" << "\"";
-        cout << ss.str().c_str() << endl;
-
-        status = system(stringToCharPntr(ss.str()));
-        if (-1 != status)
-        {
-            ret = WEXITSTATUS(status);
-
-            if (ret==0)
-            {
-                // Parse tardat2cc.rtf file
-                dtg = headerarmfiles.readFromBearingsFile(node_num, "DTG", 12);
-                lat = headerarmfiles.readFromBearingsFile(node_num, "Lat", 8);
-                lon = headerarmfiles.readFromBearingsFile(node_num, "Lon", 5);
-                n0range = headerarmfiles.readFromBearingsFile(node_num, "n0: Range", 7);
-                n0bearing = headerarmfiles.readFromBearingsFile(node_num, "n0: Bearing", 7);
-                n1range = headerarmfiles.readFromBearingsFile(node_num, "n1: Range", 7);
-                n1bearing = headerarmfiles.readFromBearingsFile(node_num, "n1: Bearing", 7);
-                n2range = headerarmfiles.readFromBearingsFile(node_num, "n2: Range", 7);
-                n2bearing = headerarmfiles.readFromBearingsFile(node_num, "n2: Bearing", 7);
-
-                if ((lat == "Fault") || (lon == "Fault") || (dtg == "Fault"))
-                {
-                    // Display data on screen in red X per node
-                    ui->statusBox->setTextColor("red");
-                    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "\tnode" + QString::number(node_num));
-                }
-                else
-                {
-                    // Update Header file
-                    headerarmfiles.writeToHeaderFile("Bearings", "DTG", dtg);
-                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", lat);
-                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", lon);
-                    headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", "0.00");
-
-                    if (node_num == 0)
-                    {
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE0_RANGE", n0range);
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE0_BEARING", n0bearing);
-                    }
-                    else if (node_num == 1)
-                    {
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE1_RANGE", n1range);
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE1_BEARING", n1bearing);
-                    }
-                    else if (node_num == 2)
-                    {
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE2_RANGE", n2range);
-                        headerarmfiles.writeToHeaderFile("Bearings", "NODE2_BEARING", n2bearing);
-                    }
-
-                    // Display data on screen in green values per node
-                    ui->statusBox->setTextColor("green");
-                    ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      _    ") + "node" + QString::number(node_num) + "\n" \
-                                + "lat=" + QString::fromStdString(lat) + "\tlong=" + QString::fromStdString(lon) + "\n" \
-                                + "DTG=" + QString::fromStdString(dtg));
-
-                    switch(node_num)
-                    {
-                    case 0: ui->statusBox->append("n0 range=" + QString::fromStdString(n0range) + "\tn0 bearing=" + QString::fromStdString(n0bearing));
-                            break;
-                    case 1: ui->statusBox->append("n1 range=" + QString::fromStdString(n1range) + "\tn1 bearing=" + QString::fromStdString(n1bearing));
-                            break;
-                    case 2: ui->statusBox->append("n2 range=" + QString::fromStdString(n2range) + "\tn2 bearing=" + QString::fromStdString(n2bearing));
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                // Display data on screen in red X per node
-                ui->statusBox->setTextColor("red");
-                ui->statusBox->append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm      X    ") + "node" + QString::number(node_num));
-            }
-        }
-        ss.str("");             //clear stringstream
-        ui->statusBox->append("");
-    }
-    catch(exception &e)
-    {
-        cout << "receiveBearings exception: " << e.what() << endl;
-    }
 }
 
 //=============================================================================
@@ -618,7 +697,7 @@ void MainWindow::on_abortGoButton_clicked()
         cout<< "Aborting TCUs...\n" <<endl;
         killTCU(0);
         killTCU(1);
-//        killTCU(2);
+        killTCU(2);
 
         ui->statusBox->setTextColor("black");
         ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
@@ -647,6 +726,8 @@ void MainWindow::on_goButton_clicked()
     {
         ui->goButton->setStyleSheet(setButtonColour(GREEN).c_str());
 
+        saveTarget();
+
         // sends out header file to ALL units
         if (sendFilesOverNetwork()== 0)
         {
@@ -672,9 +753,11 @@ void MainWindow::resetHeaderFileTimes(void)
 {
     Datetime datetime;
     std::string nowplussecs, day, month, year, hour, minute, second;
+    int starttimesecs;
 
     // This time rolls over if add seconds
-    nowplussecs = datetime.getNowPlusSecs(STARTTIMESECS);
+    starttimesecs = headerarmfiles.readFromHeaderFile("Timing", "STARTTIMESECS").toInt();
+    nowplussecs = datetime.getNowPlusSecs(starttimesecs);
 
     year = nowplussecs.substr(0,4);
     month = nowplussecs.substr(5,2);
@@ -705,7 +788,6 @@ int MainWindow::calcExperimentLength(void)
     // e.g. PULSES = "5.0,1000.0,0,1300.0|10.0,2000.0,1,1300.0|10.0,3000.0,2,1300.0|10.0,4000.0,3,1300.0";
 
     // ====================================================
-
     // Split into blocks separated by "|", put into pulses_arr
 
     std::string s = pulses_str;
@@ -793,6 +875,7 @@ int MainWindow::calcExperimentLength(void)
 // converts the times from dd-MM-yyyy hh:mm:ss to yyyy-MM-dd hh:mm:ss formats for timer and NTP
 // If countdown time is valid, this method starts the countdown timer
 //=============================================================================
+
 bool MainWindow::checkCountdown(void)
 {
     Datetime datetime;
@@ -1029,7 +1112,7 @@ void MainWindow::runTCUs(void)
 }
 
 //=============================================================================
-// runTCU()
+// runTCU()TCU0
 //=============================================================================
 void MainWindow::runTCU(int tcu_num)
 {
@@ -1037,20 +1120,20 @@ void MainWindow::runTCU(int tcu_num)
     int ret;
     int status;
 
-    ss << "python3 /home/nextrad/Documents/tcu_software/controller.py ";
+    ss << TCU_INIT_SCRIPT;
     if (tcu_num == 0)
     {
-        ss << TCU0;
+        ss << TCU0 << " -b " << TCU_BOF_ACTIVE;
     }
     else if (tcu_num == 1)
     {
-        ss << TCU1;
+        ss << TCU1 << " -b " << TCU_BOF_PASSIVE;
     }
     else
     {
-        ss << TCU2;
+        ss << TCU2 << " -b " << TCU_BOF_PASSIVE;
     }
-    ss << " -f" << HEADER_PATH << " &" << endl;
+    ss << " -i -f " << HEADER_PATH << " &" << endl;
     cout << ss.str() << endl;
     status = system(ss.str().c_str());
 
@@ -1085,7 +1168,7 @@ void MainWindow::killTCU(int tcu_num)
     int ret;
     int status;
 
-    ss << "python3 /home/nextrad/Documents/tcu_software/controller.py ";
+    ss << TCU_INIT_SCRIPT;
     if (tcu_num == 0)
     {
         ss << TCU0;
@@ -1125,6 +1208,49 @@ void MainWindow::killTCU(int tcu_num)
 }
 
 //=============================================================================
+// on_saveTarget()
+// sends out header file to all units then starts countdown to armtime
+//=============================================================================
+void MainWindow::saveTarget()
+{
+        cout << "Fetching target positions from Google Earth File" <<endl;
+
+        // Read target positions from Google Earth
+        string input = headerarmfiles.readFromGoogleEarthFile("target", "<coordinates>");
+        std::cout << "target from GE = " << input << std::endl;
+
+        string str[3];
+        int i = 0;
+        std::size_t found = input.find_first_of(">");
+        string coordt = input.substr(found+1);
+        std::cout << "target = " << coordt << std::endl;
+
+        found = coordt.find_first_of(",>");
+        while (found!=std::string::npos)
+        {
+            str[i] = coordt.substr(0,found);
+
+            coordt = coordt.substr(found+1);
+
+            i++;
+
+            found=coordt.find_first_of(",<",found+1);
+        }
+
+        found=coordt.find_first_of(",<",found+1);
+        str[i] = coordt.substr(0,found);
+
+        std::cout << "target lon = " << str[0] << std::endl;
+        std::cout << "target lat = " << str[1] << std::endl;
+        std::cout << "target ht = " << str[2] << std::endl;
+
+        // Save target positions to Header file
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LON", str[0]);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_LAT", str[1]);
+        headerarmfiles.writeToHeaderFile("TargetSettings", "TGT_LOCATION_HT", str[2]);
+}
+
+//=============================================================================
 // goLaterButtonClicked()
 // sends out header file to all units then starts countdown to armtime
 //=============================================================================
@@ -1133,6 +1259,8 @@ void MainWindow::on_goLaterButton_clicked()
     // if countdown time valid, start display
     if (checkCountdown())
     {
+        saveTarget();
+
         // sends out header file to all units
         if (sendFilesOverNetwork() == 0)
         {
@@ -1200,12 +1328,16 @@ void MainWindow::updateCountDownLCD(void)
     }
     else if (experiment_state == WAITING)
     {
-        ui->Countdown->display(getCountDownTime(strtUnixTime - currentUnixTime));
-//        cout << "WAITING " << strtUnixTime - currentUnixTime << endl;
+        if((strtUnixTime - currentUnixTime) >= 0)
+        {
+            ui->Countdown->display(getCountDownTime(strtUnixTime - currentUnixTime));
+        }
     }
     else if (experiment_state == ACTIVE)
     {
-        ui->Countdown->display(getCountDownTime(stopUnixTime - currentUnixTime));
-//        cout << "ACTIVE " << stopUnixTime - currentUnixTime << endl;
+        if((stopUnixTime - currentUnixTime) >= 0)
+        {
+            ui->Countdown->display(getCountDownTime(stopUnixTime - currentUnixTime));
+        }
     }
 }

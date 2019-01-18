@@ -217,36 +217,6 @@ void HeaderFileWindow::on_targetPositionSettingsButton_clicked()
 
 
 //=============================================================================
-// bearingsButtonClicked()
-
-//[Bearings]
-//; DTG is date-time (in date-time group format) of getting bearings. EXAMPLE: 091630Z JUL 11 = 1630 UTC on 9 July 2011
-//; Baseline_Bisector and node ranges are in meters
-//; Node bearings are in degrees relative to true north
-//DTG = "061855Z 1217"
-//NODE0_RANGE = 1.82952
-//NODE0_BEARING = 46.5192
-//NODE1_RANGE = 1.82952
-//NODE1_BEARING = 46.5192
-//NODE2_RANGE = 1.82952
-//NODE2_BEARING = 46.5192
-
-//=============================================================================
-void HeaderFileWindow::on_bearingsButtonClicked_clicked()
-{
-    try
-    {
-        bearingsdialog = new BearingsDialog(this);
-        bearingsdialog->show();
-    }
-    catch (exception &e)
-    {
-        cout << "on_bearingsButtonClicked_clicked() exception: " << e.what() << endl;
-    }
-}
-
-
-//=============================================================================
 // weatherParametersButtonClicked()
 
 //[Weather]
